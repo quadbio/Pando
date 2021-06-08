@@ -1,8 +1,4 @@
 #' @import dplyr tibble
-#' @importFrom Signac StringToGRanges
-#' @importFrom Seurat GetAssay VariableFeatures
-#' @importFrom S4Vectors subjectHits
-#' @importFrom IRanges findOverlaps
 NULL
 
 
@@ -62,7 +58,7 @@ infer_grn.SeuratPlus <- function(
     colnames(peak_data) <- rownames(regions@motifs@data)
     peaks2motif <- regions@motifs@data
 
-    # Find cancidate regions near gene bodies
+    # Find candidate regions near gene bodies
     peaks_near_gene <- find_peaks_near_genes(
         peaks = regions@ranges,
         genes = gene_annot,
@@ -75,7 +71,6 @@ infer_grn.SeuratPlus <- function(
     # Select peaks passing criteria
     peaks_at_gene <- as.logical(colMaxs(peaks2gene))
     peaks_with_motif <- as.logical(rowMaxs(peaks2motif))
-
 
     # Subset data to good peaks
     peaks_use <- peaks_at_gene & peaks_with_motif
