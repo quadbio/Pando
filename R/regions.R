@@ -45,7 +45,8 @@ initiate_grn.Seurat <- function(
     regions_obj <- new(
         Class = 'Regions',
         ranges = cand_ranges,
-        peaks = peak_matches
+        peaks = peak_matches,
+        motifs = NULL
     )
 
     gene_annot <- Signac::Annotation(object)
@@ -107,7 +108,7 @@ find_motifs.SeuratPlus <- function(
 
     motif2tf <- motif2tf %>% select(1,2) %>%
         distinct() %>% mutate(val=1) %>%
-        pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
+        tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
         column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
     tfs_use <- intersect(rownames(GetAssay(object, params$rna_assay)), colnames(motif2tf))
     object@grn@genes$tfs <- motif2tf[, tfs_use]

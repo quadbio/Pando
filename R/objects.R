@@ -43,7 +43,7 @@ Network <- setClass(
 Regions <- setClass(
     Class = 'Regions',
     slots = list(
-        motifs = 'Motif',
+        motifs = 'ANY',
         ranges = 'GRanges',
         peaks = 'numeric'
     )

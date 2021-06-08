@@ -23,6 +23,8 @@ log_message <- function(..., verbose=T){
 #' @param verbose Logical. Display messages
 #'
 #' @return A sparse binary Matrix with gene/peak matches.
+#'
+#' @export
 find_peaks_near_genes <- function(
     peaks,
     genes,
@@ -88,8 +90,7 @@ aggregate_matrix <- function(
     groups = NULL,
     fun = 'mean'
 ){
-
-    if (length(groups) == nrow(x)){
+    if (length(groups) == nrow(x) & 'character'%in%class(fun)){
         if (fun%in%c('count', 'sum')){
             agg_mat <- Matrix.utils::aggregate.Matrix(x=x, groupings=groups, fun=fun)
             return(agg_mat)
