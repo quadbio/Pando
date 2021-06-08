@@ -1,0 +1,54 @@
+#' @rdname initiate_grn
+#' @export initiate_grn
+initiate_grn <- function(object, ...){
+    UseMethod(generic = 'initiate_grn', object = object)
+}
+
+#' @rdname find_motifs
+#' @export find_motifs
+find_motifs <- function(object, ...){
+    UseMethod(generic = 'find_motifs', object = object)
+}
+
+#' @rdname infer_grn
+#' @export infer_grn
+infer_grn <- function(object, ...){
+    UseMethod(generic = 'infer_grn', object = object)
+}
+
+#' @rdname GetNetworkData
+#' @export GetNetworkData
+GetNetworkData <- function(object, ...){
+    UseMethod(generic = 'GetNetworkData', object = object)
+}
+
+#' @rdname NetworkFeatures
+#' @export NetworkFeatures
+NetworkFeatures <- function(object, ...){
+    UseMethod(generic = 'NetworkFeatures', object = object)
+}
+
+#' @rdname NetworkRegions
+#' @export NetworkRegions
+NetworkRegions <- function(object, ...){
+    UseMethod(generic = 'NetworkRegions', object = object)
+}
+
+#' @rdname NetworkParams
+#' @export NetworkParams
+NetworkParams <- function(object, ...){
+    UseMethod(generic = 'NetworkParams', object = object)
+}
+
+#' @rdname NetworkTFs
+#' @export NetworkTFs
+NetworkTFs <- function(object, ...){
+    UseMethod(generic = 'NetworkTFs', object = object)
+}
+
+#' @rdname gof
+#' @export gof
+gof <- function(object, ...){
+    UseMethod(generic = 'gof', object = object)
+}
+

@@ -1,0 +1,34 @@
+Package: Pando
+Type: Package
+Title: Inferring regulomes from multi-modal single-cell genomics data
+Version: 0.0.1
+Authors@R: person(given = "Jonas Simon",
+               family = "Fleck",
+               role = c("aut", "cre"),
+               email = "jonas.fleck@bsse.ethz.ch",
+               comment = c(ORCID = "0000-0002-4686-7254"))
+Maintainer: Jonas Simon Fleck <jonas.fleck@bsse.ethz.ch>
+Description: Pando jointly uses scRNA-seq and scATAC-seq measurements to infer regulatory relationships between TF-binding site pairs and target genes. 
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+Imports: 
+    tidyverse,
+    Seurat,
+    Signac,
+    Matrix,
+    ggplot2,
+    IRanges,
+    GenomicRanges,
+    motifmatchr,
+    Matrix.utils,
+    glmnetUtils
+Suggests: 
+    rmarkdown,
+    testthat,
+    presto,
+    TFBSTools,
+    foreach,
+    sparseMatrixStats
