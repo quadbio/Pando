@@ -6,7 +6,7 @@
 NULL
 
 
-#' Initiate the \code{RegulatoryNetwork} object.
+#' Infer a Gene Regulatory Network with \code{Pando}
 #'
 #' @import Matrix
 #' @import sparseMatrixStats

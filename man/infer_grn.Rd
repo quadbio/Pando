@@ -3,7 +3,7 @@
 \name{infer_grn}
 \alias{infer_grn}
 \alias{infer_grn.SeuratPlus}
-\title{Initiate the \code{RegulatoryNetwork} object.}
+\title{Infer a Gene Regulatory Network with \code{Pando}}
 \usage{
 infer_grn(object, ...)
 
@@ -55,5 +55,5 @@ For more info, see \code{\link[formula]{stats}}}
 A SeuratPlus object.
 }
 \description{
-Initiate the \code{RegulatoryNetwork} object.
+Infer a Gene Regulatory Network with \code{Pando}
 }
