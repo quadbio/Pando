@@ -15,7 +15,7 @@ devtools::install_github('quadbiolab/Pando')
 
 ## Quick start
 
-If you have a `seurat_object` with single cell transcriptomic data of your organoid ready, you can start right away with projecting them to the brain:
+If you have a `seurat_object` with transcriptomic and chromantin accessibility data, you can start right away with infering the regulatory network:
 
 ```r
 # Load Packages
