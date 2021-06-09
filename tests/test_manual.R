@@ -17,7 +17,11 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 test_srt <- infer_grn(test_srt, parallel=T)
+test_srt <- find_modules(test_srt, min_genes_per_module = 0)
+
+
+
+
 coef(test_srt)
 format_coefs(coef(test_srt))
 
-test_srt@grn %>% print()

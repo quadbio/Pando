@@ -214,7 +214,7 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
     }
 
     if ('pval' %in% colnames(coefs)){
-        coefs$pval <- p.adjust(coefs$pval, method=adjust_method)
+        coefs$padj <- p.adjust(coefs$pval, method=adjust_method)
     }
 
     term_pattern <- paste0('(.+)', term, '(.+)')
@@ -241,10 +241,136 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 
 
 
+#' Find TF modules in regulatory network
+#'
+#' @importFrom purrr map map_chr
+#' @importFrom stringr str_split str_replace_all
+#'
+#' @param p_thresh Float indicating the significance threshold on the adjusted p-value.
+#' @param rsq_thresh Float indicating the \eqn{R^2} threshold on the adjusted p-value.
+#' @param nvar_thresh Integer indicating the minimum number of variables in the model.
+#' @param nvar_thresh Integer indicating the minimum number of genes in a module.
+#'
+#' @return A RegulatoryNetwork object.
+#'
+#' @rdname find_modules
+#' @export
+#' @method find_modules RegulatoryNetwork
+find_modules.RegulatoryNetwork <- function(
+    object,
+    p_thresh = 0.05,
+    rsq_thresh = 0.1,
+    nvar_thresh = 10,
+    min_genes_per_module = 5
+){
+    models_use <- gof(object) %>%
+        filter(dsq>rsq_thresh & nvariables>nvar_thresh) %>%
+        pull(target) %>%
+        unique()
+
+    modules <- coef(object) %>%
+        filter(
+            target %in% models_use,
+            ifelse(is.na(padj), T, padj<p_thresh)
+        ) %>%
+        group_by(target) %>%
+        mutate(nvars=n()) %>%
+        group_by(target, tf) %>%
+        mutate(tf_sites_per_gene=n()) %>%
+        group_by(target) %>%
+        mutate(
+            tf_per_gene=length(unique(tf)),
+            peak_per_gene=length(unique(peak))
+        ) %>%
+        group_by(tf) %>%
+        mutate(gene_per_tf=length(unique(target))) %>%
+        group_by(target, tf) %>%
+        summarize(
+            estimate=sum(estimate),
+            npeaks=peak_per_gene,
+            ngenes=gene_per_tf,
+            ntfs=tf_per_gene,
+            peaks=paste(peak, collapse=';'),
+            pval=min(pval),
+            padj=min(padj)
+        ) %>%
+        distinct() %>%
+        arrange(tf)
+
+    module_pos <- modules %>%
+        filter(estimate>0) %>%
+        group_by(tf) %>% filter(n()>min_genes_per_module) %>%
+        group_split() %>% {names(.) <- map_chr(., function(x) x$tf[[1]]); .} %>%
+        map(function(x) x$target)
+
+    module_neg <- modules %>%
+        filter(estimate<0) %>%
+        group_by(tf) %>% filter(n()>min_genes_per_module) %>%
+        group_split() %>% {names(.) <- map_chr(., function(x) x$tf[[1]]); .} %>%
+        map(function(x) x$target)
+
+    regions_pos <- modules %>%
+        filter(estimate>0) %>%
+        group_by(tf) %>% filter(n()>min_genes_per_module) %>%
+        group_split() %>% {names(.) <- map_chr(., function(x) x$tf[[1]]); .} %>%
+        map(function(x) unlist(str_split(x$peaks, ';')))
+
+    regions_neg <- modules %>%
+        filter(estimate<0) %>%
+        group_by(tf) %>% filter(n()>min_genes_per_module) %>%
+        group_split() %>% {names(.) <- map_chr(., function(x) x$tf[[1]]); .} %>%
+        map(function(x) unlist(str_split(x$peaks, ';')))
+
+    module_feats <- list(
+        'genes_pos' = module_pos,
+        'genes_neg' = module_neg,
+        'regions_pos' = regions_pos,
+        'regions_neg' = regions_neg
+    )
+
+    object@network@modules[['meta']] <- modules
+    object@network@modules[['features']] <- module_feats
+
+    return(object)
+}
 
 
 
+#' @importFrom purrr map
+#'
+#' @return A Network object.
+#'
+#' @rdname find_modules
+#' @export
+#' @method find_modules SeuratPlus
+find_modules.SeuratPlus <- function(
+    object,
+    p_thresh = 0.05,
+    rsq_thresh = 0.1,
+    nvar_thresh = 10,
+    min_genes_per_module = 5
+){
+    params <- NetworkParams(object)
+    regions <- NetworkRegions(object)
+    network <- GetNetworkData(object)
+    network <- find_modules(
+        network,
+        p_thresh = p_thresh,
+        rsq_thresh = rsq_thresh,
+        nvar_thresh =nvar_thresh,
+        min_genes_per_module = min_genes_per_module
+    )
+    modules <- NetworkModules(network)
 
+    reg2peaks <- rownames(GetAssay(object, assay=params$peak_assay))[regions@peaks]
+    names(reg2peaks) <- Signac::GRangesToString(regions@ranges)
+    peaks_pos <- modules[['features']]$regions_pos %>% map(function(x) unique(reg2peaks[x]))
+    peaks_neg <- modules[['features']]$regions_neg %>% map(function(x) unique(reg2peaks[x]))
+    modules[['features']][['peaks_pos']] <- peaks_pos
+    modules[['features']][['peaks_neg']] <- peaks_neg
 
+    object@grn@network@modules <- modules
+    return(object)
+}
 
 

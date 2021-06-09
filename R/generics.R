@@ -46,9 +46,23 @@ NetworkTFs <- function(object, ...){
     UseMethod(generic = 'NetworkTFs', object = object)
 }
 
+#' @rdname NetworkModules
+#' @export NetworkModules
+NetworkModules <- function(object, ...){
+    UseMethod(generic = 'NetworkModules', object = object)
+}
+
 #' @rdname gof
 #' @export gof
 gof <- function(object, ...){
     UseMethod(generic = 'gof', object = object)
 }
+
+#' @rdname find_modules
+#' @export find_modules
+find_modules <- function(object, ...){
+    UseMethod(generic = 'find_modules', object = object)
+}
+
+
 

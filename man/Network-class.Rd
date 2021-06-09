@@ -16,6 +16,8 @@ process as well as graph representations of the network.
 
 \item{\code{coefs}}{A dataframe with the fitted coefficients.}
 
+\item{\code{modules}}{A list TF modules.}
+
 \item{\code{graph}}{A graphical representation of the inferred network.}
 }}
 

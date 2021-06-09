@@ -12,6 +12,7 @@ NULL
 #'
 #' @slot fit A dataframe with goodness of fit measures.
 #' @slot coefs A dataframe with the fitted coefficients.
+#' @slot modules A list TF modules.
 #' @slot graph A graphical representation of the inferred network.
 #'
 #' @name Network-class
@@ -22,6 +23,7 @@ Network <- setClass(
     slots = list(
         fit = 'data.frame',
         coefs = 'data.frame',
+        modules = 'list',
         graph = 'ANY'
     )
 )
@@ -155,6 +157,22 @@ GetNetworkData.SeuratPlus <- function(object){
 }
 
 
+#' Get TF modules
+#' @rdname NetworkModules
+#' @method NetworkModules SeuratPlus
+#' @export
+NetworkModules.SeuratPlus <- function(object){
+    return(object@grn@network@modules)
+}
+
+#' @rdname NetworkModules
+#' @method NetworkModules RegulatoryNetwork
+#' @export
+NetworkModules.RegulatoryNetwork <- function(object){
+    return(object@network@modules)
+}
+
+
 #' Get fitted coefficients
 #' @rdname coef
 #' @method coef SeuratPlus
@@ -176,14 +194,14 @@ coef.RegulatoryNetwork <- function(object){
 #' @method gof SeuratPlus
 #' @export
 gof.SeuratPlus <- function(object){
-    return(object@grn@network@gof)
+    return(object@grn@network@fit)
 }
 
 #' @rdname gof
 #' @method gof RegulatoryNetwork
 #' @export
 gof.RegulatoryNetwork <- function(object){
-    return(object@network@gof)
+    return(object@network@fit)
 }
 
 

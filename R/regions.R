@@ -31,7 +31,7 @@ initiate_grn.Seurat <- function(
     rna_assay = 'RNA',
     exclude_exons = TRUE
 ){
-    peak_ranges <- StringToGRanges(rownames(GetAssay(object, peak_assay)))
+    peak_ranges <- StringToGRanges(rownames(GetAssay(object, assay=peak_assay)))
 
     if (!is.null(regions)){
         cand_ranges <- IRanges::intersect(regions, peak_ranges)
@@ -49,7 +49,7 @@ initiate_grn.Seurat <- function(
         motifs = NULL
     )
 
-    gene_annot <- Signac::Annotation(object)
+    gene_annot <- Signac::Annotation(object[[peak_assay]])
     genes_use <- intersect(gene_annot$gene_name, genes) %>%
         intersect(rownames(GetAssay(object, rna_assay)))
     genes <- list(
