@@ -3,11 +3,14 @@
 \name{gof}
 \alias{gof}
 \alias{gof.SeuratPlus}
+\alias{gof.RegulatoryNetwork}
 \title{Get goodness-of-fit info}
 \usage{
 gof(object, ...)
 
 \method{gof}{SeuratPlus}(object)
+
+\method{gof}{RegulatoryNetwork}(object)
 }
 \description{
 Get goodness-of-fit info

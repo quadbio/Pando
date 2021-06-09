@@ -3,11 +3,14 @@
 \name{NetworkTFs}
 \alias{NetworkTFs}
 \alias{NetworkTFs.SeuratPlus}
+\alias{NetworkTFs.RegulatoryNetwork}
 \title{Get network TFs}
 \usage{
 NetworkTFs(object, ...)
 
 \method{NetworkTFs}{SeuratPlus}(object)
+
+\method{NetworkTFs}{RegulatoryNetwork}(object)
 }
 \description{
 Get network TFs

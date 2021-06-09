@@ -2,6 +2,7 @@ library(tidyverse)
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(Pando)
 library(doParallel)
+library(devtools)
 
 data(motifs)
 data(motif2tf)
@@ -17,4 +18,6 @@ test_srt <- find_motifs(
 )
 test_srt <- infer_grn(test_srt, parallel=T)
 coef(test_srt)
+format_coefs(coef(test_srt))
 
+test_srt@grn %>% print()

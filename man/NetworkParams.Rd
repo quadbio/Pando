@@ -3,11 +3,14 @@
 \name{NetworkParams}
 \alias{NetworkParams}
 \alias{NetworkParams.SeuratPlus}
+\alias{NetworkParams.RegulatoryNetwork}
 \title{Get network parameters}
 \usage{
 NetworkParams(object, ...)
 
 \method{NetworkParams}{SeuratPlus}(object)
+
+\method{NetworkParams}{RegulatoryNetwork}(object)
 }
 \description{
 Get network parameters

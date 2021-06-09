@@ -19,6 +19,7 @@ infer_grn(object, ...)
   alpha = 0.5,
   family = gaussian,
   interaction_term = ":",
+  adjust_method = "fdr",
   verbose = TRUE
 )
 }
@@ -48,6 +49,8 @@ See \code{\link[family]{stats}} for mode details.}
 * \code{':'} for 'multiplicative' interaction.
 * \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 For more info, see \code{\link[formula]{stats}}}
+
+\item{adjust_method}{Method fro adjusting p-values.}
 
 \item{verbose}{Logical. Display messages}
 }

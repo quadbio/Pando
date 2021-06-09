@@ -25,6 +25,7 @@ NULL
 #' * \code{':'} for 'multiplicative' interaction.
 #' * \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 #' For more info, see \code{\link[formula]{stats}}
+#' @param adjust_method Method fro adjusting p-values.
 #' @param verbose Logical. Display messages
 #'
 #' @return A SeuratPlus object.
@@ -44,10 +45,14 @@ infer_grn.SeuratPlus <- function(
     alpha = 0.5,
     family = gaussian,
     interaction_term = ':',
+    adjust_method = 'fdr',
     verbose = TRUE
 ){
     params <- NetworkParams(object)
     motif2tf <- NetworkTFs(object)
+    if (is.null(motif2tf)){
+        stop('Motif matches have not been found. Please run find_motifs() first.')
+    }
     regions <- NetworkRegions(object)
     features <- NetworkFeatures(object)
     gene_annot <- Signac::Annotation(object)
@@ -173,6 +178,7 @@ infer_grn.SeuratPlus <- function(
     }, verbose=verbose, parallel=parallel)
     model_fits <- model_fits[!map_lgl(model_fits, is.null)]
     coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
+    coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
     gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
     network_obj <- new(
@@ -183,15 +189,56 @@ infer_grn.SeuratPlus <- function(
     object@grn@network <- network_obj
     object@grn@params[['method']] <- method
     object@grn@params[['family']] <- family
-    object@grn@params[['dist']] <- c(upstream, downstream)
+    object@grn@params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
     object@grn@params[['only_tss']] <- only_tss
     object@grn@params[['interaction']] <- interaction_term
     object@grn@params[['tf_cor']] <- tf_cor
     object@grn@params[['peak_cor']] <- peak_cor
 
     return(object)
-
 }
+
+
+
+#' Format network coefficients
+#'
+#' @import stringr
+#'
+#' @param coefs A data frame with coefficients
+#'
+#' @return A data frame.
+format_coefs <- function(coefs, term=':', adjust_method='fdr'){
+
+    term_pattern <- paste0('(.+)', term, '(.+)')
+    peak_pattern <- 'c(hr)?\\d+_\\d+_\\d+'
+
+    coefs_use <- coefs %>%
+        mutate(padj = p.adjust(pval, method=adjust_method)) %>%
+        filter(term!='(Intercept)') %>%
+        mutate(
+            tf_ = str_replace(term, term_pattern, '\\1'),
+            peak_ = str_replace(term, term_pattern, '\\2')
+        ) %>%
+        mutate(
+            tf = ifelse(str_detect(tf_, peak_pattern), peak_, tf_),
+            peak = ifelse(!str_detect(tf_, peak_pattern), peak_, tf_)
+        ) %>%
+        select(-peak_, -tf_) %>%
+        mutate(
+            peak = str_replace_all(peak, '_', '-'),
+            tf = str_replace_all(tf, '_', '-'),
+            target = str_replace_all(target, '_', '-')
+        ) %>%
+        select(tf, target, peak, term, everything())
+    return(coefs_use)
+}
+
+
+
+
+
+
+
 
 
 

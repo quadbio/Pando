@@ -3,11 +3,14 @@
 \name{NetworkFeatures}
 \alias{NetworkFeatures}
 \alias{NetworkFeatures.SeuratPlus}
+\alias{NetworkFeatures.RegulatoryNetwork}
 \title{Get network features}
 \usage{
 NetworkFeatures(object, ...)
 
 \method{NetworkFeatures}{SeuratPlus}(object)
+
+\method{NetworkFeatures}{RegulatoryNetwork}(object)
 }
 \description{
 Get network features

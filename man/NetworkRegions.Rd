@@ -3,11 +3,14 @@
 \name{NetworkRegions}
 \alias{NetworkRegions}
 \alias{NetworkRegions.SeuratPlus}
+\alias{NetworkRegions.RegulatoryNetwork}
 \title{Get network regions}
 \usage{
 NetworkRegions(object, ...)
 
 \method{NetworkRegions}{SeuratPlus}(object)
+
+\method{NetworkRegions}{RegulatoryNetwork}(object)
 }
 \description{
 Get network regions

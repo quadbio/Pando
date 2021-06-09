@@ -2,9 +2,12 @@
 % Please edit documentation in R/objects.R
 \name{coef.SeuratPlus}
 \alias{coef.SeuratPlus}
+\alias{coef.RegulatoryNetwork}
 \title{Get fitted coefficients}
 \usage{
 \method{coef}{SeuratPlus}(object)
+
+\method{coef}{RegulatoryNetwork}(object)
 }
 \description{
 Get fitted coefficients
