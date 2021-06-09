@@ -34,7 +34,7 @@ initiate_grn.Seurat <- function(
     peak_ranges <- StringToGRanges(rownames(GetAssay(object, peak_assay)))
 
     if (!is.null(regions)){
-        cand_ranges <- IRanges::intersect(region, peak_ranges)
+        cand_ranges <- IRanges::intersect(regions, peak_ranges)
     } else {
         cand_ranges <- peak_ranges
     }
