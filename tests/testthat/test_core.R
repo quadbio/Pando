@@ -44,21 +44,21 @@ test_that('infer_grn returns Network object.', {
 
 test_that('infer_grn returns coefs.', {
     expect_setequal(unique(coef(test_srt)$target), c('NEUROD6', 'POU5F1'))
-    expect_equal(dim(coef(test_srt)), c(37, 6))
+    expect_equal(dim(coef(test_srt))[1], 35)
 })
 
 
 test_that('infer_grn applies filtering.', {
     tst <- infer_grn(test_srt, verbose=F)
-    expect_equal(dim(coef(tst)), c(37, 6))
+    expect_equal(dim(coef(tst))[1], 35)
     tst <- infer_grn(test_srt, verbose=F, tf_cor=0.2)
-    expect_equal(dim(coef(tst)), c(24, 6))
+    expect_equal(dim(coef(tst))[1], 22)
     tst <- infer_grn(test_srt, verbose=F, tf_cor=0.9)
-    expect_equal(dim(coef(tst)), c(0, 0))
+    expect_equal(dim(coef(tst))[1], 0)
     tst <- infer_grn(test_srt, verbose=F, peak_cor=0.2)
-    expect_equal(dim(coef(tst)), c(11, 6))
+    expect_equal(dim(coef(tst))[1], 10)
     tst <- infer_grn(test_srt, verbose=F, peak_cor=0.9)
-    expect_equal(dim(coef(tst)), c(0, 0))
+    expect_equal(dim(coef(tst))[1], 0)
 })
 
 registerDoParallel(3)

@@ -209,11 +209,17 @@ infer_grn.SeuratPlus <- function(
 #' @return A data frame.
 format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 
+    if (dim(coefs)[1] == 0){
+        return(coefs)
+    }
+
+    if ('pval' %in% colnames(coefs)){
+        coefs$pval <- p.adjust(coefs$pval, method=adjust_method)
+    }
+
     term_pattern <- paste0('(.+)', term, '(.+)')
     peak_pattern <- 'c(hr)?\\d+_\\d+_\\d+'
-
     coefs_use <- coefs %>%
-        mutate(padj = p.adjust(pval, method=adjust_method)) %>%
         filter(term!='(Intercept)') %>%
         mutate(
             tf_ = str_replace(term, term_pattern, '\\1'),
