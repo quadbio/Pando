@@ -226,8 +226,8 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
             peak_ = str_replace(term, term_pattern, '\\2')
         ) %>%
         mutate(
-            tf = ifelse(str_detect(tf_, peak_pattern), peak_, tf_),
-            peak = ifelse(!str_detect(tf_, peak_pattern), peak_, tf_)
+            tf = ifelse(!str_detect(tf_, peak_pattern), peak_, tf_),
+            peak = ifelse(str_detect(tf_, peak_pattern), peak_, tf_)
         ) %>%
         select(-peak_, -tf_) %>%
         mutate(
@@ -328,8 +328,8 @@ find_modules.RegulatoryNetwork <- function(
         'regions_neg' = regions_neg
     )
 
-    object@network@modules[['meta']] <- modules
-    object@network@modules[['features']] <- module_feats
+    object@network@modules@meta <- modules
+    object@network@modules@features <- module_feats
 
     return(object)
 }
@@ -364,10 +364,10 @@ find_modules.SeuratPlus <- function(
 
     reg2peaks <- rownames(GetAssay(object, assay=params$peak_assay))[regions@peaks]
     names(reg2peaks) <- Signac::GRangesToString(regions@ranges)
-    peaks_pos <- modules[['features']]$regions_pos %>% map(function(x) unique(reg2peaks[x]))
-    peaks_neg <- modules[['features']]$regions_neg %>% map(function(x) unique(reg2peaks[x]))
-    modules[['features']][['peaks_pos']] <- peaks_pos
-    modules[['features']][['peaks_neg']] <- peaks_neg
+    peaks_pos <- modules@features$regions_pos %>% map(function(x) unique(reg2peaks[x]))
+    peaks_neg <- modules@features$regions_neg %>% map(function(x) unique(reg2peaks[x]))
+    modules@features[['peaks_pos']] <- peaks_pos
+    modules@features[['peaks_neg']] <- peaks_neg
 
     object@grn@network@modules <- modules
     return(object)

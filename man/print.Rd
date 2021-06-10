@@ -2,10 +2,25 @@
 % Please edit documentation in R/objects.R
 \name{print.RegulatoryNetwork}
 \alias{print.RegulatoryNetwork}
+\alias{print.Network}
+\alias{print.Modules}
+\alias{print.Regions}
 \title{Print RegulatoryNetwork objects}
 \usage{
 \method{print}{RegulatoryNetwork}(object)
+
+\method{print}{Network}(object)
+
+\method{print}{Modules}(object)
+
+\method{print}{Regions}(object)
 }
 \description{
 Print RegulatoryNetwork objects
+
+Print Network objects
+
+Print Modules objects
+
+Print Regions objects
 }

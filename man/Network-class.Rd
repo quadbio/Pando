@@ -3,15 +3,22 @@
 \docType{class}
 \name{Network-class}
 \alias{Network-class}
+\alias{Modules}
 \alias{Network}
-\title{The Network class}
+\title{The Modules class}
 \description{
+The Modules object stores the TF modules extracted from the inferred network..
+
 The Network object stores the inferred network itself, information about the fitting
 process as well as graph representations of the network.
 }
 \section{Slots}{
 
 \describe{
+\item{\code{meta}}{A dataframe with meta data about the modules.}
+
+\item{\code{features}}{A names list of lists with a set of fetures (genes/peaks) for each module.}
+
 \item{\code{fit}}{A dataframe with goodness of fit measures.}
 
 \item{\code{coefs}}{A dataframe with the fitted coefficients.}

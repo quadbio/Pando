@@ -3,11 +3,14 @@
 \name{coef.SeuratPlus}
 \alias{coef.SeuratPlus}
 \alias{coef.RegulatoryNetwork}
+\alias{coef.Network}
 \title{Get fitted coefficients}
 \usage{
 \method{coef}{SeuratPlus}(object)
 
 \method{coef}{RegulatoryNetwork}(object)
+
+\method{coef}{Network}(object)
 }
 \description{
 Get fitted coefficients

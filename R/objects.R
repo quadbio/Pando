@@ -5,6 +5,25 @@
 NULL
 
 
+#' The Modules class
+#'
+#' The Modules object stores the TF modules extracted from the inferred network..
+#'
+#' @slot meta A dataframe with meta data about the modules.
+#' @slot features A names list of lists with a set of fetures (genes/peaks) for each module.
+#'
+#' @name Network-class
+#' @rdname Network-class
+#' @exportClass Network
+Modules <- setClass(
+    Class = 'Modules',
+    slots = list(
+        meta = 'data.frame',
+        features = 'list'
+    )
+)
+
+
 #' The Network class
 #'
 #' The Network object stores the inferred network itself, information about the fitting
@@ -23,7 +42,7 @@ Network <- setClass(
     slots = list(
         fit = 'data.frame',
         coefs = 'data.frame',
-        modules = 'list',
+        modules = 'Modules',
         graph = 'ANY'
     )
 )
@@ -172,6 +191,13 @@ NetworkModules.RegulatoryNetwork <- function(object){
     return(object@network@modules)
 }
 
+#' @rdname NetworkModules
+#' @method NetworkModules Network
+#' @export
+NetworkModules.Network <- function(object){
+    return(object@modules)
+}
+
 
 #' Get fitted coefficients
 #' @rdname coef
@@ -186,6 +212,13 @@ coef.SeuratPlus <- function(object){
 #' @export
 coef.RegulatoryNetwork <- function(object){
     return(object@network@coefs)
+}
+
+#' @rdname coef
+#' @method coef Network
+#' @export
+coef.Network <- function(object){
+    return(object@coefs)
 }
 
 
@@ -241,12 +274,66 @@ print.RegulatoryNetwork <- function(object){
         conn_string <- NULL
     }
     cat(paste0(
-        'An object of class RegulatoryNetwork\n', 'based on ', n_genes, ' target genes',
+        'An RegulatoryNetwork object\n', 'based on ', n_genes, ' target genes',
         tf_string, conn_string
     ))
 }
 
 setMethod('show', 'RegulatoryNetwork', function(object) print(object))
+
+
+#' Print Network objects
+#'
+#' @rdname print
+#' @export
+#' @method print Network
+print.Network <- function(object){
+    if (nrow(NetworkModules(object)@meta)==0){
+        n_genes <- length(unique(coef(object)$target))
+        n_tfs <- length(unique(coef(object)$tf))
+    } else {
+        n_genes <- length(unique(NetworkModules(object)@meta$target))
+        n_tfs <- length(unique(NetworkModules(object)@meta$tf))
+    }
+    cat(paste0(
+        'An Network object\n', 'with ', n_tfs, ' TFs and ',
+        n_genes, ' target genes'
+    ))
+}
+
+setMethod('show', 'Network', function(object) print(object))
+
+
+#' Print Modules objects
+#'
+#' @rdname print
+#' @export
+#' @method print Modules
+print.Modules <- function(object){
+    n_mods <- length(object@features$genes_pos)
+    cat(paste0(
+        'An Modules object with ', n_mods, ' TF modules'
+    ))
+}
+
+setMethod('show', 'Modules', function(object) print(object))
+
+
+#' Print Regions objects
+#'
+#' @rdname print
+#' @export
+#' @method print Regions
+print.Regions <- function(object){
+    n_regs <- length(object@ranges)
+    n_peaks <- length(unique(object@peaks))
+    cat(paste0(
+        'An Regions object\n', 'with ', n_regs, ' candidate genomic regions ',
+        'in ', n_peaks, ' peaks'
+    ))
+}
+
+setMethod('show', 'Regions', function(object) print(object))
 
 
 

@@ -4,6 +4,7 @@
 \alias{NetworkModules}
 \alias{NetworkModules.SeuratPlus}
 \alias{NetworkModules.RegulatoryNetwork}
+\alias{NetworkModules.Network}
 \title{Get TF modules}
 \usage{
 NetworkModules(object, ...)
@@ -11,6 +12,8 @@ NetworkModules(object, ...)
 \method{NetworkModules}{SeuratPlus}(object)
 
 \method{NetworkModules}{RegulatoryNetwork}(object)
+
+\method{NetworkModules}{Network}(object)
 }
 \description{
 Get TF modules
