@@ -282,17 +282,17 @@ find_modules.RegulatoryNetwork <- function(
         group_by(target) %>%
         mutate(
             tf_per_gene=length(unique(tf)),
-            peak_per_gene=length(unique(peak))
+            peak_per_gene=length(unique(region))
         ) %>%
         group_by(tf) %>%
         mutate(gene_per_tf=length(unique(target))) %>%
         group_by(target, tf) %>%
         summarize(
             estimate=sum(estimate),
-            npeaks=peak_per_gene,
-            ngenes=gene_per_tf,
-            ntfs=tf_per_gene,
-            peaks=paste(peak, collapse=';'),
+            n_regions=peak_per_gene,
+            n_genes=gene_per_tf,
+            n_tfs=tf_per_gene,
+            regions=paste(region, collapse=';'),
             pval=min(pval),
             padj=min(padj)
         ) %>%
@@ -315,13 +315,13 @@ find_modules.RegulatoryNetwork <- function(
         filter(estimate>0) %>%
         group_by(tf) %>% filter(n()>min_genes_per_module) %>%
         group_split() %>% {names(.) <- map_chr(., function(x) x$tf[[1]]); .} %>%
-        map(function(x) unlist(str_split(x$peaks, ';')))
+        map(function(x) unlist(str_split(x$regions, ';')))
 
     regions_neg <- modules %>%
         filter(estimate<0) %>%
         group_by(tf) %>% filter(n()>min_genes_per_module) %>%
         group_split() %>% {names(.) <- map_chr(., function(x) x$tf[[1]]); .} %>%
-        map(function(x) unlist(str_split(x$peaks, ';')))
+        map(function(x) unlist(str_split(x$regions, ';')))
 
     module_feats <- list(
         'genes_pos' = module_pos,
