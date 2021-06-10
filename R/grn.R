@@ -207,6 +207,8 @@ infer_grn.SeuratPlus <- function(
 #' @param coefs A data frame with coefficients
 #'
 #' @return A data frame.
+#'
+#' @export
 format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 
     if (dim(coefs)[1] == 0){
