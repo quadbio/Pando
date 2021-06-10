@@ -218,24 +218,24 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
     }
 
     term_pattern <- paste0('(.+)', term, '(.+)')
-    peak_pattern <- 'c(hr)?\\d+_\\d+_\\d+'
+    region_pattern <- '[\\d\\w]+_\\d+_\\d+'
     coefs_use <- coefs %>%
         filter(term!='(Intercept)') %>%
         mutate(
             tf_ = str_replace(term, term_pattern, '\\1'),
-            peak_ = str_replace(term, term_pattern, '\\2')
+            region_ = str_replace(term, term_pattern, '\\2')
         ) %>%
         mutate(
-            tf = ifelse(!str_detect(tf_, peak_pattern), peak_, tf_),
-            peak = ifelse(str_detect(tf_, peak_pattern), peak_, tf_)
+            tf = ifelse(!str_detect(tf_, region_pattern), region_, tf_),
+            region = ifelse(str_detect(tf_, region_pattern), region_, tf_)
         ) %>%
-        select(-peak_, -tf_) %>%
+        select(-region_, -tf_) %>%
         mutate(
-            peak = str_replace_all(peak, '_', '-'),
+            region = str_replace_all(region, '_', '-'),
             tf = str_replace_all(tf, '_', '-'),
             target = str_replace_all(target, '_', '-')
         ) %>%
-        select(tf, target, peak, term, everything())
+        select(tf, target, region, term, everything())
     return(coefs_use)
 }
 
