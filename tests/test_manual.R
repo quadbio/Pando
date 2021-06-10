@@ -21,6 +21,6 @@ test_srt <- find_modules(test_srt, min_genes_per_module = 0)
 
 NetworkModules(test_srt)@meta
 test_srt@grn@regions
-coef(test_srt)
+format_coefs(coef(test_srt))
 
 

@@ -228,8 +228,8 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
             region_ = str_replace(term, term_pattern, '\\2')
         ) %>%
         mutate(
-            tf = ifelse(!str_detect(tf_, region_pattern), region_, tf_),
-            region = ifelse(str_detect(tf_, region_pattern), region_, tf_)
+            tf = ifelse(str_detect(tf_, region_pattern), region_, tf_),
+            region = ifelse(!str_detect(tf_, region_pattern), region_, tf_)
         ) %>%
         select(-region_, -tf_) %>%
         mutate(
