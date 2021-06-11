@@ -10,7 +10,7 @@ NULL
 #'
 #' @param regions Candidate regions to consider for binding site inference.
 #' If \code{NULL}, all peaks regions are considered.
-#' @param genes A character vector with the genes to consider for GRN inference.
+#' @param genes A character vector with the target genes to consider for GRN inference.
 #' @param peak_assay A character vector indicating the name of the chromatin
 #' accessibility assay in the \code{Seurat} object.
 #' @param rna_assay A character vector indicating the name of the gene expression
@@ -34,12 +34,15 @@ initiate_grn.Seurat <- function(
     gene_annot <- Signac::Annotation(object[[peak_assay]])
     peak_ranges <- StringToGRanges(rownames(GetAssay(object, assay=peak_assay)))
 
+    # Find candidate ranges by intersecting the supplied regions with peaks
+    # Per default take all peaks as candidate regions
     if (!is.null(regions)){
         cand_ranges <- IRanges::intersect(regions, peak_ranges)
     } else {
         cand_ranges <- peak_ranges
     }
 
+    # Exclude exons because they are usually conserved
     if (exclude_exons){
         exon_ranges <- gene_annot[gene_annot$type=='exon', ]
         names(exon_ranges@ranges) <- NULL
@@ -51,6 +54,7 @@ initiate_grn.Seurat <- function(
         cand_ranges <- IRanges::setdiff(cand_ranges, exon_ranges, ignore.strand=TRUE)
     }
 
+    # Match candidate ranges to peaks
     peak_overlaps <- findOverlaps(cand_ranges, peak_ranges)
     peak_matches <- subjectHits(peak_overlaps)
 
@@ -61,6 +65,8 @@ initiate_grn.Seurat <- function(
         motifs = NULL
     )
 
+    # Select genes to use by intersecting annotated genes with all
+    # detected genes in the object
     genes_use <- intersect(gene_annot$gene_name, genes) %>%
         intersect(rownames(GetAssay(object, rna_assay)))
     genes <- list(
@@ -117,6 +123,7 @@ find_motifs.SeuratPlus <- function(
         utils::data(motif2tf, envir = environment())
     }
 
+    # Spread dataframe to sparse matrix
     motif2tf <- motif2tf %>% select(1,2) %>%
         distinct() %>% mutate(val=1) %>%
         tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
