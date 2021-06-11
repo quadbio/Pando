@@ -31,12 +31,24 @@ initiate_grn.Seurat <- function(
     rna_assay = 'RNA',
     exclude_exons = TRUE
 ){
+    gene_annot <- Signac::Annotation(object[[peak_assay]])
     peak_ranges <- StringToGRanges(rownames(GetAssay(object, assay=peak_assay)))
 
     if (!is.null(regions)){
         cand_ranges <- IRanges::intersect(regions, peak_ranges)
     } else {
         cand_ranges <- peak_ranges
+    }
+
+    if (exclude_exons){
+        exon_ranges <- gene_annot[gene_annot$type=='exon', ]
+        names(exon_ranges@ranges) <- NULL
+        exon_ranges <- IRanges::intersect(exon_ranges, exon_ranges)
+        exon_ranges <- GenomicRanges::GRanges(
+            seqnames = exon_ranges@seqnames,
+            ranges = exon_ranges@ranges
+        )
+        cand_ranges <- IRanges::setdiff(cand_ranges, exon_ranges, ignore.strand=TRUE)
     }
 
     peak_overlaps <- findOverlaps(cand_ranges, peak_ranges)
@@ -49,7 +61,6 @@ initiate_grn.Seurat <- function(
         motifs = NULL
     )
 
-    gene_annot <- Signac::Annotation(object[[peak_assay]])
     genes_use <- intersect(gene_annot$gene_name, genes) %>%
         intersect(rownames(GetAssay(object, rna_assay)))
     genes <- list(
