@@ -124,7 +124,7 @@ find_motifs.SeuratPlus <- function(
     }
 
     # Spread dataframe to sparse matrix
-    motif2tf <- motif2tf %>% select(1,2) %>%
+    motif2tf <- motif2tf %>% select('motif'=1,'tf'=2) %>%
         distinct() %>% mutate(val=1) %>%
         tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
         column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
