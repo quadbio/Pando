@@ -3,6 +3,8 @@ library(BSgenome.Hsapiens.UCSC.hg38)
 library(Pando)
 library(doParallel)
 library(devtools)
+library(Signac)
+library(Seurat)
 
 data(motifs)
 data(phastConsElements20Mammals.UCSC.hg38)
@@ -37,5 +39,18 @@ coef(test_srt)
 NetworkModules(test_srt)@meta
 test_srt@grn@regions
 format_coefs(coef(test_srt))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
