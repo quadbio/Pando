@@ -44,4 +44,19 @@ seurat_object <- infer_grn(seurat_object)
 
 # Print inferred coefficients
 coef(seurat_object)
+
+# Find gene and regulatory modules 
+test_srt <- find_modules(test_srt)
+
+# Print modules
+NetworkModules(test_srt)
 ```
+
+## More
+
+Pando is actively being developed, an API reference and more vignettes are coming soon, stay tuned!
+
+
+
+
+
