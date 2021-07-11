@@ -7,28 +7,38 @@
 find_peaks_near_genes(
   peaks,
   genes,
+  sep = c("-", "-"),
+  method = "Signac",
   upstream = 1e+05,
   downstream = 0,
-  sep = c("-", "-"),
-  only_tss = FALSE
+  extend = 1e+06,
+  only_tss = FALSE,
+  verbose = TRUE
 )
 }
 \arguments{
 \item{peaks}{A \code{GRanges} object with peak regions.}
 
-\item{upstream}{Integer defining the distance upstream of the gene to consider.}
-
-\item{downstream}{Integer defining the distance downstream of the gene to consider.}
-
 \item{sep}{Vector of separators to use for genomic string.
 First element is used to separate chromosome and coordinates,
 second separator is used to separate start and end coordinates.}
 
-\item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).}
+\item{upstream}{Integer defining the distance upstream of the gene/TSS to consider.}
+
+\item{downstream}{Integer defining the distance downstream of the gene/TSS to consider.}
+
+\item{extend}{Integer defining the distance from the upstream and downstream of the
+basal regulatory region. Used only when peak_to_gene_method is 'GREAT'.}
+
+\item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE})
+or from the entire gene body (\code{FALSE}).}
+
+\item{verbose}{Logical. Display messages}
 
 \item{gene}{A \code{GRanges} object with gene coordinates.}
 
-\item{verbose}{Logical. Display messages}
+\item{methos}{Character specifying the method to link peak overlapping motif regions to nearby genes.
+On of 'Signac' or 'GREAT'.}
 }
 \value{
 A sparse binary Matrix with gene/peak matches.

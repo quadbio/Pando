@@ -9,8 +9,12 @@ NULL
 #' @importFrom purrr map_dfr map_lgl map_dbl map
 #' @importFrom stringr str_replace_all
 #'
+#' @param peak_to_gene_method Character specifying the method to
+#' link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.
 #' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
 #' @param downstream Integer defining the distance downstream of the gene to consider as potential regulatory region.
+#' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
+#' Only used when peak_to_gene_method is 'GREAT'.
 #' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
 #' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
 #' @param tf_cor Threshold for TF - target gene correlation.
@@ -35,8 +39,10 @@ NULL
 #' @method infer_grn SeuratPlus
 infer_grn.SeuratPlus <- function(
     object,
+    peak_to_gene_method = 'Signac',
     upstream = 100000,
     downstream = 0,
+    extend = 1000000,
     only_tss = FALSE,
     parallel = FALSE,
     tf_cor = 0.1,
@@ -66,6 +72,7 @@ infer_grn.SeuratPlus <- function(
     # Find candidate regions near gene bodies
     peaks_near_gene <- find_peaks_near_genes(
         peaks = regions@ranges,
+        method = peak_to_gene_method,
         genes = gene_annot,
         upstream = upstream,
         downstream = downstream,

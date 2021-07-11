@@ -20,7 +20,7 @@ initiate_grn(object, ...)
 \item{regions}{Candidate regions to consider for binding site inference.
 If \code{NULL}, all peaks regions are considered.}
 
-\item{genes}{A character vector with the genes to consider for GRN inference.}
+\item{genes}{A character vector with the target genes to consider for GRN inference.}
 
 \item{peak_assay}{A character vector indicating the name of the chromatin
 accessibility assay in the \code{Seurat} object.}
