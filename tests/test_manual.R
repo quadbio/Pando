@@ -8,6 +8,7 @@ library(Seurat)
 
 data(motifs)
 data(phastConsElements20Mammals.UCSC.hg38)
+data(EnsDb.Hsapiens.v93.annot.UCSC.hg38)
 data(motif2tf)
 
 genes_use <- c('PAX6', 'POU5F1', 'DLX6', 'NFIA')
@@ -32,13 +33,14 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'Signac', parallel=T)
-test_srt <- find_modules(test_srt, min_genes_per_module = 0)
-
+test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T)
+test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
 coef(test_srt)
-NetworkModules(test_srt)@meta
-test_srt@grn@regions
-format_coefs(coef(test_srt))
+NetworkModules(test_srt)
+
+
+
 
 
 

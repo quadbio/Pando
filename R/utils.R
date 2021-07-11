@@ -87,13 +87,13 @@ find_peaks_near_genes <- function(
         )
 
         # Step 1 - get peaks overlap with basal regulatory region
-        basal_overlaps <- IRanges::findOverlaps(
+        basal_overlaps <- suppressWarnings(IRanges::findOverlaps(
             query = peaks,
             subject = basal_reg,
             type = 'any',
             select = 'all',
             minoverlap = 2
-        )
+        ))
 
         peak_all <- Signac::GRangesToString(grange = peaks, sep = sep)
         basal_peak_mapped_idx <- queryHits(basal_overlaps)
@@ -132,13 +132,13 @@ find_peaks_near_genes <- function(
         )
 
         # Get overlap between unmapped_peak_region and extended regulatory region
-        extended_overlaps <- IRanges::findOverlaps(
+        extended_overlaps <- suppressWarnings(IRanges::findOverlaps(
             query = peak_unmapped_region,
             subject = extend_reg,
             type = 'any',
             select = 'all',
             minoverlap = 2
-        )
+        ))
         extended_peak_mapped_idx <- peak_unmapped_idx[queryHits(extended_overlaps)]
         extended_mapped_peaks <- unique(peak_all[extended_peak_mapped_idx])
         n3 <- length(extended_mapped_peaks)
