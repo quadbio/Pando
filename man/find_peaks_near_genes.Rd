@@ -28,7 +28,7 @@ second separator is used to separate start and end coordinates.}
 \item{downstream}{Integer defining the distance downstream of the gene/TSS to consider.}
 
 \item{extend}{Integer defining the distance from the upstream and downstream of the
-basal regulatory region. Used only when peak_to_gene_method is 'GREAT'.}
+basal regulatory region. Used only when method is 'GREAT'.}
 
 \item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE})
 or from the entire gene body (\code{FALSE}).}

@@ -9,8 +9,10 @@ infer_grn(object, ...)
 
 \method{infer_grn}{SeuratPlus}(
   object,
+  peak_to_gene_method = "Signac",
   upstream = 1e+05,
   downstream = 0,
+  extend = 1e+06,
   only_tss = FALSE,
   parallel = FALSE,
   tf_cor = 0.1,
@@ -24,9 +26,15 @@ infer_grn(object, ...)
 )
 }
 \arguments{
+\item{peak_to_gene_method}{Character specifying the method to
+link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
+
 \item{upstream}{Integer defining the distance upstream of the gene to consider as potential regulatory region.}
 
 \item{downstream}{Integer defining the distance downstream of the gene to consider as potential regulatory region.}
+
+\item{extend}{Integer defining the distance from the upstream and downstream of the basal regulatory region.
+Only used when peak_to_gene_method is 'GREAT'.}
 
 \item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).}
 
