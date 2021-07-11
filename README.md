@@ -4,7 +4,7 @@ Pando leverages multi-modal singel-cell measurements to infer gene regulatory ne
 
 ## Introduction
 
-The fate and state of a cell is regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of cell fate regulomes. Pando jointly utilizes scRNA-seq and scATAC-seq data to infer regulatory relationships between TFs and target genes.
+The fate and state of a cell is regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of cell regulomes. Pando jointly utilizes scRNA-seq and scATAC-seq data to infer regulatory relationships between TFs and target genes.
 
 
 ## Installation
@@ -54,7 +54,7 @@ NetworkModules(test_srt)
 
 ## More
 
-Pando is actively being developed, an API reference and more vignettes are coming soon, stay tuned!
+Pando is still in it's early stages and we are actively developing it. An API reference and more vignettes are coming soon, stay tuned!
 
 
 
