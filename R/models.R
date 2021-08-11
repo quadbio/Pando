@@ -15,6 +15,8 @@ NULL
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
 #' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
 fit_model <- function(
     formula,
     data,
@@ -43,6 +45,8 @@ fit_model <- function(
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
 #' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
 fit_glm <- function(formula, data, family=gaussian, ...){
     fit <- suppressWarnings(glm(formula, data=data, family=family, ...))
     s <- summary(fit)
@@ -67,6 +71,8 @@ fit_glm <- function(formula, data, family=gaussian, ...){
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
 #' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
 fit_glmnet <- function(
     formula, data,
     family = gaussian,
@@ -109,6 +115,8 @@ fit_glmnet <- function(
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
 #' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
 fit_cvglmnet <- function(
     formula, data,
     family = gaussian,
@@ -137,3 +145,4 @@ fit_cvglmnet <- function(
     colnames(coefs) <- c('term', 'estimate')
     return(list(gof=gof, coefs=coefs))
 }
+
