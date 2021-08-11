@@ -6,6 +6,8 @@ library(devtools)
 library(Signac)
 library(Seurat)
 
+rename <- dplyr::rename
+
 data(motifs)
 data(phastConsElements20Mammals.UCSC.hg38)
 data(EnsDb.Hsapiens.v93.annot.UCSC.hg38)
@@ -40,11 +42,18 @@ coef(test_srt)
 NetworkModules(test_srt)
 
 
+np <- 10000
+x <- seq(np) + rnorm(np, sd=3)
+z <- seq(np) + rnorm(np, sd=5)
+y <- rnorm(np, sd=50) + x * 3 + z * 1.5
 
+tbl <- tibble(
+    x = x,
+    y = y,
+    z = z
+)
 
-
-
-
+brm_fit <- brm(y ~ x + z, data=tbl, backend='cmdstanr')
 
 
 
