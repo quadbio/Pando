@@ -31,4 +31,6 @@ Suggests:
     presto,
     TFBSTools,
     foreach,
-    sparseMatrixStats
+    sparseMatrixStats,
+    brms,
+    cmdstanr
