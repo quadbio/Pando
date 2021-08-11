@@ -31,6 +31,7 @@ NULL
 #' For more info, see \code{\link[formula]{stats}}
 #' @param adjust_method Method fro adjusting p-values.
 #' @param verbose Logical. Display messages
+#' @param ... Other parameters for the model fitting function.
 #'
 #' @return A SeuratPlus object.
 #'
@@ -52,7 +53,8 @@ infer_grn.SeuratPlus <- function(
     family = gaussian,
     interaction_term = ':',
     adjust_method = 'fdr',
-    verbose = TRUE
+    verbose = TRUE,
+    ...
 ){
     params <- NetworkParams(object)
     motif2tf <- NetworkTFs(object)
@@ -172,8 +174,12 @@ infer_grn.SeuratPlus <- function(
 
         log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
         fit <- try(fit_model(
-            model_frml, data=model_mat,
-            family=family, method=method, alpha=alpha
+            model_frml,
+            data = model_mat,
+            family = family,
+            method = method,
+            alpha = alpha,
+            ...
         ), silent=TRUE)
         if (any(class(fit)=='try-error')){
             log_message('Warning: Fitting model failed for ', g, verbose=verbose==2)
