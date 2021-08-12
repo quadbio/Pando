@@ -48,35 +48,9 @@ coef(test_srt)
 gof(test_srt)
 modules <- NetworkModules(test_srt)
 
-modules@meta
+expect_true('tbl'%in%class(modules@meta))
 
-#### Try bayesian regression ####
-np <- 100
-x <- seq(np) + rnorm(np, sd=3)
-z <- seq(np) + rnorm(np, sd=5)
-y <- round(rnorm(np, sd=50, mean=1000) + x * 3 + z * 1.5)
-
-tbl <- tibble(
-    x = x,
-    y = y,
-    z = z
-)
-
-
-# p <- prior(normal(0,5))
-p <- prior(horseshoe())
-
-brm_fit <- brm(y ~ x : z, data=tbl, backend='cmdstanr', family=gaussian, prior=p, silent=T, refresh = 0)
-
-class(brm_fit)
-
-
-fixef(brm_fit)
-brm_smry <- summary(brm_fit, )
-bayes_R2(brm_fit)
-pvals <- p_map(brm_fit)$p_MAP
-
-
+class(modules@meta)
 
 
 

@@ -11,6 +11,7 @@ library(Pando)
 data(motifs)
 
 test_srt <- read_rds('../../../data/test_seurat.rds')
+
 test_srt <- initiate_grn(test_srt, genes = c('NEUROD6', 'POU5F1', 'PAX6'), exclude_exons=F)
 
 test_that('initiate_grn returns SeuratPlus object.', {
@@ -86,6 +87,27 @@ test_that('infer_grn with diverse parameters does not through errors.', {
     expect_error(infer_grn(test_srt, verbose=F, parallel=T, interaction_term='*'), NA)
     expect_error(infer_grn(test_srt, verbose=F, parallel=T, family='poisson'), NA)
     expect_error(infer_grn(test_srt, verbose=F, method='brms'), NA)
+})
+
+
+test_that('find_modules works for glm models.', {
+    tst <- infer_grn(test_srt, verbose=F, parallel=T)
+    expect_error(find_modules(tst), NA)
+    expect_true('tbl'%in%class(NetworkModules(tst)@meta))
+})
+
+test_that('find_modules works for glmnet models.', {
+    tst <- infer_grn(test_srt, verbose=F, parallel=T, method='cv.glmnet')
+    expect_error(find_modules(tst), NA)
+    tst <- find_modules(tst)
+    expect_true('tbl'%in%class(NetworkModules(tst)@meta))
+})
+
+test_that('find_modules works for brms models.', {
+    tst <- infer_grn(test_srt, verbose=F, parallel=T, method='brms')
+    expect_error(find_modules(tst), NA)
+    tst <- find_modules(tst)
+    expect_true('tbl'%in%class(NetworkModules(tst)@meta))
 })
 
 
