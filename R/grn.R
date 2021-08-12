@@ -238,7 +238,7 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
     term_pattern <- paste0('(.+)', term, '(.+)')
     region_pattern <- '[\\d\\w]+_\\d+_\\d+'
     coefs_use <- coefs %>%
-        filter(term!='(Intercept)') %>%
+        filter(!term%in%c('(Intercept)', 'Intercept')) %>%
         mutate(
             tf_ = str_replace(term, term_pattern, '\\1'),
             region_ = str_replace(term, term_pattern, '\\2')
