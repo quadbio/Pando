@@ -33,4 +33,5 @@ Suggests:
     foreach,
     sparseMatrixStats,
     brms,
-    cmdstanr
+    cmdstanr,
+    bayestestR
