@@ -22,10 +22,13 @@ infer_grn(object, ...)
   family = gaussian,
   interaction_term = ":",
   adjust_method = "fdr",
-  verbose = TRUE
+  verbose = TRUE,
+  ...
 )
 }
 \arguments{
+\item{...}{Other parameters for the model fitting function.}
+
 \item{peak_to_gene_method}{Character specifying the method to
 link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
 
