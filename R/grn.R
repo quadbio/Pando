@@ -281,16 +281,25 @@ find_modules.RegulatoryNetwork <- function(
     nvar_thresh = 10,
     min_genes_per_module = 5
 ){
+    fit_method <- NetworkParams(object)$method
+
     models_use <- gof(object) %>%
         filter(rsq>rsq_thresh & nvariables>nvar_thresh) %>%
         pull(target) %>%
         unique()
 
     modules <- coef(object) %>%
-        filter(
-            target %in% models_use,
-            ifelse(is.na(padj), T, padj<p_thresh)
-        ) %>%
+        filter(target %in% models_use)
+
+    if (fit_method %in% c('cv.glmnet', 'glmnet')){
+        modules <- modules %>%
+            filter(estimate != 0)
+    } else {
+        modules <- modules %>%
+            filter(ifelse(is.na(padj), T, padj<p_thresh))
+    }
+
+    modules <- modules %>%
         group_by(target) %>%
         mutate(nvars=n()) %>%
         group_by(target, tf) %>%
@@ -302,16 +311,31 @@ find_modules.RegulatoryNetwork <- function(
         ) %>%
         group_by(tf) %>%
         mutate(gene_per_tf=length(unique(target))) %>%
-        group_by(target, tf) %>%
-        summarize(
-            estimate=sum(estimate),
-            n_regions=peak_per_gene,
-            n_genes=gene_per_tf,
-            n_tfs=tf_per_gene,
-            regions=paste(region, collapse=';'),
-            pval=min(pval),
-            padj=min(padj)
-        ) %>%
+        group_by(target, tf)
+
+    if (fit_method %in% c('cv.glmnet', 'glmnet')){
+        modules <- modules %>%
+            summarize(
+                estimate=sum(estimate),
+                n_regions=peak_per_gene,
+                n_genes=gene_per_tf,
+                n_tfs=tf_per_gene,
+                regions=paste(region, collapse=';')
+            )
+    } else {
+        modules <- modules %>%
+            summarize(
+                estimate=sum(estimate),
+                n_regions=peak_per_gene,
+                n_genes=gene_per_tf,
+                n_tfs=tf_per_gene,
+                regions=paste(region, collapse=';'),
+                pval=min(pval),
+                padj=min(padj)
+            )
+    }
+
+    modules <- modules %>%
         distinct() %>%
         arrange(tf)
 
