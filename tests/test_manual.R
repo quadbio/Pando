@@ -53,6 +53,56 @@ expect_true('tbl'%in%class(modules@meta))
 class(modules@meta)
 
 
+### Try random forest (xgboost) ####
+
+np <- 100
+x <- seq(np) + rnorm(np, sd=3)
+z <- seq(np) + rnorm(np, sd=5)
+y <- round(rnorm(np, sd=50, mean=1000) + x * 3 + z * 1.5)
+
+tbl <- tibble(
+    x = x,
+    y = y,
+    z = z
+)
+
+xy <- model_as_xy(data=as.data.frame(tbl), formula=y ~ x:z)
+
+
+formula <- y ~ x:z
+data <- tbl
+model_mat <- stats::model.matrix(formula, data = data)
+response <- data[[formula[[2]]]]
+
+
+params <- list(
+    max_depth = 3
+)
+
+object <- xgboost::xgboost(data = model_mat, label = response, nrounds=100, params=params)
+pred <- predict(object, newdata=model_mat)
+resid_sq <- (pred - response)**2
+
+sstot <- sum((pred - mean(response))^2)
+ssresid <- sum(resid_sq)
+1 - ssresid / sstot
+
+attr(object, 'formula') <- formula
+
+summary(object)
+xgboost::xgb.importance(model=object)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
