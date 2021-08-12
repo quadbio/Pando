@@ -38,7 +38,7 @@ test_srt <- find_motifs(
 )
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'Signac', parallel=T)
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100)
-test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=horseshoe())
+test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=prior(horseshoe()))
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
@@ -60,10 +60,10 @@ tbl <- tibble(
 )
 
 
-p <- prior(normal(0,5))
-# p <- prior(horseshoe(scale_global=1000))
+# p <- prior(normal(0,5))
+p <- prior(horseshoe())
 
-brm_fit <- suppressMessages(brm(y ~ x : z, data=tbl, backend='cmdstanr', family=gaussian, prior=p, silent=T, refresh = 0))
+brm_fit <- brm(y ~ x : z, data=tbl, backend='cmdstanr', family=gaussian, prior=p, silent=T, refresh = 0)
 
 class(brm_fit)
 
