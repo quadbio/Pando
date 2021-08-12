@@ -190,6 +190,9 @@ infer_grn.SeuratPlus <- function(
         }
     }, verbose=verbose, parallel=parallel)
     model_fits <- model_fits[!map_lgl(model_fits, is.null)]
+    if (length(model_fits)==0){
+        stop('Fitting failed for all models.')
+    }
     coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
     coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
     gof <- map_dfr(model_fits, function(x) x$gof, .id='target')

@@ -5,6 +5,8 @@ library(doParallel)
 library(devtools)
 library(Signac)
 library(Seurat)
+library(brms)
+library(bayestestR)
 
 rename <- dplyr::rename
 
@@ -20,7 +22,7 @@ motif2tf_use <- motif2tf %>%
     filter(origin=='JASPAR2020') %>%
     rename('mot'=motif)
 
-registerDoParallel(4)
+registerDoParallel(1)
 
 test_srt <- read_rds('../data/test_seurat.rds')
 test_srt <- initiate_grn(
@@ -36,7 +38,7 @@ test_srt <- find_motifs(
 )
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'Signac', parallel=T)
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100)
-test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'brms', backend='cmdstanr')
+test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=horseshoe())
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
@@ -67,9 +69,9 @@ class(brm_fit)
 
 
 fixef(brm_fit)
-brm_smry <- summary(brm_fit)
+brm_smry <- summary(brm_fit, )
 bayes_R2(brm_fit)
-
+pvals <- p_map(brm_fit)$p_MAP
 
 
 

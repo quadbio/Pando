@@ -172,7 +172,7 @@ fit_brms <- function(
     ...
 ){
     # Silence annoying output
-    sink('/dev/null')
+    sink('/dev/null', type='output')
     fit <- suppressMessages(brms::brm(
         formula,
         data = data,
@@ -184,9 +184,10 @@ fit_brms <- function(
     ))
     sink()
     gof <- tibble(
-        rsq = as.matrix(bayes_R2(brm_fit))[, 'Estimate']
+        rsq = as.matrix(brms::bayes_R2(fit))[, 'Estimate']
     )
-    coefs <- as_tibble(as.matrix(fixef(fit, probs=c(0.05, 0.95))), rownames='term')
+    coefs <- as_tibble(as.matrix(brms::fixef(fit, probs=c(0.05, 0.95))), rownames='term')
     colnames(coefs) <- c('term', 'estimate', 'est_error', 'q5', 'q95')
+    coefs$pval <- bayestestR::p_map(fit)$p_MAP
     return(list(gof=gof, coefs=coefs))
 }
