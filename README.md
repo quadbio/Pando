@@ -1,3 +1,5 @@
+![Build](https://github.com/quadbiolab/Pando/workflows/build/badge.svg)
+
 # Pando <img src="man/figures/logo.png" align="right" width="180"/>
 
 Pando leverages multi-modal singel-cell measurements to infer gene regulatory networks using a flexible linear model-based framework. By modeling the relationship between TF-binding site pairs with the expression of target genes, Pando simultaneously infers gene modules and sets of regulatory regions for each transcription factor.
