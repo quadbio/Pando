@@ -279,7 +279,7 @@ find_modules.RegulatoryNetwork <- function(
     min_genes_per_module = 5
 ){
     models_use <- gof(object) %>%
-        filter(dsq>rsq_thresh & nvariables>nvar_thresh) %>%
+        filter(rsq>rsq_thresh & nvariables>nvar_thresh) %>%
         pull(target) %>%
         unique()
 

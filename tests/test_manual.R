@@ -35,17 +35,21 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'Signac', parallel=T)
-test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T)
+test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100)
+test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'brms', backend='cmdstanr')
+
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
 coef(test_srt)
 NetworkModules(test_srt)
 
 
-np <- 10000
+
+#### Try bayesian regression ####
+np <- 100
 x <- seq(np) + rnorm(np, sd=3)
 z <- seq(np) + rnorm(np, sd=5)
-y <- rnorm(np, sd=50) + x * 3 + z * 1.5
+y <- round(rnorm(np, sd=50, mean=1000) + x * 3 + z * 1.5)
 
 tbl <- tibble(
     x = x,
@@ -53,10 +57,18 @@ tbl <- tibble(
     z = z
 )
 
-brm_fit <- brm(y ~ x + z, data=tbl, backend='cmdstanr')
+
+p <- prior(normal(0,5))
+# p <- prior(horseshoe(scale_global=1000))
+
+brm_fit <- suppressMessages(brm(y ~ x : z, data=tbl, backend='cmdstanr', family=gaussian, prior=p, silent=T, refresh = 0))
+
+class(brm_fit)
 
 
-
+fixef(brm_fit)
+brm_smry <- summary(brm_fit)
+bayes_R2(brm_fit)
 
 
 
