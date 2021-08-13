@@ -28,6 +28,20 @@ Pando interacts directly with [Seurat objects](https://satijalab.org/seurat/) an
 seurat_object <- initiate_grn(seurat_object)
 ```
 
-This will create a `RegulatoryNetwork` object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a `GenomicRanges` object in the `regions` argument. 
+This will create a `RegulatoryNetwork` object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a `GenomicRanges` object in the `regions` argument. Pando ships with a set of evolutionary conserved regions (`phastConsElements20Mammals.UCSC.hg38`) as well as predicted regulatory elements from ENCODE (`SCREEN.ccRE.UCSC.hg38`) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using [CICERO](https://cole-trapnell-lab.github.io/cicero-release/).
 
+Once the `RegulatoryNetwork` object is initiated with candidate regions, we can scan for TF binding motifs in these regions by using the function `find_motifs()`
+
+```r
+library(BSgenome.Hsapiens.UCSC.hg38)
+data(motifs)
+
+seurat_object <- find_motifs(
+    seurat_object,
+    pfm = motifs,
+    genome = BSgenome.Hsapiens.UCSC.hg38
+)
+```
+
+This uses [motifmatchr](https://github.com/GreenleafLab/motifmatchr) to pair up TFs with their putative binding sites. 
 

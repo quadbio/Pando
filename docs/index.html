@@ -94,10 +94,21 @@
 <div id="usage-overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage-overview" class="anchor"></a>Usage overview</h2>
-<p>Pando interacts directly with <a href="https://satijalab.org/seurat/">Seurat objects</a> and integrates well <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://satijalab.org/signac/">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by inizializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>: \par</p>
+<p>Pando interacts directly with <a href="https://satijalab.org/seurat/">Seurat objects</a> and integrates well <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://satijalab.org/signac/">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by inizializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
-<p>\par This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument.</p>
+<p>This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument. Pando ships with a set of evolutionary conserved regions (<code>phastConsElements20Mammals.UCSC.hg38</code>) as well as predicted regulatory elements from ENCODE (<code>SCREEN.ccRE.UCSC.hg38</code>) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using <a href="https://cole-trapnell-lab.github.io/cicero-release/">CICERO</a>.</p>
+<p>Once the <code>RegulatoryNetwork</code> object is initiated with candidate regions, we can scan for TF binding motifs in these regions by using the function <code><a href="reference/find_motifs.html">find_motifs()</a></code></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span>
+
+<span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_motifs.html">find_motifs</a></span><span class="op">(</span>
+    <span class="va">seurat_object</span>,
+    pfm <span class="op">=</span> <span class="va">motifs</span>,
+    genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>
+<span class="op">)</span></code></pre></div>
+<p>This uses <a href="https://github.com/GreenleafLab/motifmatchr">motifmatchr</a> to pair up TFs with their putative binding sites.</p>
 </div>
 </div>
   </div>

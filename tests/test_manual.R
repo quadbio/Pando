@@ -12,7 +12,7 @@ rename <- dplyr::rename
 
 data(motifs)
 data(phastConsElements20Mammals.UCSC.hg38)
-data(EnsDb.Hsapiens.v93.annot.UCSC.hg38)
+data(SCREEN.ccRE.UCSC.hg38)
 data(motif2tf)
 
 genes_use <- c('PAX6', 'POU5F1', 'DLX6', 'NFIA')
