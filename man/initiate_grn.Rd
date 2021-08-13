@@ -29,8 +29,6 @@ accessibility assay in the \code{Seurat} object.}
 assay in the \code{Seurat} object.}
 
 \item{exclude_exons}{Logical. Whether to consider exons for binding site inference.}
-
-\item{grn_name}{Character vector indicating the name of the GRN.}
 }
 \value{
 A SeuratPlus object containing a RegulatoryNetwork object.

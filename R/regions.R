@@ -16,7 +16,6 @@ NULL
 #' @param rna_assay A character vector indicating the name of the gene expression
 #' assay in the \code{Seurat} object.
 #' @param exclude_exons Logical. Whether to consider exons for binding site inference.
-#' @param grn_name Character vector indicating the name of the GRN.
 #'
 #' @return A SeuratPlus object containing a RegulatoryNetwork object.
 #'
@@ -99,6 +98,8 @@ initiate_grn.Seurat <- function(
 #'
 #' @param pfm A \code{PFMatrixList} object with position weight matrices.
 #' @param genome A \code{BSgenome} object with the genome of interest.
+#' @param motif_tfs A data frame matching motifs with TFs. The first column is assumed
+#' to be the name of the motif, the second the name of the TF.
 #' @param verbose Display messages.
 #'
 #' @return A SeuratPlus object with updated motif info.
