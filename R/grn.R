@@ -279,7 +279,8 @@ find_modules.RegulatoryNetwork <- function(
     p_thresh = 0.05,
     rsq_thresh = 0.1,
     nvar_thresh = 10,
-    min_genes_per_module = 5
+    min_genes_per_module = 5,
+
 ){
     fit_method <- NetworkParams(object)$method
 
