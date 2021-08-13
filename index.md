@@ -70,9 +70,19 @@ coef(seurat_object)
 
 
 ### Module extraction
-Based on the model coefficients, we can construct a network between TFs and target genes. This can be further summarized to the level of 
+Based on the model coefficients, we can construct a network between TFs and target genes. This can be further summarized to construct gene and regulatory modules with the set of target genes and regulatory regions for each TF. In Pando we do this with 
 
+```r
+seurat_object <- find_modules(seurat_object)
+```
 
+To access the extracted modules, you can use the function `NetworkModules()`:
+
+```
+modules <- NetworkModules(seurat_object)
+modules@meta
+modules@features
+```
 
 
 

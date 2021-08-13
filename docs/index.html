@@ -136,7 +136,13 @@
 <div id="module-extraction" class="section level3">
 <h3 class="hasAnchor">
 <a href="#module-extraction" class="anchor"></a>Module extraction</h3>
-<p>Based on the model coefficients, we can construct a network between TFs and target genes. This can be further summarized to the level of</p>
+<p>Based on the model coefficients, we can construct a network between TFs and target genes. This can be further summarized to construct gene and regulatory modules with the set of target genes and regulatory regions for each TF. In Pando we do this with</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_modules.html">find_modules</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
+<p>To access the extracted modules, you can use the function <code><a href="reference/NetworkModules.html">NetworkModules()</a></code>:</p>
+<pre><code>modules &lt;- NetworkModules(seurat_object)
+modules@meta
+modules@features</code></pre>
 </div>
 </div>
 </div>
