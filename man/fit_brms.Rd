@@ -9,7 +9,6 @@ fit_brms(
   data,
   family = gaussian,
   prior = brms::prior(normal(0, 1)),
-  alpha = NULL,
   ...
 )
 }
@@ -24,8 +23,6 @@ See \code{\link[family]{stats}} for mode details.}
 \item{prior}{The prior distribution of the coefficients.
 See \code{\link[set_prior]{brms}} for mode details.
 The default (\code{prior(normal(0,1))}) results in ridge regularization.}
-
-\item{alpha}{Not used, only for compatibility.}
 
 \item{...}{Other parameters for the model fitting function.}
 }

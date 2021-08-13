@@ -45,16 +45,23 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
+  <a href="reference/index.html">Reference</a>
+</li>
+      </ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://bsse.ethz.ch/qdb">
+    <span class="fas fa-university fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="https://github.com/quadbiolab/Pando">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -66,73 +73,44 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-<p><img src="https://github.com/quadbiolab/Pando/workflows/build/badge.svg" alt="Build"></p>
 <div id="pando-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#pando-" class="anchor"></a>Pando <img src="reference/figures/logo.png" align="right" width="180">
 </h1></div>
-<p>Pando leverages multi-modal singel-cell measurements to infer gene regulatory networks using a flexible linear model-based framework. By modeling the relationship between TF-binding site pairs with the expression of target genes, Pando simultaneously infers gene modules and sets of regulatory regions for each transcription factor.</p>
-<div id="introduction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h2>
-<p>The fate and state of a cell is regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of cell regulomes. Pando jointly utilizes scRNA-seq and scATAC-seq data to infer regulatory relationships between TFs and target genes.</p>
-</div>
+<p>Pando leverages multi-modal singel-cell measurements to infer gene regulatory networks (GRNs) using a flexible modelling framework. By modeling the relationship between TF-binding site pairs with the expression of target genes, Pando simultaneously infers gene modules and sets of regulatory regions for each transcription factor.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">'quadbiolab/Pando'</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="quick-start" class="section level2">
+<div id="about-pando" class="section level2">
 <h2 class="hasAnchor">
-<a href="#quick-start" class="anchor"></a>Quick start</h2>
-<p>If you have a <code>seurat_object</code> with transcriptomic and chromantin accessibility data, you can start right away with infering the regulatory network:</p>
+<a href="#about-pando" class="anchor"></a>About Pando</h2>
+<p>The fate and state of a cell is regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of gene regulatory networks (GRNs).</p>
+<p>The unifying idea behind many modern GRN inference methods is to model the expression of each gene as a function of TF abundances. The weights or coefficients of this model can then be interpreted as a measure of the regulatory interaction between TF and target gene. Additional (epi-) genomic information (such as predicted TF binding sites) is often used to constrain or refine the model.</p>
+<p>Pando tries to generalize this concept to make use of the multi-modal nature of modern single-cell technologies by incorporating TF binding information directly into the model. By utilizing jointly measured or integrated scRNA-seq and scATAC-seq data, Pando models the expression of genes based the interaction of TF expression with the accessibility of their putative binding site. By offering a number different pre-processing and modelling choices, Pando strives to be a modular and flexible framework for single-cell GRN inference.</p>
+</div>
+<div id="usage-overview" class="section level2">
+<h2 class="hasAnchor">
+<a href="#usage-overview" class="anchor"></a>Usage overview</h2>
+<p>Pando interacts directly with <a href="https://satijalab.org/seurat/">Seurat objects</a> and integrates well <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://satijalab.org/signac/">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by inizializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>: \par</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Load Packages</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Pando</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat">Seurat</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span>
-
-<span class="co"># Get motif data</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span>
-
-<span class="co"># Select variable features</span>
-<span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html">FindVariableFeatures</a></span><span class="op">(</span><span class="va">seurat_object</span>, assay<span class="op">=</span><span class="st">'RNA'</span><span class="op">)</span>
-
-<span class="co"># Initiate GRN object and select candidate regions</span>
-<span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span>
-
-<span class="co"># Scan candidate regions for TF binding motifs</span>
-<span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_motifs.html">find_motifs</a></span><span class="op">(</span>
-    <span class="va">seurat_object</span>,
-    pfm <span class="op">=</span> <span class="va">motifs</span>,
-    genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>
-<span class="op">)</span>
-
-<span class="co"># Infer gene regulatory network</span>
-<span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/infer_grn.html">infer_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span>
-
-<span class="co"># Print inferred coefficients</span>
-<span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span>
-
-<span class="co"># Find gene and regulatory modules </span>
-<span class="va">test_srt</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_modules.html">find_modules</a></span><span class="op">(</span><span class="va">test_srt</span><span class="op">)</span>
-
-<span class="co"># Print modules</span>
-<span class="fu"><a href="reference/NetworkModules.html">NetworkModules</a></span><span class="op">(</span><span class="va">test_srt</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="more" class="section level2">
-<h2 class="hasAnchor">
-<a href="#more" class="anchor"></a>More</h2>
-<p>Pando is still in it’s early stages and we are actively developing it. An API reference and more vignettes are coming soon, stay tuned!</p>
+<code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
+<p>\par This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument.</p>
 </div>
 </div>
-
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/quadbiolab/Pando">https://​github.com/​quadbiolab/​Pando</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="https://opensource.org/licenses/mit-license.php">MIT</a></li>

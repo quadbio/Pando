@@ -87,17 +87,22 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://bsse.ethz.ch/qdb">
+    <span class="fas fa-university fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/quadbiolab/Pando">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -125,7 +130,6 @@
   <span class='va'>data</span>,
   family <span class='op'>=</span> <span class='va'>gaussian</span>,
   prior <span class='op'>=</span> <span class='fu'>brms</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/brms/man/set_prior.html'>prior</a></span><span class='op'>(</span><span class='fu'>normal</span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
-  alpha <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -150,10 +154,6 @@ See <code>stats</code> for mode details.</p></td>
       <td><p>The prior distribution of the coefficients.
 See <code>brms</code> for mode details.
 The default (<code>prior(normal(0,1))</code>) results in ridge regularization.</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>Not used, only for compatibility.</p></td>
     </tr>
     <tr>
       <th>...</th>

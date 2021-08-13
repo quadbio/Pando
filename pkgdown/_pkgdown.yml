@@ -1,0 +1,46 @@
+title: Pando
+navbar:
+  title: ~
+  type: default
+  left:
+    reference:
+      text: Reference
+      href: reference/index.html
+  right:
+    homepage:
+      icon: "fas fa-university fa-lg"
+      href: https://bsse.ethz.ch/qdb
+    github:
+      icon: "fab fa-github fa-lg"
+      href: https://github.com/quadbiolab/Pando
+reference:
+  - title: Main workflow
+    desc: Functions executing the main Pando workflow
+    contents:
+      - '`initiate_grn`'
+      - '`find_motifs`'
+      - '`infer_grn`'
+      - '`find_modules`'
+  - title: Object interaction
+    desc: Functions to interact with Seurat and Network objects
+    contents:
+      - starts_with('Network')
+      - '`GetNetworkData`'
+      - starts_with('coef')
+      - starts_with('gof')
+      - starts_with('print')
+      - ends_with('-class')
+  - title: Model fitting
+    desc: Functions to fit models
+    contents:
+      - starts_with('fit_')
+  - title: Utilities
+    desc: Utility functions
+    contents:
+      - '`aggregate_matrix`'
+      - '`map_par`'
+      - '`sparse_cor`'
+      - '`find_peaks_near_genes`'
+repo:
+  url:
+    home: https://github.com/quadbiolab/Pando

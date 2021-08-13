@@ -86,17 +86,22 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://bsse.ethz.ch/qdb">
+    <span class="fas fa-university fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="https://github.com/quadbiolab/Pando">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -124,8 +129,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
+          <h2 id="section-main-workflow" class="hasAnchor"><a href="#section-main-workflow" class="anchor"></a>Main workflow</h2>
+          <p class="section-desc"><p>Functions executing the main Pando workflow</p></p>
         </th>
       </tr>
       
@@ -136,10 +141,41 @@
       <tr>
         
         <td>
-          <p><code><a href="GetNetworkData.html">GetNetworkData()</a></code> </p>
+          <p><code><a href="initiate_grn.html">initiate_grn()</a></code> </p>
         </td>
-        <td><p>Get network data</p></td>
+        <td><p>Initiate the <code>RegulatoryNetwork</code> object.</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="find_motifs.html">find_motifs()</a></code> </p>
+        </td>
+        <td><p>Scan for motifs in candidate regions.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="infer_grn.html">infer_grn()</a></code> </p>
+        </td>
+        <td><p>Infer a Gene Regulatory Network with <code>Pando</code></p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="find_modules.html">find_modules()</a></code> </p>
+        </td>
+        <td><p>Find TF modules in regulatory network</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-object-interaction" class="hasAnchor"><a href="#section-object-interaction" class="anchor"></a>Object interaction</h2>
+          <p class="section-desc"><p>Functions to interact with Seurat and Network objects</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="Network-class.html">Network-class</a></code> </p>
@@ -178,6 +214,24 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="GetNetworkData.html">GetNetworkData()</a></code> </p>
+        </td>
+        <td><p>Get network data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="coef.html">coef(<i>&lt;SeuratPlus&gt;</i>)</a></code> <code><a href="coef.html">coef(<i>&lt;RegulatoryNetwork&gt;</i>)</a></code> <code><a href="coef.html">coef(<i>&lt;Network&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Get fitted coefficients</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="gof.html">gof()</a></code> </p>
+        </td>
+        <td><p>Get goodness-of-fit info</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="Regions-class.html">Regions-class</a></code> </p>
         </td>
         <td><p>The Regions class</p></td>
@@ -193,37 +247,20 @@
           <p><code><a href="SeuratPlus-class.html">SeuratPlus-class</a></code> </p>
         </td>
         <td><p>The SeuratPlus class</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="aggregate_matrix.html">aggregate_matrix()</a></code> </p>
-        </td>
-        <td><p>Aggregate matrix over groups</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="coef.html">coef(<i>&lt;SeuratPlus&gt;</i>)</a></code> <code><a href="coef.html">coef(<i>&lt;RegulatoryNetwork&gt;</i>)</a></code> <code><a href="coef.html">coef(<i>&lt;Network&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Get fitted coefficients</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="find_modules.html">find_modules()</a></code> </p>
-        </td>
-        <td><p>Find TF modules in regulatory network</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="find_motifs.html">find_motifs()</a></code> </p>
-        </td>
-        <td><p>Scan for motifs in candidate regions.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="find_peaks_near_genes.html">find_peaks_near_genes()</a></code> </p>
-        </td>
-        <td><p>Find peaks or regions near gene body or TSS</p></td>
-      </tr><tr>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-model-fitting" class="hasAnchor"><a href="#section-model-fitting" class="anchor"></a>Model fitting</h2>
+          <p class="section-desc"><p>Functions to fit models</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="fit_brms.html">fit_brms()</a></code> </p>
@@ -256,39 +293,28 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="format_coefs.html">format_coefs()</a></code> </p>
+          <p><code><a href="fit_xgb.html">fit_xgb()</a></code> </p>
         </td>
-        <td><p>Format network coefficients</p></td>
-      </tr><tr>
+        <td><p>Fit a gradient boosting regression model with XGBoost</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-utilities" class="hasAnchor"><a href="#section-utilities" class="anchor"></a>Utilities</h2>
+          <p class="section-desc"><p>Utility functions</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
-          <p><code><a href="gof.html">gof()</a></code> </p>
+          <p><code><a href="aggregate_matrix.html">aggregate_matrix()</a></code> </p>
         </td>
-        <td><p>Get goodness-of-fit info</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="hello.html">hello()</a></code> </p>
-        </td>
-        <td><p>Hello, World!</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="infer_grn.html">infer_grn()</a></code> </p>
-        </td>
-        <td><p>Infer a Gene Regulatory Network with <code>Pando</code></p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="initiate_grn.html">initiate_grn()</a></code> </p>
-        </td>
-        <td><p>Initiate the <code>RegulatoryNetwork</code> object.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="log_message.html">log_message()</a></code> </p>
-        </td>
-        <td><p>Print diagnostic message</p></td>
+        <td><p>Aggregate matrix over groups</p></td>
       </tr><tr>
         
         <td>
@@ -298,21 +324,15 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="print.html">print(<i>&lt;RegulatoryNetwork&gt;</i>)</a></code> <code><a href="print.html">print(<i>&lt;Network&gt;</i>)</a></code> <code><a href="print.html">print(<i>&lt;Modules&gt;</i>)</a></code> <code><a href="print.html">print(<i>&lt;Regions&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Print RegulatoryNetwork objects</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="sparse_cor.html">sparse_cor()</a></code> </p>
         </td>
         <td><p>Safe correlation function which returns a sparse matrix without missing values</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="sparse_covcor.html">sparse_covcor()</a></code> </p>
+          <p><code><a href="find_peaks_near_genes.html">find_peaks_near_genes()</a></code> </p>
         </td>
-        <td><p>Fast correlation and covariance calcualtion for sparse matrices</p></td>
+        <td><p>Find peaks or regions near gene body or TSS</p></td>
       </tr>
     </tbody>
     </table>

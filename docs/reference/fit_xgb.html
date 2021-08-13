@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get network TFs — NetworkTFs • Pando</title>
+<title>Fit a gradient boosting regression model with XGBoost — fit_xgb • Pando</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Get network TFs — NetworkTFs" />
-<meta property="og:description" content="Get network TFs" />
+<meta property="og:title" content="Fit a gradient boosting regression model with XGBoost — fit_xgb" />
+<meta property="og:description" content="Fit a gradient boosting regression model with XGBoost" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -116,24 +116,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get network TFs</h1>
+    <h1>Fit a gradient boosting regression model with XGBoost</h1>
     
-    <div class="hidden name"><code>NetworkTFs.Rd</code></div>
+    <div class="hidden name"><code>fit_xgb.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get network TFs</p>
+    <p>Fit a gradient boosting regression model with XGBoost</p>
     </div>
 
-    <pre class="usage"><span class='fu'>NetworkTFs</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>fit_xgb</span><span class='op'>(</span>
+  <span class='va'>formula</span>,
+  <span class='va'>data</span>,
+  params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>max_depth <span class='op'>=</span> <span class='fl'>3</span>, eta <span class='op'>=</span> <span class='fl'>0.01</span>, objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span><span class='op'>)</span>,
+  nrounds <span class='op'>=</span> <span class='fl'>1000</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
-<span class='co'># S3 method for SeuratPlus</span>
-<span class='fu'>NetworkTFs</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>formula</th>
+      <td><p>An object of class <code>formula</code> with a symbolic description</p></td>
+    </tr>
+    <tr>
+      <th>data</th>
+      <td><p>A <code>data.frame</code> containing the variables in the model.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Other parameters for the model fitting function.</p></td>
+    </tr>
+    </table>
 
-<span class='co'># S3 method for RegulatoryNetwork</span>
-<span class='fu'>NetworkTFs</span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span></pre>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-
+    <p>A list with two data frames: <code>gof</code> contains goodness of fit measures of the fit and
+<code>coefs</code> contains the fitted coefficients.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
