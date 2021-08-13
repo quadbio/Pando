@@ -17,7 +17,7 @@ devtools::install_github('quadbiolab/Pando')
 
 If you have a `seurat_object` with transcriptomic and chromantin accessibility data, you can start right away with infering the regulatory network:
 
-    ```r
+```r
 # Load Packages
 library(Pando)
 library(Seurat)
@@ -51,12 +51,5 @@ test_srt <- find_modules(test_srt)
 # Print modules
 NetworkModules(test_srt)
 ```
-
-## More
-
-Pando is still in it's early stages and we are actively developing it. An API reference and more vignettes are coming soon, stay tuned!
-
-
-
 
 
