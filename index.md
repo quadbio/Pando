@@ -23,13 +23,13 @@ Pando tries to generalize this concept to make use of the multi-modal nature of 
 ## Usage overview
 
 ### Initiating the GRN
-Pando interacts directly with [Seurat objects](https://satijalab.org/seurat/) and integrates well [Seurat](https://satijalab.org/seurat/) and [Signac](https://satijalab.org/signac/) workflows. To use Pando, you'll need a Seurat object with two assays, one scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let's call it `seurat_object`) ready, you can start off by inizializing the GRN using the function `initiate_grn()`:
+Pando interacts directly with [Seurat objects](https://satijalab.org/seurat/) and integrates well with [Seurat](https://satijalab.org/seurat/) and [Signac](https://satijalab.org/signac/) workflows. To use Pando, you'll need a Seurat object with two assays, one with scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let's call it `seurat_object`) ready, you can start off by inizializing the GRN using the function `initiate_grn()`:
 
 ```r
 seurat_object <- initiate_grn(seurat_object)
 ```
 
-This will create a `RegulatoryNetwork` object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a `GenomicRanges` object in the `regions` argument. Pando ships with a set of conserved regions (`phastConsElements20Mammals.UCSC.hg38`) as well as predicted regulatory elements from [ENCODE](https://screen.encodeproject.org/) (`SCREEN.ccRE.UCSC.hg38`) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using [CICERO](https://cole-trapnell-lab.github.io/cicero-release/).
+This will create a `RegulatoryNetwork` object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a `GenomicRanges` object in the `regions` argument. Pando ships with a set of conserved regions (`phastConsElements20Mammals.UCSC.hg38`) as well as predicted regulatory elements from [ENCODE](https://screen.encodeproject.org/) (`SCREEN.ccRE.UCSC.hg38`) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using [Cicero](https://cole-trapnell-lab.github.io/cicero-release/).
 
 ### Finding TF binding sites
 Once the `RegulatoryNetwork` object is initiated with candidate regions, we can scan for TF binding motifs in these regions by using the function `find_motifs()`
@@ -60,7 +60,7 @@ seurat_object <- infer_grn(
 
 Here, we first select regions near genes, either by simply considering a distance upstream and/or downstream of the gene (`peak_to_gene_method='Signac'`) or by also considering overlapping regulatory regions as is done by [GREAT](http://great.stanford.edu/public/html/) (`peak_to_gene_method='GREAT'`). 
 
-You can also choose between a number of different models using the `method` argument, such as GLMs (`'glm'`) regularized GLMs [(`'glmnet'`, `'cv.glmnet'`)](https://glmnet.stanford.edu/articles/glmnet.html) or Bayesian regression models [(`'brms'`)](https://paul-buerkner.github.io/brms/). We are also working on integrating gradient boosting regression with [XGBoost](https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html) as it is done by [GRNBoost](https://github.com/aertslab/GRNBoost)/[SCENIC](https://scenic.aertslab.org/).
+You can also choose between a number of different models using the `method` argument, such as GLMs (`'glm'`) regularized GLMs [(`'glmnet'`, `'cv.glmnet'`)](https://glmnet.stanford.edu/articles/glmnet.html) or Bayesian regression models [(`'brms'`)](https://paul-buerkner.github.io/brms/). We are also working on integrating gradient boosting regression with [XGBoost](https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html) as it is used by [GRNBoost](https://github.com/aertslab/GRNBoost)/[SCENIC](https://scenic.aertslab.org/).
 
 Once the models are fit, model coefficients can be inspected with
 
