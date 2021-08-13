@@ -14,7 +14,7 @@ NULL
 #' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
 #' @param downstream Integer defining the distance downstream of the gene to consider as potential regulatory region.
 #' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
-#' Only used of `peak_to_gene_method ='GREAT'`.
+#' Only used of `peak_to_gene_method = 'GREAT'`.
 #' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
 #' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
 #' @param tf_cor Threshold for TF - target gene correlation.
