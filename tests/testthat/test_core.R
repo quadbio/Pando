@@ -94,6 +94,7 @@ test_that('infer_grn with diverse parameters does not through errors.', {
 test_that('find_modules works for glm models.', {
     tst <- infer_grn(test_srt, verbose=F, parallel=T)
     expect_error(find_modules(tst), NA)
+    tst <- find_modules(tst)
     expect_true('tbl'%in%class(NetworkModules(tst)@meta))
 })
 
