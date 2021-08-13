@@ -30,7 +30,8 @@ fit_model <- function(
         'glm' = fit_glm(formula, data, family=family, ...),
         'glmnet' = fit_glmnet(formula, data, family=family, alpha=alpha, ...),
         'cv.glmnet' = fit_cvglmnet(formula, data, family=family, alpha=alpha, ...),
-        'brms' = fit_brms(formula, data, family=family, alpha=alpha, ...)
+        'brms' = fit_brms(formula, data, family=family, ...),
+        'xgb' = fit_xgb(formula, data, ...)
     )
     return(result)
 }
@@ -157,7 +158,6 @@ fit_cvglmnet <- function(
 #' @param prior The prior distribution of the coefficients.
 #' See \code{\link[set_prior]{brms}} for mode details.
 #' The default (\code{prior(normal(0,1))}) results in ridge regularization.
-#' @param alpha Not used, only for compatibility.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
@@ -168,7 +168,6 @@ fit_brms <- function(
     formula, data,
     family = gaussian,
     prior = brms::prior(normal(0,1)),
-    alpha = NULL,
     ...
 ){
     # Silence annoying output
@@ -191,3 +190,48 @@ fit_brms <- function(
     coefs$pval <- bayestestR::p_map(fit)$p_MAP
     return(list(gof=gof, coefs=coefs))
 }
+
+
+#' Fit a gradient boosting regression model with XGBoost
+#'
+#' @param formula An object of class \code{formula} with a symbolic description
+#' @param data A \code{data.frame} containing the variables in the model.
+#' @param ... Other parameters for the model fitting function.
+#' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
+#' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
+fit_xgb <- function(
+    formula, data,
+    params = list(
+        max_depth=3,
+        eta=0.01,
+        objective='reg:squarederror'),
+    nrounds = 1000,
+    ...
+){
+
+    model_mat <- stats::model.matrix(formula, data=data)
+    response <- data[[formula[[2]]]]
+    fit <- xgboost::xgboost(
+        data = model_mat,
+        label = response,
+        verbose = 0,
+        params = params,
+        nrounds = nrounds,
+        ...
+    )
+    pred <- predict(fit, newdata=model_mat)
+    resid <- sum((response - pred)**2)
+    tot <- sum((response - mean(response))**2)
+    gof <- tibble(
+        rsq = 1 - resid / tot
+    )
+    coefs <- as_tibble(as.matrix(xgboost::xgb.importance(model=fit)))
+    colnames(coefs) <- c('term', 'gain', 'cover', 'frequency')
+    return(list(gof=gof, coefs=coefs))
+}
+
+
+
+

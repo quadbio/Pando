@@ -182,7 +182,7 @@ infer_grn.SeuratPlus <- function(
             ...
         ), silent=TRUE)
         if (any(class(fit)=='try-error')){
-            log_message('Warning: Fitting model failed for ', g, verbose=verbose==2)
+            log_message('Warning: Fitting model failed for ', g, verbose=verbose)
             return()
         } else {
             fit$gof$nvariables <- nfeats
@@ -191,7 +191,7 @@ infer_grn.SeuratPlus <- function(
     }, verbose=verbose, parallel=parallel)
     model_fits <- model_fits[!map_lgl(model_fits, is.null)]
     if (length(model_fits)==0){
-        log_message('Warning: Fitting model failed for all genes.', verbose=verbose==2)
+        log_message('Warning: Fitting model failed for all genes.', verbose=verbose)
     }
     coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
     coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)

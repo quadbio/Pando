@@ -37,8 +37,9 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 test_srt <- infer_grn(test_srt, peak_to_gene_method = 'Signac', parallel=T)
-test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100, alpha=0.3)
-test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=prior(lasso()))
+# test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100, alpha=0.3)
+# test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=prior(lasso()))
+test_srt <- infer_grn(test_srt, peak_to_gene_method = 'GREAT', method='xgb')
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
@@ -47,8 +48,6 @@ NetworkParams(test_srt)$method
 coef(test_srt)
 gof(test_srt)
 modules <- NetworkModules(test_srt)
-
-expect_true('tbl'%in%class(modules@meta))
 
 class(modules@meta)
 
@@ -66,31 +65,23 @@ tbl <- tibble(
     z = z
 )
 
-xy <- model_as_xy(data=as.data.frame(tbl), formula=y ~ x:z)
-
 
 formula <- y ~ x:z
 data <- tbl
 model_mat <- stats::model.matrix(formula, data = data)
 response <- data[[formula[[2]]]]
 
-
-params <- list(
-    max_depth = 3
-)
-
-object <- xgboost::xgboost(data = model_mat, label = response, nrounds=100, params=params)
-pred <- predict(object, newdata=model_mat)
+fit <- suppressMessages(xgboost::xgboost(data = model_mat, label = response, nrounds=100, params=params, verbose=0))
+pred <- predict(fit, newdata=model_mat)
 resid_sq <- (pred - response)**2
 
 sstot <- sum((pred - mean(response))^2)
 ssresid <- sum(resid_sq)
 1 - ssresid / sstot
 
-attr(object, 'formula') <- formula
+attr(fit, 'formula') <- formula
 
-summary(object)
-xgboost::xgb.importance(model=object)
+as_tibble(as.matrix(xgboost::xgb.importance(model=fit)))
 
 
 
