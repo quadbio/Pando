@@ -52,37 +52,6 @@ modules <- NetworkModules(test_srt)
 class(modules@meta)
 
 
-### Try random forest (xgboost) ####
-
-np <- 100
-x <- seq(np) + rnorm(np, sd=3)
-z <- seq(np) + rnorm(np, sd=5)
-y <- round(rnorm(np, sd=50, mean=1000) + x * 3 + z * 1.5)
-
-tbl <- tibble(
-    x = x,
-    y = y,
-    z = z
-)
-
-
-formula <- y ~ x:z
-data <- tbl
-model_mat <- stats::model.matrix(formula, data = data)
-response <- data[[formula[[2]]]]
-
-fit <- suppressMessages(xgboost::xgboost(data = model_mat, label = response, nrounds=100, params=params, verbose=0))
-pred <- predict(fit, newdata=model_mat)
-resid_sq <- (pred - response)**2
-
-sstot <- sum((pred - mean(response))^2)
-ssresid <- sum(resid_sq)
-1 - ssresid / sstot
-
-attr(fit, 'formula') <- formula
-
-as_tibble(as.matrix(xgboost::xgb.importance(model=fit)))
-
 
 
 
