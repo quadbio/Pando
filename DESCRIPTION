@@ -25,7 +25,10 @@ Imports:
     GenomicRanges,
     motifmatchr,
     Matrix.utils,
-    glmnetUtils
+    glmnetUtils,
+    bayestestR,
+    xgboost,
+    brms
 Suggests: 
     rmarkdown,
     testthat,
@@ -33,6 +36,4 @@ Suggests:
     TFBSTools,
     foreach,
     sparseMatrixStats,
-    brms,
-    cmdstanr,
-    bayestestR
+    cmdstanr
