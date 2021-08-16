@@ -50,7 +50,7 @@ infer_grn.SeuratPlus <- function(
     peak_cor = 0.,
     method = 'glm',
     alpha = 0.5,
-    family = gaussian,
+    family = 'gaussian',
     interaction_term = ':',
     adjust_method = 'fdr',
     verbose = TRUE,
