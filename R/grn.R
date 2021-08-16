@@ -183,6 +183,7 @@ infer_grn.SeuratPlus <- function(
         ), silent=TRUE)
         if (any(class(fit)=='try-error')){
             log_message('Warning: Fitting model failed for ', g, verbose=verbose)
+            log_message(fit, verbose=verbose==2)
             return()
         } else {
             fit$gof$nvariables <- nfeats
