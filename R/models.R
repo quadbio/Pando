@@ -172,7 +172,7 @@ fit_brms <- function(
 ){
     # Silence annoying output
     sink('/dev/null', type='output')
-    fit <- brms::brm(
+    fit <- suppressMessages(brms::brm(
         formula,
         data = data,
         family = family,
@@ -180,7 +180,7 @@ fit_brms <- function(
         silent = TRUE,
         refresh = 0,
         ...
-    )
+    ))
     sink()
     gof <- tibble(
         rsq = as.matrix(brms::bayes_R2(fit))[, 'Estimate']
