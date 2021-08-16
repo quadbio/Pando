@@ -79,7 +79,6 @@ fit_glmnet <- function(
     formula, data,
     family = gaussian,
     alpha = 0.5,
-    nlambda = 20,
     ...
 ){
     fit <- glmnetUtils::glmnet(
@@ -87,7 +86,6 @@ fit_glmnet <- function(
         data = data,
         family = family,
         alpha = alpha,
-        nlambda = nlambda,
         ...
     )
     class(fit) <- 'glmnet'
@@ -123,7 +121,6 @@ fit_cvglmnet <- function(
     formula, data,
     family = gaussian,
     alpha = 0.5,
-    nlambda = 20,
     nfolds = 5,
     ...
 ){
@@ -132,7 +129,6 @@ fit_cvglmnet <- function(
         data = data,
         family = family,
         alpha = alpha,
-        nlambda = nlambda,
         nfolds = nfolds,
         ...
     )
