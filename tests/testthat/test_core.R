@@ -21,7 +21,7 @@ test_that('initiate_grn returns SeuratPlus object.', {
 })
 
 test_that('initiate_grn creates RegualtoryNetwork object.', {
-    expect_equal(class(GetNetworkData(test_srt))[1], 'RegulatoryNetwork')
+    expect_equal(class(GetGRN(test_srt))[1], 'RegulatoryNetwork')
 })
 
 test_srt <- find_motifs(
@@ -35,7 +35,7 @@ test_that('find_motifs returns Motif object.', {
 test_srt <- infer_grn(test_srt, verbose=F)
 
 test_that('infer_grn returns Network object.', {
-    expect_equal(class(GetNetworkData(test_srt)@network)[1], 'Network')
+    expect_equal(class(GetGRN(test_srt)@network)[1], 'Network')
 })
 
 test_that('infer_grn returns coefs.', {
@@ -65,6 +65,17 @@ test_that('initiate_grn excludes exons.', {
     expect_equal(dim(coef(tst))[1], 25)
 })
 
+test_that('getters return the expected type.', {
+    expect(any(class(GetNetwork(test_srt)) == 'Network'))
+    expect(any(class(NetworkFeatures(test_srt)) == 'character'))
+    expect(any(class(NetworkTFs(test_srt)) == 'data.frame'))
+    expect(any(class(NetworkRegions(test_srt)) == 'Regions'))
+    expect(any(class(GetGRN(test_srt)) == 'RegulatoryNetwork'))
+    expect(any(class(NetworkModules(test_srt)) == 'Modules'))
+    expect(any(class(NetworkParams(test_srt)) == 'list'))
+    expect(any(class(coef(test_srt)) == 'dara.frame'))
+    expect(any(class(gof(test_srt)) == 'dara.frame'))
+})
 
 registerDoParallel(3)
 
@@ -95,6 +106,10 @@ test_that('find_modules works for glm models.', {
 
 test_that('find_modules works for glmnet models.', {
     tst <- infer_grn(test_srt, verbose=F, parallel=T, method='cv.glmnet')
+    expect_error(find_modules(tst), NA)
+    tst <- find_modules(tst)
+    expect_true('tbl'%in%class(NetworkModules(tst)@meta))
+    tst <- infer_grn(test_srt, verbose=F, parallel=T, method='glmnet')
     expect_error(find_modules(tst), NA)
     tst <- find_modules(tst)
     expect_true('tbl'%in%class(NetworkModules(tst)@meta))
