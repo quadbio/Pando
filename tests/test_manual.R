@@ -25,6 +25,7 @@ motif2tf_use <- motif2tf %>%
 registerDoParallel(2)
 
 test_srt <- read_rds('../data/test_seurat.rds')
+
 test_srt <- initiate_grn(
     test_srt,
     genes = genes_use,

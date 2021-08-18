@@ -28,9 +28,11 @@ initiate_grn.Seurat <- function(
     genes = VariableFeatures(object, assay=rna_assay),
     peak_assay = 'peaks',
     rna_assay = 'RNA',
-    exclude_exons = TRUE
+    exclude_exons = TRUE,
+    grn_name = 'GRN'
 ){
     gene_annot <- Signac::Annotation(object[[peak_assay]])
+    # Error if not there
     peak_ranges <- StringToGRanges(rownames(GetAssay(object, assay=peak_assay)))
 
     # Find candidate ranges by intersecting the supplied regions with peaks
@@ -87,6 +89,8 @@ initiate_grn.Seurat <- function(
     )
 
     object <- as(object, 'SeuratPlus')
+    # object@grns <- list()
+    # object@grns[[grn_name]] <- grn_obj
     object@grn <- grn_obj
     return(object)
 }
