@@ -61,7 +61,7 @@ infer_grn.SeuratPlus <- function(
     ...
 ){
     # Get variables from object
-    params <- NetworkParams(object)
+    params <- Params(object)
     motif2tf <- NetworkTFs(object)
     if (is.null(motif2tf)){
         stop('Motif matches have not been found. Please run find_motifs() first.')
@@ -81,7 +81,6 @@ infer_grn.SeuratPlus <- function(
     # detected genes in the object
     features <- intersect(gene_annot$gene_name, genes) %>%
         intersect(rownames(GetAssay(object, params$rna_assay)))
-    object@grn@genes$genes <- features
     gene_annot <- gene_annot[gene_annot$gene_name%in%features, ]
 
     # Get regions
@@ -220,10 +219,11 @@ infer_grn.SeuratPlus <- function(
 
     network_obj <- new(
         Class = 'Network',
+        features = features,
         coefs = coefs,
         fit = gof
     )
-    object@grn@network <- network_obj
+    object@grn@networks[[network_name]] <- network_obj
     object@grn@params[['method']] <- method
     object@grn@params[['family']] <- family
     object@grn@params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
@@ -302,7 +302,7 @@ find_modules.RegulatoryNetwork <- function(
     nvar_thresh = 10,
     min_genes_per_module = 5
 ){
-    fit_method <- NetworkParams(object)$method
+    fit_method <- Params(object)$method
 
     models_use <- gof(object) %>%
         filter(rsq>rsq_thresh & nvariables>nvar_thresh) %>%
@@ -413,7 +413,7 @@ find_modules.SeuratPlus <- function(
     nvar_thresh = 10,
     min_genes_per_module = 5
 ){
-    params <- NetworkParams(object)
+    params <- Params(object)
     regions <- NetworkRegions(object)
     network <- GetNetworkData(object)
     network <- find_modules(
