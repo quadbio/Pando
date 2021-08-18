@@ -51,7 +51,7 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
-NetworkParams(test_srt)$method
+Params(test_srt)
 
 coef(test_srt)
 gof(test_srt)

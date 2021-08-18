@@ -145,7 +145,6 @@ NetworkFeatures.SeuratPlus <- function(object, network='glm_network'){
     return(GetNetwork(object, network=network)@features)
 }
 
-
 #' @rdname NetworkFeatures
 #' @method NetworkFeatures RegulatoryNetwork
 #' @export
@@ -161,7 +160,6 @@ NetworkFeatures.RegulatoryNetwork <- function(object, network='glm_network'){
 NetworkTFs.SeuratPlus <- function(object){
     return(object@grn@regions@tfs)
 }
-
 
 #' @rdname NetworkTFs
 #' @method NetworkTFs RegulatoryNetwork
@@ -216,6 +214,29 @@ NetworkModules.RegulatoryNetwork <- function(object, network='glm_network'){
 #' @export
 NetworkModules.Network <- function(object){
     return(object@modules)
+}
+
+
+#' Get network parameters
+#' @rdname NetworkParams
+#' @method NetworkParams SeuratPlus
+#' @export
+NetworkParams.SeuratPlus <- function(object, network='glm_network'){
+    return(GetNetwork(object, network=network)@params)
+}
+
+#' @rdname NetworkParams
+#' @method NetworkParams RegulatoryNetwork
+#' @export
+NetworkParams.RegulatoryNetwork <- function(object, network='glm_network'){
+    return(GetNetwork(object, network=network)@params)
+}
+
+#' @rdname NetworkParams
+#' @method NetworkParams Network
+#' @export
+NetworkParams.Network <- function(object){
+    return(object@params)
 }
 
 
