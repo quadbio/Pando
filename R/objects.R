@@ -184,15 +184,15 @@ GetGRN.SeuratPlus <- function(object){
 #' @rdname NetworkModules
 #' @method NetworkModules SeuratPlus
 #' @export
-NetworkModules.SeuratPlus <- function(object){
-    return(object@grn@network@modules)
+NetworkModules.SeuratPlus <- function(object, network='glm_network'){
+    return(object@grn@networks[[network]]@modules)
 }
 
 #' @rdname NetworkModules
 #' @method NetworkModules RegulatoryNetwork
 #' @export
-NetworkModules.RegulatoryNetwork <- function(object){
-    return(object@network@modules)
+NetworkModules.RegulatoryNetwork <- function(object, network='glm_network'){
+    return(object@networks[[network]]@modules)
 }
 
 #' @rdname NetworkModules
@@ -207,15 +207,15 @@ NetworkModules.Network <- function(object){
 #' @rdname coef
 #' @method coef SeuratPlus
 #' @export
-coef.SeuratPlus <- function(object){
-    return(object@grn@network@coefs)
+coef.SeuratPlus <- function(object, network='glm_network'){
+    return(object@grn@networks[[network]]@coefs)
 }
 
 #' @rdname coef
 #' @method coef RegulatoryNetwork
 #' @export
-coef.RegulatoryNetwork <- function(object){
-    return(object@network@coefs)
+coef.RegulatoryNetwork <- function(object, network='glm_network'){
+    return(object@networks[[network]]@coefs)
 }
 
 #' @rdname coef
@@ -230,30 +230,30 @@ coef.Network <- function(object){
 #' @rdname gof
 #' @method gof SeuratPlus
 #' @export
-gof.SeuratPlus <- function(object){
+gof.SeuratPlus <- function(object, network='glm_network'){
     return(object@grn@network@fit)
 }
 
 #' @rdname gof
 #' @method gof RegulatoryNetwork
 #' @export
-gof.RegulatoryNetwork <- function(object){
+gof.RegulatoryNetwork <- function(object, network='glm_network'){
     return(object@network@fit)
 }
 
 
-#' Get network parameters
-#' @rdname NetworkParams
-#' @method NetworkParams SeuratPlus
+#' Get GRN inference parameters
+#' @rdname Params
+#' @method Params SeuratPlus
 #' @export
-NetworkParams.SeuratPlus <- function(object){
+Params.SeuratPlus <- function(object){
     return(object@grn@params)
 }
 
-#' @rdname NetworkParams
-#' @method NetworkParams RegulatoryNetwork
+#' @rdname Params
+#' @method Params RegulatoryNetwork
 #' @export
-NetworkParams.RegulatoryNetwork <- function(object){
+Params.RegulatoryNetwork <- function(object){
     return(object@params)
 }
 
