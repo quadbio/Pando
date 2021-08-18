@@ -305,6 +305,9 @@ find_modules.Network <- function(
     min_genes_per_module = 5
 ){
     fit_method <- NetworkParams(object)$method
+    if (!fit_method %in% c('glm', 'cv.glmnet', 'glmnet', 'brms')){
+        stop(paste0('find_modules() is not yet implemented for "', fit_method, '" models'))
+    }
 
     models_use <- gof(object) %>%
         filter(rsq>rsq_thresh & nvariables>nvar_thresh) %>%
@@ -418,15 +421,15 @@ find_modules.SeuratPlus <- function(
 ){
     params <- Params(object)
     regions <- NetworkRegions(object)
-    network <- GetNetwork(object, network=network)
-    network <- find_modules(
-        network,
+    net_obj <- GetNetwork(object, network=network)
+    net_obj <- find_modules(
+        net_obj,
         p_thresh = p_thresh,
         rsq_thresh = rsq_thresh,
         nvar_thresh = nvar_thresh,
         min_genes_per_module = min_genes_per_module
     )
-    modules <- NetworkModules(network)
+    modules <- NetworkModules(net_obj)
 
     reg2peaks <- rownames(GetAssay(object, assay=params$peak_assay))[regions@peaks]
     names(reg2peaks) <- Signac::GRangesToString(regions@ranges)
@@ -435,7 +438,7 @@ find_modules.SeuratPlus <- function(
     modules@features[['peaks_pos']] <- peaks_pos
     modules@features[['peaks_neg']] <- peaks_neg
 
-    object@grn@network@modules <- modules
+    object@grn@networks[[network]]@modules <- modules
     return(object)
 }
 
