@@ -143,7 +143,7 @@ NetworkFeatures.RegulatoryNetwork <- function(object, network='glm_network'){
 #' @method NetworkTFs SeuratPlus
 #' @export
 NetworkTFs.SeuratPlus <- function(object){
-    return(object@grn@regions$tfs)
+    return(object@grn@regions@tfs)
 }
 
 
@@ -151,7 +151,7 @@ NetworkTFs.SeuratPlus <- function(object){
 #' @method NetworkTFs RegulatoryNetwork
 #' @export
 NetworkTFs.RegulatoryNetwork <- function(object){
-    return(object@regions$tfs)
+    return(object@regions@tfs)
 }
 
 
@@ -264,7 +264,7 @@ Params.RegulatoryNetwork <- function(object){
 #' @export
 #' @method print RegulatoryNetwork
 print.RegulatoryNetwork <- function(object){
-    n_genes <- length(NetworkFeatures(object))
+    n_nets <- length(object@grn@networks)
     n_tfs <- ncol(NetworkTFs(object))
     if (is.null(n_tfs)){
         tf_string <- '\nCandidate regions have not been scanned for motifs'
