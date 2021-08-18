@@ -278,6 +278,13 @@ gof.RegulatoryNetwork <- function(object, network='glm_network'){
     return(GetNetwork(object, network=network)@fit)
 }
 
+#' @rdname gof
+#' @method gof Network
+#' @export
+gof.Network <- function(object, network='glm_network'){
+    return(object@fit)
+}
+
 
 #' Get GRN inference parameters
 #' @rdname Params
