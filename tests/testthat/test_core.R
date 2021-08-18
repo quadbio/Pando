@@ -11,8 +11,10 @@ library(Pando)
 data(motifs)
 
 test_srt <- read_rds('../../../data/test_seurat.rds')
+genes_use <- c('NEUROD6', 'POU5F1')
 
-test_srt <- initiate_grn(test_srt, genes = c('NEUROD6', 'POU5F1', 'PAX6'), exclude_exons=F)
+test_srt <- initiate_grn(test_srt, exclude_exons=F)
+VariableFeatures(test_srt, assay='RNA') <- genes_use
 
 test_that('initiate_grn returns SeuratPlus object.', {
     expect_equal(class(test_srt)[1], 'SeuratPlus')
@@ -22,11 +24,6 @@ test_that('initiate_grn creates RegualtoryNetwork object.', {
     expect_equal(class(GetNetworkData(test_srt))[1], 'RegulatoryNetwork')
 })
 
-test_that('initiate_grn filters target genes.', {
-    expect_setequal(NetworkFeatures(test_srt), c('NEUROD6', 'POU5F1'))
-})
-
-
 test_srt <- find_motifs(
     test_srt, pfm=motifs[800:802], genome=BSgenome.Hsapiens.UCSC.hg38
 )
@@ -35,13 +32,11 @@ test_that('find_motifs returns Motif object.', {
     expect_equal(class(NetworkRegions(test_srt)@motifs)[1], 'Motif')
 })
 
-
 test_srt <- infer_grn(test_srt, verbose=F)
 
 test_that('infer_grn returns Network object.', {
     expect_equal(class(GetNetworkData(test_srt)@network)[1], 'Network')
 })
-
 
 test_that('infer_grn returns coefs.', {
     expect_setequal(unique(coef(test_srt)$target), c('NEUROD6', 'POU5F1'))
@@ -64,7 +59,7 @@ test_that('infer_grn applies filtering.', {
 
 
 test_that('initiate_grn excludes exons.', {
-    tst <- initiate_grn(test_srt, genes = c('NEUROD6', 'POU5F1', 'PAX6'), exclude_exons=T)
+    tst <- initiate_grn(test_srt, exclude_exons=T)
     tst <- find_motifs(tst, pfm=motifs[800:802], genome=BSgenome.Hsapiens.UCSC.hg38)
     tst <- infer_grn(tst, verbose=F)
     expect_equal(dim(coef(tst))[1], 25)

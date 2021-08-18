@@ -80,11 +80,7 @@ infer_grn.SeuratPlus <- function(
     # detected genes in the object
     features <- intersect(gene_annot$gene_name, genes) %>%
         intersect(rownames(GetAssay(object, params$rna_assay)))
-    genes <- list(
-        genes = genes_use,
-        tfs = NULL
-    )
-    object@grn@genes <- genes
+    object@grn@genes$genes <- features
     gene_annot <- gene_annot[gene_annot$gene_name%in%features, ]
 
     # Get regions
