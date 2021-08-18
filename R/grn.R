@@ -217,21 +217,23 @@ infer_grn.SeuratPlus <- function(
     coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
     gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
+    params <- list()
+    params[['method']] <- method
+    params[['family']] <- family
+    params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
+    params[['only_tss']] <- only_tss
+    params[['interaction']] <- interaction_term
+    params[['tf_cor']] <- tf_cor
+    params[['peak_cor']] <- peak_cor
+
     network_obj <- new(
         Class = 'Network',
         features = features,
         coefs = coefs,
-        fit = gof
+        fit = gof,
+        params = params
     )
     object@grn@networks[[network_name]] <- network_obj
-    object@grn@params[['method']] <- method
-    object@grn@params[['family']] <- family
-    object@grn@params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
-    object@grn@params[['only_tss']] <- only_tss
-    object@grn@params[['interaction']] <- interaction_term
-    object@grn@params[['tf_cor']] <- tf_cor
-    object@grn@params[['peak_cor']] <- peak_cor
-
     return(object)
 }
 
@@ -408,6 +410,7 @@ find_modules.RegulatoryNetwork <- function(
 #' @method find_modules SeuratPlus
 find_modules.SeuratPlus <- function(
     object,
+    network = 'glm_network',
     p_thresh = 0.05,
     rsq_thresh = 0.1,
     nvar_thresh = 10,
@@ -415,12 +418,12 @@ find_modules.SeuratPlus <- function(
 ){
     params <- Params(object)
     regions <- NetworkRegions(object)
-    network <- GetNetworkData(object)
+    network <- GetGRN(object)
     network <- find_modules(
         network,
         p_thresh = p_thresh,
         rsq_thresh = rsq_thresh,
-        nvar_thresh =nvar_thresh,
+        nvar_thresh = nvar_thresh,
         min_genes_per_module = min_genes_per_module
     )
     modules <- NetworkModules(network)
