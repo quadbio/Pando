@@ -24,8 +24,10 @@ reference:
   - title: Object interaction
     desc: Functions to interact with Seurat and Network objects
     contents:
+      - '`GetGRN`'
+      - '`GetNetwork`'
       - starts_with('Network')
-      - '`GetNetworkData`'
+      - starts_with('Params')
       - starts_with('coef')
       - starts_with('gof')
       - starts_with('print')
