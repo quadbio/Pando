@@ -18,6 +18,7 @@ find_modules(object, ...)
 
 \method{find_modules}{SeuratPlus}(
   object,
+  network = "glm_network",
   p_thresh = 0.05,
   rsq_thresh = 0.1,
   nvar_thresh = 10,
