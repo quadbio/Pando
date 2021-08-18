@@ -22,7 +22,7 @@ NULL
 #' @param tf_cor Threshold for TF - target gene correlation.
 #' @param peak_cor Threshold for binding peak - target gene correlation.
 #' @param method A character string indicating the method to fit the model.
-#' Possible values are \code{'glm'}, \code{'glmnet'} and \code{'cv.glmnet'}.
+#' Possible values are \code{'glm'}, \code{'glmnet'}, \code{'cv.glmnet'}, \code{'brms'} and \code{'xgb'}.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -44,7 +44,7 @@ infer_grn.SeuratPlus <- function(
     object,
     genes = NULL,
     network_name = paste0(method, '_network'),
-    peak_to_gene_method = 'Signac',
+    peak_to_gene_method = c('Signac', 'GREAT'),
     upstream = 100000,
     downstream = 0,
     extend = 1000000,
@@ -52,7 +52,7 @@ infer_grn.SeuratPlus <- function(
     parallel = FALSE,
     tf_cor = 0.1,
     peak_cor = 0.,
-    method = 'glm',
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb'),
     alpha = 0.5,
     family = 'gaussian',
     interaction_term = ':',
@@ -60,6 +60,10 @@ infer_grn.SeuratPlus <- function(
     verbose = TRUE,
     ...
 ){
+    # Match args
+    method <- match.arg(method)
+    peak_to_gene_method <- match.arg(peak_to_gene_method)
+
     # Get variables from object
     params <- Params(object)
     motif2tf <- NetworkTFs(object)

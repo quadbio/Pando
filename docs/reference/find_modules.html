@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@
 
     <pre class="usage"><span class='fu'>find_modules</span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='co'># S3 method for RegulatoryNetwork</span>
+<span class='co'># S3 method for Network</span>
 <span class='fu'>find_modules</span><span class='op'>(</span>
   <span class='va'>object</span>,
   p_thresh <span class='op'>=</span> <span class='fl'>0.05</span>,
@@ -139,6 +139,7 @@
 <span class='co'># S3 method for SeuratPlus</span>
 <span class='fu'>find_modules</span><span class='op'>(</span>
   <span class='va'>object</span>,
+  network <span class='op'>=</span> <span class='st'>"glm_network"</span>,
   p_thresh <span class='op'>=</span> <span class='fl'>0.05</span>,
   rsq_thresh <span class='op'>=</span> <span class='fl'>0.1</span>,
   nvar_thresh <span class='op'>=</span> <span class='fl'>10</span>,
@@ -158,13 +159,17 @@
     </tr>
     <tr>
       <th>nvar_thresh</th>
+      <td><p>Integer indicating the minimum number of variables in the model.</p></td>
+    </tr>
+    <tr>
+      <th>min_genes_per_module</th>
       <td><p>Integer indicating the minimum number of genes in a module.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A RegulatoryNetwork object.</p>
+    <p>A Network object.</p>
 <p>A Network object.</p>
 
   </div>

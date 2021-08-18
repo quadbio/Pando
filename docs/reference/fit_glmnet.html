@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -125,7 +125,7 @@
     <p>Fit regularized generalized linear model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_glmnet</span><span class='op'>(</span><span class='va'>formula</span>, <span class='va'>data</span>, family <span class='op'>=</span> <span class='va'>gaussian</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span>, nlambda <span class='op'>=</span> <span class='fl'>20</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fit_glmnet</span><span class='op'>(</span><span class='va'>formula</span>, <span class='va'>data</span>, family <span class='op'>=</span> <span class='va'>gaussian</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -148,12 +148,12 @@ See <code>stats</code> for mode details.</p></td>
       <td><p>The elasticnet mixing parameter. See <code><a href='https://glmnet.stanford.edu/reference/glmnet.html'>glmnet</a></code> for details.</p></td>
     </tr>
     <tr>
-      <th>nlambda</th>
-      <td><p>The number of <code>lambda</code> values.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>Other parameters for the model fitting function.</p></td>
+    </tr>
+    <tr>
+      <th>nlambda</th>
+      <td><p>The number of <code>lambda</code> values.</p></td>
     </tr>
     </table>
 

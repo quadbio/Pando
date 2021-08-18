@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -130,6 +130,8 @@
 <span class='co'># S3 method for SeuratPlus</span>
 <span class='fu'>infer_grn</span><span class='op'>(</span>
   <span class='va'>object</span>,
+  genes <span class='op'>=</span> <span class='cn'>NULL</span>,
+  network_name <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>method</span>, <span class='st'>"_network"</span><span class='op'>)</span>,
   peak_to_gene_method <span class='op'>=</span> <span class='st'>"Signac"</span>,
   upstream <span class='op'>=</span> <span class='fl'>1e+05</span>,
   downstream <span class='op'>=</span> <span class='fl'>0</span>,
@@ -140,7 +142,7 @@
   peak_cor <span class='op'>=</span> <span class='fl'>0</span>,
   method <span class='op'>=</span> <span class='st'>"glm"</span>,
   alpha <span class='op'>=</span> <span class='fl'>0.5</span>,
-  family <span class='op'>=</span> <span class='va'>gaussian</span>,
+  family <span class='op'>=</span> <span class='st'>"gaussian"</span>,
   interaction_term <span class='op'>=</span> <span class='st'>":"</span>,
   adjust_method <span class='op'>=</span> <span class='st'>"fdr"</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
@@ -153,6 +155,11 @@
     <tr>
       <th>...</th>
       <td><p>Other parameters for the model fitting function.</p></td>
+    </tr>
+    <tr>
+      <th>genes</th>
+      <td><p>A character vector with the target genes to consider for GRN inference.
+Takes all VariableFeatures in the object per default.</p></td>
     </tr>
     <tr>
       <th>peak_to_gene_method</th>
@@ -170,7 +177,7 @@ link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.<
     <tr>
       <th>extend</th>
       <td><p>Integer defining the distance from the upstream and downstream of the basal regulatory region.
-Only used when peak_to_gene_method is 'GREAT'.</p></td>
+Only used of `peak_to_gene_method = 'GREAT'`.</p></td>
     </tr>
     <tr>
       <th>only_tss</th>

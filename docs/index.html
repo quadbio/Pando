@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -97,10 +97,10 @@
 <div id="initiating-the-grn" class="section level3">
 <h3 class="hasAnchor">
 <a href="#initiating-the-grn" class="anchor"></a>Initiating the GRN</h3>
-<p>Pando interacts directly with <a href="https://satijalab.org/seurat/">Seurat objects</a> and integrates well <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://satijalab.org/signac/">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by inizializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>:</p>
+<p>Pando interacts directly with <a href="https://satijalab.org/seurat/">Seurat objects</a> and integrates well with <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://satijalab.org/signac/">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one with scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by inizializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
-<p>This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument. Pando ships with a set of conserved regions (<code>phastConsElements20Mammals.UCSC.hg38</code>) as well as predicted regulatory elements from <a href="https://screen.encodeproject.org/">ENCODE</a> (<code>SCREEN.ccRE.UCSC.hg38</code>) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using <a href="https://cole-trapnell-lab.github.io/cicero-release/">CICERO</a>.</p>
+<p>This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument. Pando ships with a set of conserved regions (<code>phastConsElements20Mammals.UCSC.hg38</code>) as well as predicted regulatory elements from <a href="https://screen.encodeproject.org/">ENCODE</a> (<code>SCREEN.ccRE.UCSC.hg38</code>) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using <a href="https://cole-trapnell-lab.github.io/cicero-release/">Cicero</a>.</p>
 </div>
 <div id="finding-tf-binding-sites" class="section level3">
 <h3 class="hasAnchor">
@@ -128,7 +128,7 @@
     method <span class="op">=</span> <span class="st">'glm'</span>
 <span class="op">)</span></code></pre></div>
 <p>Here, we first select regions near genes, either by simply considering a distance upstream and/or downstream of the gene (<code>peak_to_gene_method='Signac'</code>) or by also considering overlapping regulatory regions as is done by <a href="http://great.stanford.edu/public/html/">GREAT</a> (<code>peak_to_gene_method='GREAT'</code>).</p>
-<p>You can also choose between a number of different models using the <code>method</code> argument, such as GLMs (<code>'glm'</code>) regularized GLMs <a href="https://glmnet.stanford.edu/articles/glmnet.html">(<code>'glmnet'</code>, <code>'cv.glmnet'</code>)</a> or Bayesian regression models <a href="https://paul-buerkner.github.io/brms/">(<code>'brms'</code>)</a>. We are also working on integrating gradient boosting regression with <a href="https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html">XGBoost</a> as it is done by <a href="https://github.com/aertslab/GRNBoost">GRNBoost</a>/<a href="https://scenic.aertslab.org/">SCENIC</a>.</p>
+<p>You can also choose between a number of different models using the <code>method</code> argument, such as GLMs (<code>'glm'</code>) regularized GLMs <a href="https://glmnet.stanford.edu/articles/glmnet.html">(<code>'glmnet'</code>, <code>'cv.glmnet'</code>)</a> or Bayesian regression models <a href="https://paul-buerkner.github.io/brms/">(<code>'brms'</code>)</a>. We are also working on integrating gradient boosting regression with <a href="https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html">XGBoost</a> as it is used by <a href="https://github.com/aertslab/GRNBoost">GRNBoost</a>/<a href="https://scenic.aertslab.org/">SCENIC</a>.</p>
 <p>Once the models are fit, model coefficients can be inspected with</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
