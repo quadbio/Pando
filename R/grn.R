@@ -290,7 +290,7 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 #' @param p_thresh Float indicating the significance threshold on the adjusted p-value.
 #' @param rsq_thresh Float indicating the \eqn{R^2} threshold on the adjusted p-value.
 #' @param nvar_thresh Integer indicating the minimum number of variables in the model.
-#' @param nvar_thresh Integer indicating the minimum number of genes in a module.
+#' @param min_genes_per_module Integer indicating the minimum number of genes in a module.
 #'
 #' @return A RegulatoryNetwork object.
 #'

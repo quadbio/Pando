@@ -30,7 +30,9 @@ find_modules(object, ...)
 
 \item{rsq_thresh}{Float indicating the \eqn{R^2} threshold on the adjusted p-value.}
 
-\item{nvar_thresh}{Integer indicating the minimum number of genes in a module.}
+\item{nvar_thresh}{Integer indicating the minimum number of variables in the model.}
+
+\item{min_genes_per_module}{Integer indicating the minimum number of genes in a module.}
 }
 \value{
 A RegulatoryNetwork object.
