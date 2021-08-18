@@ -9,6 +9,8 @@ NULL
 #' @importFrom purrr map_dfr map_lgl map_dbl map
 #' @importFrom stringr str_replace_all
 #'
+#' @param genes A character vector with the target genes to consider for GRN inference.
+#' Takes all VariableFeatures in the object per default.
 #' @param peak_to_gene_method Character specifying the method to
 #' link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.
 #' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
@@ -40,6 +42,7 @@ NULL
 #' @method infer_grn SeuratPlus
 infer_grn.SeuratPlus <- function(
     object,
+    genes = NULL,
     peak_to_gene_method = 'Signac',
     upstream = 100000,
     downstream = 0,
@@ -56,16 +59,36 @@ infer_grn.SeuratPlus <- function(
     verbose = TRUE,
     ...
 ){
+    # Get variables from object
     params <- NetworkParams(object)
     motif2tf <- NetworkTFs(object)
     if (is.null(motif2tf)){
         stop('Motif matches have not been found. Please run find_motifs() first.')
     }
-    regions <- NetworkRegions(object)
-    features <- NetworkFeatures(object)
-    gene_annot <- Signac::Annotation(object)
+    gene_annot <- Signac::Annotation(object[[params$peak_assay]])
+    if (is.null(gene_annot)){
+        stop('Please provide a gene annotation for the ChromatinAssay.')
+    }
+    # Select target genes for GRN inference
+    if (is.null(genes)){
+        genes <- VariableFeatures(object, assay=params$rna_assay)
+        if (is.null(genes)){
+            stop('Please provide a set of features or run FindVariableFeatures()')
+        }
+    }
+    # Select genes to use by intersecting annotated genes with all
+    # detected genes in the object
+    features <- intersect(gene_annot$gene_name, genes) %>%
+        intersect(rownames(GetAssay(object, params$rna_assay)))
+    genes <- list(
+        genes = genes_use,
+        tfs = NULL
+    )
+    object@grn@genes <- genes
     gene_annot <- gene_annot[gene_annot$gene_name%in%features, ]
 
+    # Get regions
+    regions <- NetworkRegions(object)
     log_message('Selecting candidate regulatory regions near genes', verbose=verbose)
     peak_data <- t(Seurat::GetAssayData(object, assay=params$peak_assay)[regions@peaks, ])
     colnames(peak_data) <- rownames(regions@motifs@data)
