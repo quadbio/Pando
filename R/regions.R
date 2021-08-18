@@ -106,7 +106,7 @@ find_motifs.SeuratPlus <- function(
     motif_tfs = NULL,
     verbose = TRUE
 ){
-    params <- NetworkParams(object)
+    params <- Params(object)
 
     # Add TF info for motifs
     log_message('Adding TF info', verbose=verbose)
@@ -122,7 +122,7 @@ find_motifs.SeuratPlus <- function(
         tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
         column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
     tfs_use <- intersect(rownames(GetAssay(object, params$rna_assay)), colnames(motif2tf))
-    object@grn@genes$tfs <- motif2tf[, tfs_use]
+    object@grn@regions@tfs <- motif2tf[, tfs_use]
 
     # Find motif positions with Signac/motifmatchr
     cand_ranges <- object@grn@regions@ranges
