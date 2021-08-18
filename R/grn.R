@@ -393,8 +393,8 @@ find_modules.Network <- function(
         'regions_neg' = regions_neg
     )
 
-    object@network@modules@meta <- modules
-    object@network@modules@features <- module_feats
+    object@modules@meta <- modules
+    object@modules@features <- module_feats
 
     return(object)
 }
