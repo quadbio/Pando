@@ -43,6 +43,7 @@ NULL
 infer_grn.SeuratPlus <- function(
     object,
     genes = NULL,
+    network_name = paste0(method, '_network'),
     peak_to_gene_method = 'Signac',
     upstream = 100000,
     downstream = 0,
