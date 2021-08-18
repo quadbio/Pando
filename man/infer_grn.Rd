@@ -11,7 +11,7 @@ infer_grn(object, ...)
   object,
   genes = NULL,
   network_name = paste0(method, "_network"),
-  peak_to_gene_method = "Signac",
+  peak_to_gene_method = c("Signac", "GREAT"),
   upstream = 1e+05,
   downstream = 0,
   extend = 1e+06,
@@ -19,7 +19,7 @@ infer_grn(object, ...)
   parallel = FALSE,
   tf_cor = 0.1,
   peak_cor = 0,
-  method = "glm",
+  method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb"),
   alpha = 0.5,
   family = "gaussian",
   interaction_term = ":",
@@ -53,7 +53,7 @@ Only used of `peak_to_gene_method = 'GREAT'`.}
 \item{peak_cor}{Threshold for binding peak - target gene correlation.}
 
 \item{method}{A character string indicating the method to fit the model.
-Possible values are \code{'glm'}, \code{'glmnet'} and \code{'cv.glmnet'}.}
+Possible values are \code{'glm'}, \code{'glmnet'}, \code{'cv.glmnet'}, \code{'brms'} and \code{'xgb'}.}
 
 \item{alpha}{The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.}
 
