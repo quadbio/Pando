@@ -80,8 +80,6 @@ initiate_grn.Seurat <- function(
     )
 
     object <- as(object, 'SeuratPlus')
-    # object@grns <- list()
-    # object@grns[[grn_name]] <- grn_obj
     object@grn <- grn_obj
     return(object)
 }
