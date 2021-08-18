@@ -26,8 +26,7 @@ initiate_grn.Seurat <- function(
     regions = NULL,
     peak_assay = 'peaks',
     rna_assay = 'RNA',
-    exclude_exons = TRUE,
-    grn_name = 'GRN'
+    exclude_exons = TRUE
 ){
     gene_annot <- Signac::Annotation(object[[peak_assay]])
     # Through error if NULL
