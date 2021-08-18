@@ -22,6 +22,12 @@ GetGRN <- function(object, ...){
     UseMethod(generic = 'GetGRN', object = object)
 }
 
+#' @rdname GetNetwork
+#' @export GetNetwork
+GetNetwork <- function(object, ...){
+    UseMethod(generic = 'GetNetwork', object = object)
+}
+
 #' @rdname NetworkFeatures
 #' @export NetworkFeatures
 NetworkFeatures <- function(object, ...){
@@ -38,6 +44,12 @@ NetworkRegions <- function(object, ...){
 #' @export Params
 Params <- function(object, ...){
     UseMethod(generic = 'Params', object = object)
+}
+
+#' @rdname NetworkParams
+#' @export NetworkParams
+NetworkParams <- function(object, ...){
+    UseMethod(generic = 'NetworkParams', object = object)
 }
 
 #' @rdname NetworkTFs
