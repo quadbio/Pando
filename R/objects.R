@@ -264,22 +264,23 @@ Params.RegulatoryNetwork <- function(object){
 #' @export
 #' @method print RegulatoryNetwork
 print.RegulatoryNetwork <- function(object){
-    n_nets <- length(object@grn@networks)
     n_tfs <- ncol(NetworkTFs(object))
     if (is.null(n_tfs)){
         tf_string <- '\nCandidate regions have not been scanned for motifs'
     } else {
-        tf_string <- paste0('\nand ', n_tfs, ' transcription factors')
+        tf_string <- paste0('based on ', n_tfs, ' transcription factors')
     }
-    n_conn <- coef(object)
-    if (all(n_conn==0)){
-        conn_string <- '\nNetwork has not been inferred'
+    n_nets <- length(object@networks)
+    net_names <- names(object@networks)
+    if (n_nets==0){
+        conn_string <- '\nNo network has been inferred'
     } else {
-        conn_string <- NULL
+        conn_string <- paste0(n_nets, 'inferred networks: ',
+            paste(net_names, collapse=', '))
     }
     cat(paste0(
-        'An RegulatoryNetwork object\n', 'based on ', n_genes, ' target genes',
-        tf_string, conn_string
+        'An RegulatoryNetwork object ', tf_string,
+        conn_string
     ))
 }
 
