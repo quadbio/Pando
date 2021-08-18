@@ -43,7 +43,8 @@ Network <- setClass(
         fit = 'data.frame',
         coefs = 'data.frame',
         modules = 'Modules',
-        graph = 'ANY'
+        graph = 'ANY',
+        params = 'list'
     )
 )
 
@@ -93,7 +94,7 @@ RegulatoryNetwork <- setClass(
     slots = list(
         genes = 'list',
         regions = 'Regions',
-        network = 'Network',
+        networks = 'list',
         params = 'list'
     )
 )
