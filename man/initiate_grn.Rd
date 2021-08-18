@@ -10,7 +10,6 @@ initiate_grn(object, ...)
 \method{initiate_grn}{Seurat}(
   object,
   regions = NULL,
-  genes = VariableFeatures(object, assay = rna_assay),
   peak_assay = "peaks",
   rna_assay = "RNA",
   exclude_exons = TRUE
@@ -19,8 +18,6 @@ initiate_grn(object, ...)
 \arguments{
 \item{regions}{Candidate regions to consider for binding site inference.
 If \code{NULL}, all peaks regions are considered.}
-
-\item{genes}{A character vector with the target genes to consider for GRN inference.}
 
 \item{peak_assay}{A character vector indicating the name of the chromatin
 accessibility assay in the \code{Seurat} object.}

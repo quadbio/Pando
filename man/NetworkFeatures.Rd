@@ -8,9 +8,9 @@
 \usage{
 NetworkFeatures(object, ...)
 
-\method{NetworkFeatures}{SeuratPlus}(object)
+\method{NetworkFeatures}{SeuratPlus}(object, network = "glm_network")
 
-\method{NetworkFeatures}{RegulatoryNetwork}(object)
+\method{NetworkFeatures}{RegulatoryNetwork}(object, network = "glm_network")
 }
 \description{
 Get network features

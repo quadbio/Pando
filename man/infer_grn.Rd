@@ -9,6 +9,8 @@ infer_grn(object, ...)
 
 \method{infer_grn}{SeuratPlus}(
   object,
+  genes = NULL,
+  network_name = paste0(method, "_network"),
   peak_to_gene_method = "Signac",
   upstream = 1e+05,
   downstream = 0,
@@ -19,7 +21,7 @@ infer_grn(object, ...)
   peak_cor = 0,
   method = "glm",
   alpha = 0.5,
-  family = gaussian,
+  family = "gaussian",
   interaction_term = ":",
   adjust_method = "fdr",
   verbose = TRUE,
@@ -29,6 +31,9 @@ infer_grn(object, ...)
 \arguments{
 \item{...}{Other parameters for the model fitting function.}
 
+\item{genes}{A character vector with the target genes to consider for GRN inference.
+Takes all VariableFeatures in the object per default.}
+
 \item{peak_to_gene_method}{Character specifying the method to
 link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
 
@@ -37,7 +42,7 @@ link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
 \item{downstream}{Integer defining the distance downstream of the gene to consider as potential regulatory region.}
 
 \item{extend}{Integer defining the distance from the upstream and downstream of the basal regulatory region.
-Only used when peak_to_gene_method is 'GREAT'.}
+Only used of `peak_to_gene_method = 'GREAT'`.}
 
 \item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).}
 

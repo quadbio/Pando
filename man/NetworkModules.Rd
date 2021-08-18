@@ -9,9 +9,9 @@
 \usage{
 NetworkModules(object, ...)
 
-\method{NetworkModules}{SeuratPlus}(object)
+\method{NetworkModules}{SeuratPlus}(object, network = "glm_network")
 
-\method{NetworkModules}{RegulatoryNetwork}(object)
+\method{NetworkModules}{RegulatoryNetwork}(object, network = "glm_network")
 
 \method{NetworkModules}{Network}(object)
 }

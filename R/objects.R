@@ -172,8 +172,8 @@ NetworkRegions.RegulatoryNetwork <- function(object){
 
 
 #' Get network data
-#' @rdname GetNetworkData
-#' @method GetNetworkData SeuratPlus
+#' @rdname GetGRN
+#' @method GetGRN SeuratPlus
 #' @export
 GetGRN.SeuratPlus <- function(object){
     return(object@grn)
