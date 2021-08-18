@@ -10,7 +10,6 @@ NULL
 #'
 #' @param regions Candidate regions to consider for binding site inference.
 #' If \code{NULL}, all peaks regions are considered.
-#' @param genes A character vector with the target genes to consider for GRN inference.
 #' @param peak_assay A character vector indicating the name of the chromatin
 #' accessibility assay in the \code{Seurat} object.
 #' @param rna_assay A character vector indicating the name of the gene expression
@@ -25,14 +24,16 @@ NULL
 initiate_grn.Seurat <- function(
     object,
     regions = NULL,
-    genes = VariableFeatures(object, assay=rna_assay),
     peak_assay = 'peaks',
     rna_assay = 'RNA',
     exclude_exons = TRUE,
     grn_name = 'GRN'
 ){
     gene_annot <- Signac::Annotation(object[[peak_assay]])
-    # Error if not there
+    # Through error if NULL
+    if (is.null(gene_annot)){
+        stop('Please provide a gene annotation for the ChromatinAssay.')
+    }
     peak_ranges <- StringToGRanges(rownames(GetAssay(object, assay=peak_assay)))
 
     # Find candidate ranges by intersecting the supplied regions with peaks
@@ -66,15 +67,6 @@ initiate_grn.Seurat <- function(
         motifs = NULL
     )
 
-    # Select genes to use by intersecting annotated genes with all
-    # detected genes in the object
-    genes_use <- intersect(gene_annot$gene_name, genes) %>%
-        intersect(rownames(GetAssay(object, rna_assay)))
-    genes <- list(
-        genes = genes_use,
-        tfs = NULL
-    )
-
     params <- list(
         peak_assay = peak_assay,
         rna_assay = rna_assay,
@@ -84,7 +76,6 @@ initiate_grn.Seurat <- function(
     grn_obj <- new(
         Class = 'RegulatoryNetwork',
         regions = regions_obj,
-        genes = genes,
         params = params
     )
 
