@@ -418,7 +418,7 @@ find_modules.SeuratPlus <- function(
 ){
     params <- Params(object)
     regions <- NetworkRegions(object)
-    network <- GetGRN(object)
+    network <- GetNetwork(object, network=network)
     network <- find_modules(
         network,
         p_thresh = p_thresh,
