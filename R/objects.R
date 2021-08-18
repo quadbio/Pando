@@ -40,6 +40,7 @@ Modules <- setClass(
 Network <- setClass(
     Class = 'Network',
     slots = list(
+        features = 'character',
         fit = 'data.frame',
         coefs = 'data.frame',
         modules = 'Modules',
@@ -66,6 +67,7 @@ Regions <- setClass(
     Class = 'Regions',
     slots = list(
         motifs = 'ANY',
+        tfs = 'ANY',
         ranges = 'GRanges',
         peaks = 'numeric'
     )
@@ -92,7 +94,6 @@ Regions <- setClass(
 RegulatoryNetwork <- setClass(
     Class = 'RegulatoryNetwork',
     slots = list(
-        genes = 'list',
         regions = 'Regions',
         networks = 'list',
         params = 'list'
@@ -124,15 +125,16 @@ SeuratPlus <- setClass(
 #' @rdname NetworkFeatures
 #' @method NetworkFeatures SeuratPlus
 #' @export
-NetworkFeatures.SeuratPlus <- function(object){
-    return(object@grn@genes$genes)
+NetworkFeatures.SeuratPlus <- function(object, network='glm_network'){
+    return(object@grn@networks[[network]]@features)
 }
+
 
 #' @rdname NetworkFeatures
 #' @method NetworkFeatures RegulatoryNetwork
 #' @export
-NetworkFeatures.RegulatoryNetwork <- function(object){
-    return(object@genes$genes)
+NetworkFeatures.RegulatoryNetwork <- function(object, network='glm_network'){
+    return(object@networks[[network]]@features)
 }
 
 
@@ -141,14 +143,15 @@ NetworkFeatures.RegulatoryNetwork <- function(object){
 #' @method NetworkTFs SeuratPlus
 #' @export
 NetworkTFs.SeuratPlus <- function(object){
-    return(object@grn@genes$tfs)
+    return(object@grn@regions$tfs)
 }
+
 
 #' @rdname NetworkTFs
 #' @method NetworkTFs RegulatoryNetwork
 #' @export
 NetworkTFs.RegulatoryNetwork <- function(object){
-    return(object@genes$tfs)
+    return(object@regions$tfs)
 }
 
 
@@ -172,7 +175,7 @@ NetworkRegions.RegulatoryNetwork <- function(object){
 #' @rdname GetNetworkData
 #' @method GetNetworkData SeuratPlus
 #' @export
-GetNetworkData.SeuratPlus <- function(object){
+GetGRN.SeuratPlus <- function(object){
     return(object@grn)
 }
 
