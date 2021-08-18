@@ -2,13 +2,13 @@
 % Please edit documentation in R/generics.R, R/grn.R
 \name{find_modules}
 \alias{find_modules}
-\alias{find_modules.RegulatoryNetwork}
+\alias{find_modules.Network}
 \alias{find_modules.SeuratPlus}
 \title{Find TF modules in regulatory network}
 \usage{
 find_modules(object, ...)
 
-\method{find_modules}{RegulatoryNetwork}(
+\method{find_modules}{Network}(
   object,
   p_thresh = 0.05,
   rsq_thresh = 0.1,
@@ -35,7 +35,7 @@ find_modules(object, ...)
 \item{min_genes_per_module}{Integer indicating the minimum number of genes in a module.}
 }
 \value{
-A RegulatoryNetwork object.
+A Network object.
 
 A Network object.
 }

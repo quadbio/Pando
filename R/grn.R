@@ -292,19 +292,19 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 #' @param nvar_thresh Integer indicating the minimum number of variables in the model.
 #' @param min_genes_per_module Integer indicating the minimum number of genes in a module.
 #'
-#' @return A RegulatoryNetwork object.
+#' @return A Network object.
 #'
 #' @rdname find_modules
 #' @export
-#' @method find_modules RegulatoryNetwork
-find_modules.RegulatoryNetwork <- function(
+#' @method find_modules Network
+find_modules.Network <- function(
     object,
     p_thresh = 0.05,
     rsq_thresh = 0.1,
     nvar_thresh = 10,
     min_genes_per_module = 5
 ){
-    fit_method <- Params(object)$method
+    fit_method <- NetworkParams(object)$method
 
     models_use <- gof(object) %>%
         filter(rsq>rsq_thresh & nvariables>nvar_thresh) %>%
