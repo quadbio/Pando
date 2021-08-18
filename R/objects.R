@@ -274,12 +274,14 @@ print.RegulatoryNetwork <- function(object){
     net_names <- names(object@networks)
     if (n_nets==0){
         conn_string <- '\nNo network has been inferred'
+    } else if (n_nets==1){
+        conn_string <- paste0(n_nets, ' inferred network: ', net_names)
     } else {
-        conn_string <- paste0(n_nets, 'inferred networks: ',
+        conn_string <- paste0(n_nets, ' inferred networks: ',
             paste(net_names, collapse=', '))
     }
     cat(paste0(
-        'An RegulatoryNetwork object ', tf_string,
+        'A RegulatoryNetwork object ', tf_string, '\n',
         conn_string
     ))
 }
@@ -301,7 +303,7 @@ print.Network <- function(object){
         n_tfs <- length(unique(NetworkModules(object)@meta$tf))
     }
     cat(paste0(
-        'An Network object\n', 'with ', n_tfs, ' TFs and ',
+        'A Network object\n', 'with ', n_tfs, ' TFs and ',
         n_genes, ' target genes'
     ))
 }
