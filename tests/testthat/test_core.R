@@ -34,10 +34,6 @@ test_that('find_motifs returns Motif object.', {
 
 test_srt <- infer_grn(test_srt, verbose=F)
 
-test_that('infer_grn returns Network object.', {
-    expect_equal(class(GetGRN(test_srt)@network)[1], 'Network')
-})
-
 test_that('infer_grn returns coefs.', {
     expect_setequal(unique(coef(test_srt)$target), c('NEUROD6', 'POU5F1'))
     expect_equal(dim(coef(test_srt))[1], 35)
@@ -66,16 +62,24 @@ test_that('initiate_grn excludes exons.', {
 })
 
 test_that('getters return the expected type.', {
-    expect(any(class(GetNetwork(test_srt)) == 'Network'))
-    expect(any(class(NetworkFeatures(test_srt)) == 'character'))
-    expect(any(class(NetworkTFs(test_srt)) == 'data.frame'))
-    expect(any(class(NetworkRegions(test_srt)) == 'Regions'))
-    expect(any(class(GetGRN(test_srt)) == 'RegulatoryNetwork'))
-    expect(any(class(NetworkModules(test_srt)) == 'Modules'))
-    expect(any(class(NetworkParams(test_srt)) == 'list'))
-    expect(any(class(coef(test_srt)) == 'dara.frame'))
-    expect(any(class(gof(test_srt)) == 'dara.frame'))
+    expect_equal(class(GetNetwork(test_srt))[1], 'Network')
+    expect_equal(class(NetworkFeatures(test_srt)), 'character')
+    expect_equal(class(NetworkTFs(test_srt))[1], 'dgCMatrix')
+    expect_equal(class(NetworkRegions(test_srt))[1], 'Regions')
+    expect_equal(class(GetGRN(test_srt))[1], 'RegulatoryNetwork')
+    expect_equal(class(NetworkModules(test_srt))[1], 'Modules')
+    expect_equal(class(NetworkParams(test_srt)), 'list')
+    expect_setequal(class(coef(test_srt)), c('tbl', 'tbl_df', 'data.frame'))
+    expect_setequal(class(gof(test_srt)), c('tbl', 'tbl_df', 'data.frame'))
 })
+
+
+test_that('infer_grn makes new Network object and names correctly.', {
+    tst <- infer_grn(test_srt, verbose=F, method='glmnet')
+    expect_equal(length(GetGRN(tst)@networks), 2)
+    expect_setequal(names(GetGRN(tst)@networks), c('glmnet_network', 'glm_network'))
+})
+
 
 registerDoParallel(3)
 
