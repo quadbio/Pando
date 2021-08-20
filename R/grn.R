@@ -29,7 +29,8 @@ NULL
 #' * \code{':'} for 'multiplicative' interaction.
 #' * \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 #' For more info, see \code{\link[formula]{stats}}
-#' @param adjust_method Method fro adjusting p-values.
+#' @param scale Logical. Whether to z-transform the expression and accessibility matrices.
+#' @param adjust_method Method for adjusting p-values.
 #' @param verbose Logical. Display messages
 #' @param ... Other parameters for the model fitting function.
 #'
@@ -53,6 +54,7 @@ infer_grn.SeuratPlus <- function(
     family = 'gaussian',
     interaction_term = ':',
     adjust_method = 'fdr',
+    scale = F,
     verbose = TRUE,
     ...
 ){
@@ -170,6 +172,7 @@ infer_grn.SeuratPlus <- function(
         gene_tfs <- purrr::reduce(map(frml_string, function(x) x$tfs), union)
         gene_x <- gene_data[, union(g, gene_tfs), drop=F]
         model_mat <- as.data.frame(cbind(gene_x, peak_x))
+        if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
 
         log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)

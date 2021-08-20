@@ -19,9 +19,10 @@ infer_grn(object, ...)
   peak_cor = 0,
   method = "glm",
   alpha = 0.5,
-  family = gaussian,
+  family = "gaussian",
   interaction_term = ":",
   adjust_method = "fdr",
+  scale = F,
   verbose = TRUE,
   ...
 )
@@ -37,7 +38,7 @@ link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
 \item{downstream}{Integer defining the distance downstream of the gene to consider as potential regulatory region.}
 
 \item{extend}{Integer defining the distance from the upstream and downstream of the basal regulatory region.
-Only used when peak_to_gene_method is 'GREAT'.}
+Only used of `peak_to_gene_method = 'GREAT'`.}
 
 \item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).}
 
@@ -61,7 +62,9 @@ See \code{\link[family]{stats}} for mode details.}
 * \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 For more info, see \code{\link[formula]{stats}}}
 
-\item{adjust_method}{Method fro adjusting p-values.}
+\item{adjust_method}{Method for adjusting p-values.}
+
+\item{scale}{Logical. Whether to z-transform the expression and accessibility matrices.}
 
 \item{verbose}{Logical. Display messages}
 }

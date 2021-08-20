@@ -4,7 +4,7 @@
 \alias{fit_glmnet}
 \title{Fit regularized generalized linear model}
 \usage{
-fit_glmnet(formula, data, family = gaussian, alpha = 0.5, nlambda = 20, ...)
+fit_glmnet(formula, data, family = gaussian, alpha = 0.5, ...)
 }
 \arguments{
 \item{formula}{An object of class \code{formula} with a symbolic description}
@@ -16,9 +16,9 @@ See \code{\link[family]{stats}} for mode details.}
 
 \item{alpha}{The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.}
 
-\item{nlambda}{The number of \code{lambda} values.}
-
 \item{...}{Other parameters for the model fitting function.}
+
+\item{nlambda}{The number of \code{lambda} values.}
 }
 \value{
 A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
