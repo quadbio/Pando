@@ -65,7 +65,7 @@ infer_grn.SeuratPlus <- function(
     }
     regions <- NetworkRegions(object)
     features <- NetworkFeatures(object)
-    gene_annot <- Signac::Annotation(object)
+    gene_annot <- Signac::Annotation(object[[params$peak_assay]])
     gene_annot <- gene_annot[gene_annot$gene_name%in%features, ]
 
     log_message('Selecting candidate regulatory regions near genes', verbose=verbose)
