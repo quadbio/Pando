@@ -294,8 +294,9 @@ fit_bagging_ridge <- function(
                                   neglog10p = -log10(ifelse(is.na(p),1,p)),
                                   row.names = NULL))
     
+    corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
     gof <- tibble(
-        rsq = cor(response, model_mat %*% matrix(coefs$estimate))[1,1]^2
+        rsq = sign(corr)*corr^2
     )
     
     return(list(gof = gof, coefs = coefs))
