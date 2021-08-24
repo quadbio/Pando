@@ -12,7 +12,7 @@ NULL
 #' @param genes A character vector with the target genes to consider for GRN inference.
 #' Takes all VariableFeatures in the object per default.
 #' @param peak_to_gene_method Character specifying the method to
-#' link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.
+#' link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.
 #' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
 #' @param downstream Integer defining the distance downstream of the gene to consider as potential regulatory region.
 #' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.

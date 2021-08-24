@@ -34,13 +34,16 @@ find_peaks_near_genes <- function(
     peaks,
     genes,
     sep = c('-', '-'),
-    method = 'Signac',
+    method = c('Signac', 'GREAT'),
     upstream = 100000,
     downstream = 0,
     extend = 1000000,
     only_tss = FALSE,
     verbose = TRUE
 ){
+    # Match arg
+    peak_to_gene_method <- match.arg(peak_to_gene_method)
+
     if (method=='Signac'){
 
         if (only_tss){
