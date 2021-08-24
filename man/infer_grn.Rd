@@ -26,6 +26,7 @@ infer_grn(object, ...)
   family = "gaussian",
   interaction_term = ":",
   adjust_method = "fdr",
+  scale = F,
   verbose = TRUE,
   ...
 )
@@ -68,7 +69,9 @@ See \code{\link[family]{stats}} for mode details.}
 * \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 For more info, see \code{\link[formula]{stats}}}
 
-\item{adjust_method}{Method fro adjusting p-values.}
+\item{adjust_method}{Method for adjusting p-values.}
+
+\item{scale}{Logical. Whether to z-transform the expression and accessibility matrices.}
 
 \item{verbose}{Logical. Display messages}
 }

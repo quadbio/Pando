@@ -38,4 +38,5 @@ Suggests:
     TFBSTools,
     foreach,
     sparseMatrixStats,
-    cmdstanr
+    cmdstanr,
+    reticulate
