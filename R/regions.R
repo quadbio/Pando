@@ -136,5 +136,3 @@ find_motifs.SeuratPlus <- function(
 
     return(object)
 }
-
-

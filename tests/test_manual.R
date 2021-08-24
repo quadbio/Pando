@@ -1,12 +1,12 @@
 library(tidyverse)
 library(BSgenome.Hsapiens.UCSC.hg38)
-library(Pando)
 library(doParallel)
 library(devtools)
 library(Signac)
 library(Seurat)
 library(brms)
 library(bayestestR)
+library(Pando)
 
 rename <- dplyr::rename
 
@@ -37,8 +37,11 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 
+test_srt <- aggregate_assay(test_srt, group_name = 'seurat_clusters')
+
 test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'Signac', parallel=T)
+    peak_to_gene_method = 'Signac', parallel=T,
+    aggregate_rna_col=NULL, aggregate_peaks_col='seurat_clusters')
 
 test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100, alpha=0.3)
@@ -64,7 +67,7 @@ class(modules@meta)
 
 
 
-
+aggregate_assay(test_srt, 'peaks_snn_res.50')
 
 
 
