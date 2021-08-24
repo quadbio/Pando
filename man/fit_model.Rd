@@ -19,11 +19,13 @@ fit_model(
 \item{data}{A \code{data.frame} containing the variables in the model.}
 
 \item{method}{A character string indicating the method to fit the model.
-* \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
-* \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
-* \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
-* \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-* \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-klearn via \link[xgboost]{reticulate}.}
+\itemize{
+\item \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
+\item \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
+\item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
+\item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
+\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+}}
 
 \item{family}{A description of the error distribution and link function to be used in the model.
 See \code{\link[family]{stats}} for mode details.}

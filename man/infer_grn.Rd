@@ -45,7 +45,7 @@ link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
 \item{downstream}{Integer defining the distance downstream of the gene to consider as potential regulatory region.}
 
 \item{extend}{Integer defining the distance from the upstream and downstream of the basal regulatory region.
-Only used of `peak_to_gene_method = 'GREAT'`.}
+Only used of \code{peak_to_gene_method = 'GREAT'}.}
 
 \item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).}
 
@@ -56,11 +56,13 @@ Only used of `peak_to_gene_method = 'GREAT'`.}
 \item{peak_cor}{Threshold for binding peak - target gene correlation.}
 
 \item{method}{A character string indicating the method to fit the model.
-* \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
-* \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
-* \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
-* \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-* \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-klearn via \link[xgboost]{reticulate}.}
+\itemize{
+\item \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
+\item \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
+\item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
+\item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
+\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+}}
 
 \item{alpha}{The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.}
 
@@ -68,10 +70,12 @@ Only used of `peak_to_gene_method = 'GREAT'`.}
 See \code{\link[family]{stats}} for mode details.}
 
 \item{interaction_term}{The interaction term to use in the model between TF and binding site.
-* \code{'+'} for additive interaction.
-* \code{':'} for 'multiplicative' interaction.
-* \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
-For more info, see \code{\link[formula]{stats}}}
+\itemize{
+\item \code{'+'} for additive interaction.
+\item \code{':'} for 'multiplicative' interaction.
+\item \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
+For more info, see \code{\link[formula]{stats}}
+}}
 
 \item{adjust_method}{Method for adjusting p-values.}
 
