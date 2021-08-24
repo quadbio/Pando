@@ -7,7 +7,7 @@ NULL
 #' @param formula An object of class \code{formula} with a symbolic description
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param method A character string indicating the method to fit the model.
-#' Possible values are \code{'glm'}, \code{'glmnet'} and \code{'cv.glmnet'}
+#' Possible values are \code{'glm'}, \code{'glmnet'}, \code{'cv.glmnet'}, \code{'brms'} and \code{'xgb'}.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
@@ -20,11 +20,13 @@ NULL
 fit_model <- function(
     formula,
     data,
-    method = 'glm',
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge'),
     family = gaussian,
     alpha = 1,
     ...
 ){
+    # Match args
+    method <- match.arg(method)
     result <- switch(
         method,
         'glm' = fit_glm(formula, data, family=family, ...),
@@ -77,7 +79,8 @@ fit_glm <- function(formula, data, family=gaussian, ...){
 #'
 #' @export
 fit_glmnet <- function(
-    formula, data,
+    formula,
+    data,
     family = gaussian,
     alpha = 0.5,
     ...
@@ -119,7 +122,8 @@ fit_glmnet <- function(
 #'
 #' @export
 fit_cvglmnet <- function(
-    formula, data,
+    formula,
+    data,
     family = gaussian,
     alpha = 0.5,
     nfolds = 5,
@@ -162,7 +166,8 @@ fit_cvglmnet <- function(
 #'
 #' @export
 fit_brms <- function(
-    formula, data,
+    formula,
+    data,
     family = gaussian,
     prior = brms::prior(normal(0,1)),
     ...
@@ -193,13 +198,16 @@ fit_brms <- function(
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
 #' @param data A \code{data.frame} containing the variables in the model.
+#' @param params A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}
 #' @param ... Other parameters for the model fitting function.
+#'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
 #' \code{coefs} contains the fitted coefficients.
 #'
 #' @export
 fit_xgb <- function(
-    formula, data,
+    formula,
+    data,
     params = list(
         max_depth=3,
         eta=0.01,
@@ -229,49 +237,60 @@ fit_xgb <- function(
     return(list(gof=gof, coefs=coefs))
 }
 
-#' Fit a bagging ridge regression model implemented in scikit-learn (python)
-#' 
+
+#' Fit a bagging ridge regression model as implemented in scikit-learn (python)
+#'
 #' @param formula An object of class \code{formula} with a symbolic description
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param alpha Regularization strength; must be a positive float.
-#' @param solver Solver to use in the computational routines. Options include ‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’.
+#' @param solver Solver to use in the computational routines.
+#' Options include ‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’.
 #' @param bagging_number The number of ridge regression model in the bagging.
 #' @param n_jobs The number of cores used to fit the model.
 #' @param p_method The test used to calculate p-values. Options are 't' for \code{t.test}, and 'wilcox' for \code{wilcox.test}
+#' @param ... Other parameters for the model fitting function.
+#'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
 #' \code{coefs} contains the fitted coefficients.
-#' 
+#'
 #' @export
 fit_bagging_ridge <- function(
-    formula, data,
+    formula,
+    data,
     alpha = 1,
-    solver = "auto",
+    solver = 'auto',
     bagging_number = 200L,
     n_jobs = -1L,
-    p_method = c("t","wilcox")
+    p_method = c('t','wilcox'),
+    ...
 ){
     p_method <- match.arg(p_method)
     if (! require(reticulate, quietly = T))
-        stop("The reticulate package is required to use bagging ridge.")
-    np <- import("numpy")
-    pd <- import("pandas")
-    sklearn <- import("sklearn")
-    
+        stop('The reticulate package is required to use bagging ridge.')
+    np <- import('numpy')
+    pd <- import('pandas')
+    sklearn <- import('sklearn')
+
     model_mat <- stats::model.matrix(formula, data=data)[,-1]
     if (is.null(ncol(model_mat)))
-        stop("The bagging ridge model requires at least two variables.")
+        stop('The bagging ridge model requires at least two variables.')
     response <- data[[formula[[2]]]]
-    
-    model <- sklearn$ensemble$BaggingRegressor(base_estimator=sklearn$linear_model$Ridge(alpha=alpha,
-                                                                                         solver=solver,
-                                                                                         random_state=as.integer(123)),
-                                               n_estimators=as.integer(bagging_number),
-                                               bootstrap = TRUE,
-                                               max_features = 0.8,
-                                               n_jobs = as.integer(n_jobs),
-                                               verbose = FALSE)
+
+    model <- sklearn$ensemble$BaggingRegressor(
+        base_estimator = sklearn$linear_model$Ridge(
+            alpha = alpha,
+            solver = solver,
+            random_state = as.integer(123),
+            ...
+        ),
+        n_estimators = as.integer(bagging_number),
+        bootstrap = TRUE,
+        max_features = 0.8,
+        n_jobs = as.integer(n_jobs),
+        verbose = FALSE
+    )
     model <- model$fit(model_mat, response)
-    
+
     idx_features <- do.call(cbind, model$estimators_features_) + 1
     coefs_features <- sapply(model$estimators_, function(x) x$coef_)
     coefs <- t(sapply(1:bagging_number, function(i){
@@ -282,23 +301,22 @@ fit_bagging_ridge <- function(
             coefs[idx_features[,i]] <- coefs_features[i]
         return(coefs)
     }))
-    
-    if (p_method == "t")
+
+    if (p_method == 't')
         p <- apply(coefs, 2, function(x) t.test(x[!is.nan(x)])$p.value)
-    if (p_method == "wilcox")
+    if (p_method == 'wilcox')
         p <- apply(coefs, 2, function(x) wilcox.test(x[!is.nan(x)])$p.value)
-    
-    coefs <- as_tibble(data.frame(term = colnames(model_mat),
-                                  estimate = colMeans(coefs, na.rm=T),
-                                  pval = p,
-                                  neglog10p = -log10(ifelse(is.na(p),1,p)),
-                                  row.names = NULL))
-    
+
+    coefs <- tibble(
+        term = colnames(model_mat),
+        estimate = colMeans(coefs, na.rm=T),
+        pval = p,
+        neglog10p = -log10(ifelse(is.na(p), 1, p))
+    )
     corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
     gof <- tibble(
-        rsq = sign(corr)*corr^2
+        rsq = sign(corr) * corr**2
     )
-    
-    return(list(gof = gof, coefs = coefs))
+    return(list(gof=gof, coefs=coefs))
 }
 
