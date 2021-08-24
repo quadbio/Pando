@@ -76,5 +76,11 @@ find_modules <- function(object, ...){
     UseMethod(generic = 'find_modules', object = object)
 }
 
+#' @rdname GetAssaySummary
+#' @export GetAssaySummary
+GetAssaySummary <- function(object, ...){
+    UseMethod(generic = 'GetAssaySummary', object = object)
+}
+
 
 

@@ -302,6 +302,19 @@ Params.RegulatoryNetwork <- function(object){
 }
 
 
+#' Get summary of seurat assay
+#' @rdname GetAssaySummary
+#' @method GetAssaySummary Seurat
+#' @export
+GetAssaySummary.Seurat <- function(object, slot, assay=NULL){
+    if (is.null(assay)){
+        assay <- object@active.assay
+    }
+    smry <- Seurat::Misc(test_srt[[assay]])$summary[[slot]]
+    return(smry)
+}
+
+
 #' Print RegulatoryNetwork objects
 #'
 #' @rdname print
