@@ -73,7 +73,7 @@ See \code{\link[family]{stats}} for mode details.}
 \itemize{
 \item \code{'+'} for additive interaction.
 \item \code{':'} for 'multiplicative' interaction.
-\item \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
+\item \code{'*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 For more info, see \code{\link[formula]{stats}}
 }}
 

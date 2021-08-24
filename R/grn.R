@@ -33,7 +33,7 @@ NULL
 #' @param interaction_term The interaction term to use in the model between TF and binding site.
 #' * \code{'+'} for additive interaction.
 #' * \code{':'} for 'multiplicative' interaction.
-#' * \code{'\*'} for crossing interaction, i.e. additive AND 'multiplicative'.
+#' * \code{'*'} for crossing interaction, i.e. additive AND 'multiplicative'.
 #' For more info, see \code{\link[formula]{stats}}
 #' @param scale Logical. Whether to z-transform the expression and accessibility matrices.
 #' @param adjust_method Method for adjusting p-values.
