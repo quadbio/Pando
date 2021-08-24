@@ -17,6 +17,8 @@ fit_xgb(
 
 \item{data}{A \code{data.frame} containing the variables in the model.}
 
+\item{params}{A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}}
+
 \item{...}{Other parameters for the model fitting function.}
 }
 \value{

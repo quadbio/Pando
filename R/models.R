@@ -7,7 +7,11 @@ NULL
 #' @param formula An object of class \code{formula} with a symbolic description
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param method A character string indicating the method to fit the model.
-#' Possible values are \code{'glm'}, \code{'glmnet'}, \code{'cv.glmnet'}, \code{'brms'} and \code{'xgb'}.
+#' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
+#' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
+#' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
+#' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-klearn via \link[xgboost]{reticulate}.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
@@ -242,7 +246,7 @@ fit_xgb <- function(
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
 #' @param data A \code{data.frame} containing the variables in the model.
-#' @param alpha Regularization strength; must be a positive float.
+#' @param alpha Positive float indicating the regularization strength.
 #' @param solver Solver to use in the computational routines.
 #' Options include ‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’.
 #' @param bagging_number The number of ridge regression model in the bagging.
@@ -265,15 +269,17 @@ fit_bagging_ridge <- function(
     ...
 ){
     p_method <- match.arg(p_method)
-    if (! require(reticulate, quietly = T))
+    if (!require(reticulate, quietly = T)){
         stop('The reticulate package is required to use bagging ridge.')
+    }
     np <- import('numpy')
     pd <- import('pandas')
     sklearn <- import('sklearn')
 
     model_mat <- stats::model.matrix(formula, data=data)[,-1]
-    if (is.null(ncol(model_mat)))
+    if (is.null(ncol(model_mat))){
         stop('The bagging ridge model requires at least two variables.')
+    }
     response <- data[[formula[[2]]]]
 
     model <- sklearn$ensemble$BaggingRegressor(
@@ -295,10 +301,12 @@ fit_bagging_ridge <- function(
     coefs_features <- sapply(model$estimators_, function(x) x$coef_)
     coefs <- t(sapply(1:bagging_number, function(i){
         coefs <- setNames(rep(NaN, ncol(model_mat)), colnames(model_mat))
-        if (ncol(model_mat) > 2)
+        if (ncol(model_mat) > 2){
             coefs[idx_features[,i]] <- coefs_features[,i]
-        if (ncol(model_mat) == 2)
+        }
+        if (ncol(model_mat) == 2){
             coefs[idx_features[,i]] <- coefs_features[i]
+        }
         return(coefs)
     }))
 

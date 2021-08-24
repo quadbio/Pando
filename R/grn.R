@@ -22,7 +22,11 @@ NULL
 #' @param tf_cor Threshold for TF - target gene correlation.
 #' @param peak_cor Threshold for binding peak - target gene correlation.
 #' @param method A character string indicating the method to fit the model.
-#' Possible values are \code{'glm'}, \code{'glmnet'}, \code{'cv.glmnet'}, \code{'brms'} and \code{'xgb'}.
+#' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
+#' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
+#' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
+#' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-klearn via \link[xgboost]{reticulate}.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
