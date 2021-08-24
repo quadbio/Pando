@@ -318,7 +318,7 @@ fit_bagging_ridge <- function(
 
     coefs <- tibble(
         term = colnames(model_mat),
-        estimate = colMeans(coefs, na.rm=T),
+        estimate = colMeans(coefs, na.rm=TRUE),
         pval = p,
         neglog10p = -log10(ifelse(is.na(p), 1, p))
     )

@@ -218,10 +218,10 @@ aggregate_matrix <- function(
                 return(fun(chunk))
             }
         })
-        agg_mat <- Matrix::Matrix(agg_mat, sparse=T)
+        agg_mat <- Matrix::Matrix(agg_mat, sparse=TRUE)
     } else if (length(groups) <= 1){
         agg_mat <- fun(x)
-        agg_mat <- Matrix::Matrix(agg_mat, sparse=T)
+        agg_mat <- Matrix::Matrix(agg_mat, sparse=TRUE)
         colnames(agg_mat) <- groups
         rownames(agg_mat) <- colnames(x)
     } else {
@@ -346,12 +346,12 @@ sparse_cor <- function(
             y <- Matrix(y, sparse=TRUE)
         }
         corr_mat <- sparse_covcor(x, y)$cor
-    } else if (method == 'spearman' & require(presto, quietly=T)){
-        xr <- Matrix(presto::rank_matrix(t(x))$X_ranked, sparse=T)
+    } else if (method == 'spearman' & require(presto, quietly=TRUE)){
+        xr <- Matrix(presto::rank_matrix(t(x))$X_ranked, sparse=TRUE)
         rownames(xr) <- rownames(x)
         colnames(xr) <- colnames(x)
         if (!is.null(y)){
-            yr <- Matrix(presto::rank_matrix(t(y))$X_ranked, sparse=T)
+            yr <- Matrix(presto::rank_matrix(t(y))$X_ranked, sparse=TRUE)
             rownames(yr) <- rownames(y)
             colnames(yr) <- colnames(y)
             y <- yr

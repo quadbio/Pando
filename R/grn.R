@@ -64,7 +64,7 @@ infer_grn.SeuratPlus <- function(
     family = 'gaussian',
     interaction_term = ':',
     adjust_method = 'fdr',
-    scale = F,
+    scale = FALSE,
     verbose = TRUE,
     ...
 ){
@@ -167,21 +167,21 @@ infer_grn.SeuratPlus <- function(
         }
 
         # Select peaks correlating with target gene expression
-        peak_x <- peak_data[peak_groups, gene_peaks, drop=F]
-        peak_g_cor <- sparse_cor(peak_x, gene_data[, g, drop=F])
+        peak_x <- peak_data[peak_groups, gene_peaks, drop=FALSE]
+        peak_g_cor <- sparse_cor(peak_x, gene_data[, g, drop=FALSE])
         peak_g_cor[is.na(peak_g_cor)] <- 0
         peaks_use <- rownames(peak_g_cor)[abs(peak_g_cor[, 1]) > peak_cor]
         if (length(peaks_use)==0){
             log_message('Warning: No correlating peaks found for ', g, verbose=verbose==2)
             return()
         }
-        peak_x <- peak_x[, peaks_use, drop=F]
-        peak_motifs <- peaks2motif[gene_peaks, , drop=F][peaks_use, , drop=F]
+        peak_x <- peak_x[, peaks_use, drop=FALSE]
+        peak_motifs <- peaks2motif[gene_peaks, , drop=FALSE][peaks_use, , drop=FALSE]
 
         # Select TFs with motifs in peaks
         gene_peak_tfs <- map(rownames(peak_motifs), function(p){
             x <- as.logical(peak_motifs[p, ])
-            peak_tfs <- colMaxs(motif2tf[x, , drop=F])
+            peak_tfs <- colMaxs(motif2tf[x, , drop=FALSE])
             peak_tfs <- colnames(motif2tf)[as.logical(peak_tfs)]
             peak_tfs <- setdiff(peak_tfs, g)
             return(peak_tfs)
@@ -190,8 +190,8 @@ infer_grn.SeuratPlus <- function(
 
         # Check correlation of peaks with target gene
         gene_tfs <- purrr::reduce(gene_peak_tfs, union)
-        tf_x <- gene_data[gene_groups, gene_tfs, drop=F]
-        tf_g_cor <- sparse_cor(tf_x, gene_data[, g, drop=F])
+        tf_x <- gene_data[gene_groups, gene_tfs, drop=FALSE]
+        tf_g_cor <- sparse_cor(tf_x, gene_data[, g, drop=FALSE])
         tf_g_cor[is.na(tf_g_cor)] <- 0
         tfs_use <- rownames(tf_g_cor)[abs(tf_g_cor[, 1]) > tf_cor]
         if (length(tfs_use)==0){
@@ -226,7 +226,7 @@ infer_grn.SeuratPlus <- function(
         # Get expression data
         nfeats <- sum(map_dbl(frml_string, function(x) length(x$tfs)))
         gene_tfs <- purrr::reduce(map(frml_string, function(x) x$tfs), union)
-        gene_x <- gene_data[, union(g, gene_tfs), drop=F]
+        gene_x <- gene_data[, union(g, gene_tfs), drop=FALSE]
         model_mat <- as.data.frame(cbind(gene_x, peak_x))
         if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
