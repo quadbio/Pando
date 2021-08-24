@@ -55,7 +55,7 @@ infer_grn.SeuratPlus <- function(
     peak_cor = 0.,
     aggregate_rna_col = NULL,
     aggregate_peaks_col = NULL,
-    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb'),
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge'),
     alpha = 0.5,
     family = 'gaussian',
     interaction_term = ':',

@@ -302,10 +302,11 @@ fit_bagging_ridge <- function(
         return(coefs)
     }))
 
-    if (p_method == 't')
-        p <- apply(coefs, 2, function(x) t.test(x[!is.nan(x)])$p.value)
-    if (p_method == 'wilcox')
-        p <- apply(coefs, 2, function(x) wilcox.test(x[!is.nan(x)])$p.value)
+    p <- switch(
+        p_method,
+        't' = apply(coefs, 2, function(x) t.test(x[!is.nan(x)])$p.value),
+        'wilcox' = apply(coefs, 2, function(x) wilcox.test(x[!is.nan(x)])$p.value)
+    )
 
     coefs <- tibble(
         term = colnames(model_mat),
