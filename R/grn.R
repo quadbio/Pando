@@ -52,6 +52,8 @@ infer_grn.SeuratPlus <- function(
     parallel = FALSE,
     tf_cor = 0.1,
     peak_cor = 0.,
+    aggregate_rna_col = NULL,
+    aggregate_peaks_col = NULL,
     method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb'),
     alpha = 0.5,
     family = 'gaussian',
@@ -81,6 +83,34 @@ infer_grn.SeuratPlus <- function(
             stop('Please provide a set of features or run FindVariableFeatures()')
         }
     }
+
+    # Get assay data or summary
+    if (is.null(aggregate_rna_col)){
+        gene_data <- t(Seurat::GetAssayData(object, assay=params$rna_assay))
+        gene_groups <- TRUE
+    } else {
+        gene_data <- GetAssaySummary(
+            object,
+            assay = params$rna_assay,
+            group_name = aggregate_rna_col,
+            verbose = FALSE
+        )
+        gene_groups <- object@meta.data[[aggregate_rna_col]]
+    }
+
+    if (is.null(aggregate_peaks_col)){
+        peak_data <- t(Seurat::GetAssayData(object, assay=params$peaks_assay))
+        peak_groups <- TRUE
+    } else {
+        peak_data <- GetAssaySummary(
+            object,
+            assay = params$peaks_assay,
+            group_name = aggregate_peaks_col,
+            verbose = FALSE
+        )
+        peak_groups <- object@meta.data[[aggregate_peaks_col]]
+    }
+
     # Select genes to use by intersecting annotated genes with all
     # detected genes in the object
     features <- intersect(gene_annot$gene_name, genes) %>%
@@ -90,7 +120,7 @@ infer_grn.SeuratPlus <- function(
     # Get regions
     regions <- NetworkRegions(object)
     log_message('Selecting candidate regulatory regions near genes', verbose=verbose)
-    peak_data <- t(Seurat::GetAssayData(object, assay=params$peak_assay)[regions@peaks, ])
+    peak_data <- peak_data[, regions@peaks]
     colnames(peak_data) <- rownames(regions@motifs@data)
     peaks2motif <- regions@motifs@data
 
@@ -116,7 +146,6 @@ infer_grn.SeuratPlus <- function(
     peak_data <- peak_data[, peaks_use]
 
     log_message('Preparing model input', verbose=verbose)
-    gene_data <- t(Seurat::GetAssayData(object, assay=params$rna_assay))
     tfs_use <- colnames(motif2tf)
     motif2tf <- motif2tf[, tfs_use]
 
@@ -132,7 +161,7 @@ infer_grn.SeuratPlus <- function(
         }
 
         # Select peaks correlating with target gene expression
-        peak_x <- peak_data[, gene_peaks, drop=F]
+        peak_x <- peak_data[peak_groups, gene_peaks, drop=F]
         peak_g_cor <- sparse_cor(peak_x, gene_data[, g, drop=F])
         peak_g_cor[is.na(peak_g_cor)] <- 0
         peaks_use <- rownames(peak_g_cor)[abs(peak_g_cor[, 1]) > peak_cor]
@@ -155,7 +184,7 @@ infer_grn.SeuratPlus <- function(
 
         # Check correlation of peaks with target gene
         gene_tfs <- purrr::reduce(gene_peak_tfs, union)
-        tf_x <- gene_data[, gene_tfs, drop=F]
+        tf_x <- gene_data[gene_groups, gene_tfs, drop=F]
         tf_g_cor <- sparse_cor(tf_x, gene_data[, g, drop=F])
         tf_g_cor[is.na(tf_g_cor)] <- 0
         tfs_use <- rownames(tf_g_cor)[abs(tf_g_cor[, 1]) > tf_cor]
@@ -445,5 +474,3 @@ find_modules.SeuratPlus <- function(
     object@grn@networks[[network]]@modules <- modules
     return(object)
 }
-
-

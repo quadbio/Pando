@@ -306,11 +306,17 @@ Params.RegulatoryNetwork <- function(object){
 #' @rdname GetAssaySummary
 #' @method GetAssaySummary Seurat
 #' @export
-GetAssaySummary.Seurat <- function(object, slot, assay=NULL){
+GetAssaySummary.Seurat <- function(object, group_name, assay=NULL, verbose=TRUE){
     if (is.null(assay)){
         assay <- object@active.assay
     }
-    smry <- Seurat::Misc(test_srt[[assay]])$summary[[slot]]
+    smry <- Seurat::Misc(object[[assay]])$summary[[group_name]]
+    if (is.null(smry)){
+        log_message('Summary of "', group_name, '" does not yet exist.', verbose=verbose)
+        log_message('Summarizing.', verbose=verbose)
+        object <- aggregate_assay(object, assay=assay, group_name=group_name)
+        smry <- GetAssaySummary(object, assay=assay, group_name=group_name, verbose=verbose)
+    }
     return(smry)
 }
 
