@@ -231,6 +231,34 @@ aggregate_matrix <- function(
 }
 
 
+#' Aggregate Seurat assay over groups
+#'
+#' @param groups A character vector indicating the metadata column to aggregate over.
+#' @param fun The summary function to be applied to each group.
+#' @param assay The assay to summarize.
+#' @param slot The slot to summarize.
+#'
+#' @return A Seurat object.
+#'
+#' @export
+aggregate_assay <- function(
+    object,
+    groups,
+    fun = 'mean',
+    assay = 'RNA',
+    slot = 'data'
+){
+    ass_mat <- Matrix::t(Seurat::GetAssayData(object, assay=assay, slot=slot))
+    groups <- object@meta.data[[groups]]
+    agg_mat <- aggregate_matrix(ass_mat, groups=groups, fun=fun)
+    if (is.null(object@assays[[assay]]@misc$summary)){
+        object@assays[[assay]]@misc$summary <- list()
+    }
+    object@assays[[assay]]@misc$summary[[groups]] <- agg_mat
+    return(object)
+}
+
+
 #' Apply function over a List or Vector (in parallel)
 #'
 #' @param x A vector or list to apply over.
