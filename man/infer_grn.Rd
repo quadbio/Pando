@@ -19,6 +19,8 @@ infer_grn(object, ...)
   parallel = FALSE,
   tf_cor = 0.1,
   peak_cor = 0,
+  aggregate_rna_col = NULL,
+  aggregate_peaks_col = NULL,
   method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb"),
   alpha = 0.5,
   family = "gaussian",

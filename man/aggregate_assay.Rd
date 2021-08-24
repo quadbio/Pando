@@ -4,10 +4,10 @@
 \alias{aggregate_assay}
 \title{Aggregate Seurat assay over groups}
 \usage{
-aggregate_assay(object, groups, fun = "mean", assay = "RNA", slot = "data")
+aggregate_assay(object, group_name, fun = "mean", assay = "RNA", slot = "data")
 }
 \arguments{
-\item{groups}{A character vector indicating the metadata column to aggregate over.}
+\item{group_name}{A character vector indicating the metadata column to aggregate over.}
 
 \item{fun}{The summary function to be applied to each group.}
 
