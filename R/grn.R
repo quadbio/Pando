@@ -227,7 +227,7 @@ infer_grn.SeuratPlus <- function(
         # Get expression data
         nfeats <- sum(map_dbl(frml_string, function(x) length(x$tfs)))
         gene_tfs <- purrr::reduce(map(frml_string, function(x) x$tfs), union)
-        gene_x <- gene_data[, union(g, gene_tfs), drop=FALSE]
+        gene_x <- gene_data[gene_groups, union(g, gene_tfs), drop=FALSE]
         model_mat <- as.data.frame(cbind(gene_x, peak_x))
         if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
