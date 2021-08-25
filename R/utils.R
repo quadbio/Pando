@@ -72,7 +72,7 @@ find_peaks_near_genes <- function(
     } else if (method=='GREAT'){
 
         # Read gene annotation (Ensembl v93, GRCh38)
-        data(EnsDb.Hsapiens.v93.annot.UCSC.hg38)
+        utils::data(EnsDb.Hsapiens.v93.annot.UCSC.hg38, envir=environment())
         gene_annot_use <- EnsDb.Hsapiens.v93.annot.UCSC.hg38[
             which(EnsDb.Hsapiens.v93.annot.UCSC.hg38$gene_name %in% genes$gene_name),
         ]
