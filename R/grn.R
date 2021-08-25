@@ -167,8 +167,9 @@ infer_grn.SeuratPlus <- function(
         }
 
         # Select peaks correlating with target gene expression
+        g_x <- gene_data[gene_groups, g, drop=FALSE]
         peak_x <- peak_data[peak_groups, gene_peaks, drop=FALSE]
-        peak_g_cor <- sparse_cor(peak_x, gene_data[, g, drop=FALSE])
+        peak_g_cor <- sparse_cor(peak_x, g_x)
         peak_g_cor[is.na(peak_g_cor)] <- 0
         peaks_use <- rownames(peak_g_cor)[abs(peak_g_cor[, 1]) > peak_cor]
         if (length(peaks_use)==0){
@@ -191,7 +192,7 @@ infer_grn.SeuratPlus <- function(
         # Check correlation of peaks with target gene
         gene_tfs <- purrr::reduce(gene_peak_tfs, union)
         tf_x <- gene_data[gene_groups, gene_tfs, drop=FALSE]
-        tf_g_cor <- sparse_cor(tf_x, gene_data[, g, drop=FALSE])
+        tf_g_cor <- sparse_cor(tf_x, g_x)
         tf_g_cor[is.na(tf_g_cor)] <- 0
         tfs_use <- rownames(tf_g_cor)[abs(tf_g_cor[, 1]) > tf_cor]
         if (length(tfs_use)==0){

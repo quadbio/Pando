@@ -61,6 +61,7 @@ NetworkParams(test_srt)
 test_srt@grn@networks
 
 coef(test_srt)
+coef(test_srt, network='bagging_ridge_network')
 gof(test_srt)
 modules <- NetworkModules(test_srt)
 
