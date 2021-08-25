@@ -42,7 +42,7 @@ find_peaks_near_genes <- function(
     verbose = TRUE
 ){
     # Match arg
-    peak_to_gene_method <- match.arg(peak_to_gene_method)
+    method <- match.arg(method)
 
     if (method=='Signac'){
 
