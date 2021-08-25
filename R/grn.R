@@ -160,8 +160,8 @@ infer_grn.SeuratPlus <- function(
     model_fits <- map_par(features, function(g){
 
         # Select peaks near gene
-        if (!g%in%colnames(peaks2gene)){
-            log_message('Warning: ', g, 'not found in EnsDb', verbose=verbose==2)
+        if (!g%in%rownames(peaks2gene)){
+            log_message('Warning: ', g, ' not found in EnsDb', verbose=verbose==2)
             return()
         }
         gene_peaks <- as.logical(peaks2gene[g, ])
