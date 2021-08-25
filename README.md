@@ -2,7 +2,7 @@
 
 # Pando <img src="man/figures/logo.png" align="right" width="180"/>
 
-Pando leverages multi-modal singel-cell measurements to infer gene regulatory networks using a flexible linear model-based framework. By modeling the relationship between TF-binding site pairs with the expression of target genes, Pando simultaneously infers gene modules and sets of regulatory regions for each transcription factor.
+Pando leverages multi-modal single-cell measurements to infer gene regulatory networks using a flexible linear model-based framework. By modeling the relationship between TF-binding site pairs with the expression of target genes, Pando simultaneously infers gene modules and sets of regulatory regions for each transcription factor.
 
 ## Introduction
 
@@ -17,7 +17,7 @@ devtools::install_github('quadbiolab/Pando')
 
 ## Quick start
 
-If you have a `seurat_object` with transcriptomic and chromantin accessibility data, you can start right away with infering the regulatory network:
+If you have a `seurat_object` with transcriptomic and chromantin accessibility data, you can start right away with inferring the regulatory network:
 
 ```r
 # Load Packages
@@ -56,7 +56,7 @@ NetworkModules(test_srt)
 
 ## More
 
-Pando is still in it's early stages and we are actively developing it. An API reference and more vignettes are coming soon, stay tuned!
+More info about Pando can be found on our [website](https://quadbiolab.github.io/Pando/). Pando is still in it's early stages and we are actively developing it. An API reference and more vignettes are coming soon, stay tuned! 
 
 
 
