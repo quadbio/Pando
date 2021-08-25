@@ -92,7 +92,7 @@ infer_grn.SeuratPlus <- function(
 
     # Get assay data or summary
     if (is.null(aggregate_rna_col)){
-        gene_data <- t(Seurat::GetAssayData(object, assay=params$rna_assay))
+        gene_data <- Matrix::t(Seurat::GetAssayData(object, assay=params$rna_assay))
         gene_groups <- TRUE
     } else {
         gene_data <- GetAssaySummary(
@@ -105,12 +105,12 @@ infer_grn.SeuratPlus <- function(
     }
 
     if (is.null(aggregate_peaks_col)){
-        peak_data <- t(Seurat::GetAssayData(object, assay=params$peaks_assay))
+        peak_data <- Matrix::t(Seurat::GetAssayData(object, assay=params$peak_assay))
         peak_groups <- TRUE
     } else {
         peak_data <- GetAssaySummary(
             object,
-            assay = params$peaks_assay,
+            assay = params$peak_assay,
             group_name = aggregate_peaks_col,
             verbose = FALSE
         )
