@@ -25,7 +25,7 @@ NULL
 fit_model <- function(
     formula,
     data,
-    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge'),
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
     family = gaussian,
     alpha = 1,
     ...
