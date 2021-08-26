@@ -50,9 +50,9 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=prior(lasso()), family='gaussian')
 
 test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb')
-test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge')
 
-test_srt <- find_modules(test_srt, min_genes_per_module=0, network='xgb_network')
+test_srt <- infer_grn(test_srt, genes=genes_use, method='bayesian_ridge')
+
 test_srt <- find_modules(test_srt, min_genes_per_module=0, network='xgb_network')
 
 Params(test_srt)
@@ -66,8 +66,6 @@ gof(test_srt)
 modules <- NetworkModules(test_srt)
 
 class(modules@meta)
-
-
 
 aggregate_assay(test_srt, 'peaks_snn_res.50')
 

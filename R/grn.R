@@ -27,6 +27,7 @@ NULL
 #' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 #' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -59,7 +60,7 @@ infer_grn.SeuratPlus <- function(
     peak_cor = 0.,
     aggregate_rna_col = NULL,
     aggregate_peaks_col = NULL,
-    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge'),
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
     alpha = 0.5,
     family = 'gaussian',
     interaction_term = ':',
