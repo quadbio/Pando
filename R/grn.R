@@ -448,7 +448,6 @@ find_modules.Network <- function(
 }
 
 
-
 #' @importFrom purrr map
 #'
 #' @return A Network object.

@@ -326,3 +326,84 @@ fit_bagging_ridge <- function(
     return(list(gof=gof, coefs=coefs))
 }
 
+
+#' Fit a bayesian ridge regression model as implemented in scikit-learn (python)
+#'
+#' @param formula An object of class \code{formula} with a symbolic description
+#' @param data A \code{data.frame} containing the variables in the model.
+#' @param alpha Positive float indicating the regularization strength.
+#' @param solver Solver to use in the computational routines.
+#' Options include ‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’.
+#' @param bagging_number The number of ridge regression model in the bagging.
+#' @param n_jobs The number of cores used to fit the model.
+#' @param p_method The test used to calculate p-values. Options are 't' for \code{t.test}, and 'wilcox' for \code{wilcox.test}
+#' @param ... Other parameters for the model fitting function.
+#'
+#' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
+#' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
+fit_bayesian_ridge <- function(
+    formula,
+    data,
+    alpha = 1,
+    solver = 'auto',
+    bagging_number = 200L,
+    n_jobs = -1L,
+    p_method = c('t','wilcox'),
+    ...
+){
+    p_method <- match.arg(p_method)
+    if (!require(reticulate, quietly = T)){
+        stop('The reticulate package is required to use bagging ridge.')
+    }
+    np <- import('numpy')
+    pd <- import('pandas')
+    sklearn <- import('sklearn')
+
+    model_mat <- stats::model.matrix(formula, data=data)[,-1]
+    if (is.null(ncol(model_mat))){
+        stop('The bagging ridge model requires at least two variables.')
+    }
+    response <- data[[formula[[2]]]]
+
+    model <- sklearn$linear_model$BayesianRidge(
+            alpha = alpha,
+            solver = solver,
+            random_state = as.integer(123),
+            ...
+    )
+    model <- model$fit(model_mat, response)
+
+    idx_features <- do.call(cbind, model$estimators_features_) + 1
+    coefs_features <- sapply(model$estimators_, function(x) x$coef_)
+    coefs <- t(sapply(1:bagging_number, function(i){
+        coefs <- setNames(rep(NaN, ncol(model_mat)), colnames(model_mat))
+        if (ncol(model_mat) > 2){
+            coefs[idx_features[,i]] <- coefs_features[,i]
+        }
+        if (ncol(model_mat) == 2){
+            coefs[idx_features[,i]] <- coefs_features[i]
+        }
+        return(coefs)
+    }))
+
+    p <- switch(
+        p_method,
+        't' = apply(coefs, 2, function(x) t.test(x[!is.nan(x)])$p.value),
+        'wilcox' = apply(coefs, 2, function(x) wilcox.test(x[!is.nan(x)])$p.value)
+    )
+
+    coefs <- tibble(
+        term = colnames(model_mat),
+        estimate = colMeans(coefs, na.rm=TRUE),
+        pval = p,
+        neglog10p = -log10(ifelse(is.na(p), 1, p))
+    )
+    corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
+    gof <- tibble(
+        rsq = sign(corr) * corr**2
+    )
+    return(list(gof=gof, coefs=coefs))
+}
+
