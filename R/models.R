@@ -12,6 +12,7 @@ NULL
 #' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 #' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
@@ -38,7 +39,8 @@ fit_model <- function(
         'cv.glmnet' = fit_cvglmnet(formula, data, family=family, alpha=alpha, ...),
         'brms' = fit_brms(formula, data, family=family, ...),
         'xgb' = fit_xgb(formula, data, ...),
-        'bagging_ridge' = fit_bagging_ridge(formula, data, alpha=alpha, ...)
+        'bagging_ridge' = fit_bagging_ridge(formula, data, alpha=alpha, ...),
+        'bayesian_ridge' = fit_bagging_ridge(formula, data, ...)
     )
     return(result)
 }
