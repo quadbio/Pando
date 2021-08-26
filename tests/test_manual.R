@@ -72,6 +72,18 @@ class(modules@meta)
 aggregate_assay(test_srt, 'peaks_snn_res.50')
 
 
+np <- 10000
+x <- seq(np) + rpois(np, 3)
+z <- seq(np) + rpois(np, 5)
+y <- rpois(np, 7) + x * 3 + z * 1.5
+
+tbl <- tibble(
+    x = x,
+    y = y,
+    z = z
+)
+
+fit_bayesian_ridge(y ~ x + z, tbl)
 
 
 

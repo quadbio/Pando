@@ -306,13 +306,11 @@ fit_bagging_ridge <- function(
         }
         return(coefs)
     }))
-
     p <- switch(
         p_method,
         't' = apply(coefs, 2, function(x) t.test(x[!is.nan(x)])$p.value),
         'wilcox' = apply(coefs, 2, function(x) wilcox.test(x[!is.nan(x)])$p.value)
     )
-
     coefs <- tibble(
         term = colnames(model_mat),
         estimate = colMeans(coefs, na.rm=TRUE),
@@ -346,10 +344,6 @@ fit_bagging_ridge <- function(
 fit_bayesian_ridge <- function(
     formula,
     data,
-    alpha = 1,
-    solver = 'auto',
-    bagging_number = 200L,
-    n_jobs = -1L,
     p_method = c('t','wilcox'),
     ...
 ){
@@ -367,42 +361,21 @@ fit_bayesian_ridge <- function(
     }
     response <- data[[formula[[2]]]]
 
-    model <- sklearn$linear_model$BayesianRidge(
-            alpha = alpha,
-            solver = solver,
-            random_state = as.integer(123),
-            ...
-    )
+    model <- sklearn$linear_model$BayesianRidge(...)
     model <- model$fit(model_mat, response)
 
-    idx_features <- do.call(cbind, model$estimators_features_) + 1
-    coefs_features <- sapply(model$estimators_, function(x) x$coef_)
-    coefs <- t(sapply(1:bagging_number, function(i){
-        coefs <- setNames(rep(NaN, ncol(model_mat)), colnames(model_mat))
-        if (ncol(model_mat) > 2){
-            coefs[idx_features[,i]] <- coefs_features[,i]
-        }
-        if (ncol(model_mat) == 2){
-            coefs[idx_features[,i]] <- coefs_features[i]
-        }
-        return(coefs)
-    }))
-
-    p <- switch(
-        p_method,
-        't' = apply(coefs, 2, function(x) t.test(x[!is.nan(x)])$p.value),
-        'wilcox' = apply(coefs, 2, function(x) wilcox.test(x[!is.nan(x)])$p.value)
-    )
-
+    coefs <- model$coef_
+    coef_var <- diag(model$sigma_)
+    p <- dnorm(x=0, mean=coefs, sd=sqrt(coef_var)) * 2
     coefs <- tibble(
         term = colnames(model_mat),
-        estimate = colMeans(coefs, na.rm=TRUE),
+        estimate = coefs,
+        est_variance = coef_var,
         pval = p,
         neglog10p = -log10(ifelse(is.na(p), 1, p))
     )
-    corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
     gof <- tibble(
-        rsq = sign(corr) * corr**2
+        rsq = model$score(model_mat, response)
     )
     return(list(gof=gof, coefs=coefs))
 }
