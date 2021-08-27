@@ -331,12 +331,6 @@ fit_bagging_ridge <- function(
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
 #' @param data A \code{data.frame} containing the variables in the model.
-#' @param alpha Positive float indicating the regularization strength.
-#' @param solver Solver to use in the computational routines.
-#' Options include ‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’.
-#' @param bagging_number The number of ridge regression model in the bagging.
-#' @param n_jobs The number of cores used to fit the model.
-#' @param p_method The test used to calculate p-values. Options are 't' for \code{t.test}, and 'wilcox' for \code{wilcox.test}
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
@@ -346,7 +340,6 @@ fit_bagging_ridge <- function(
 fit_bayesian_ridge <- function(
     formula,
     data,
-    p_method = c('t','wilcox'),
     ...
 ){
     p_method <- match.arg(p_method)
