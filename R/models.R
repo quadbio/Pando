@@ -271,9 +271,9 @@ fit_bagging_ridge <- function(
     if (!require(reticulate, quietly = T)){
         stop('The reticulate package is required to use bagging ridge.')
     }
-    np <- import('numpy')
-    pd <- import('pandas')
-    sklearn <- import('sklearn')
+    np <- reticulate::import('numpy')
+    pd <- reticulate::import('pandas')
+    sklearn <- reticulate::import('sklearn')
 
     model_mat <- stats::model.matrix(formula, data=data)[,-1]
     if (is.null(ncol(model_mat))){
@@ -351,15 +351,15 @@ fit_bayesian_ridge <- function(
 ){
     p_method <- match.arg(p_method)
     if (!require(reticulate, quietly = T)){
-        stop('The reticulate package is required to use bagging ridge.')
+        stop('The reticulate package is required to use bayesian ridge.')
     }
-    np <- import('numpy')
-    pd <- import('pandas')
-    sklearn <- import('sklearn')
+    np <- reticulate::import('numpy')
+    pd <- reticulate::import('pandas')
+    sklearn <- reticulate::import('sklearn')
 
     model_mat <- stats::model.matrix(formula, data=data)[,-1]
     if (is.null(ncol(model_mat))){
-        stop('The bagging ridge model requires at least two variables.')
+        stop('The bayesian ridge model requires at least two variables.')
     }
     response <- data[[formula[[2]]]]
 
@@ -381,4 +381,13 @@ fit_bayesian_ridge <- function(
     )
     return(list(gof=gof, coefs=coefs))
 }
+
+
+
+
+
+
+
+
+
 
