@@ -8,7 +8,7 @@ find_peaks_near_genes(
   peaks,
   genes,
   sep = c("-", "-"),
-  method = "Signac",
+  method = c("Signac", "GREAT"),
   upstream = 1e+05,
   downstream = 0,
   extend = 1e+06,

@@ -21,12 +21,13 @@ infer_grn(object, ...)
   peak_cor = 0,
   aggregate_rna_col = NULL,
   aggregate_peaks_col = NULL,
-  method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb", "bagging_ridge"),
+  method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb", "bagging_ridge",
+    "bayesian_ridge"),
   alpha = 0.5,
   family = "gaussian",
   interaction_term = ":",
   adjust_method = "fdr",
-  scale = F,
+  scale = FALSE,
   verbose = TRUE,
   ...
 )
@@ -38,7 +39,7 @@ infer_grn(object, ...)
 Takes all VariableFeatures in the object per default.}
 
 \item{peak_to_gene_method}{Character specifying the method to
-link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.}
+link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.}
 
 \item{upstream}{Integer defining the distance upstream of the gene to consider as potential regulatory region.}
 
@@ -62,6 +63,7 @@ Only used of \code{peak_to_gene_method = 'GREAT'}.}
 \item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 \item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 \item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 }}
 
 \item{alpha}{The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.}

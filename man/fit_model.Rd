@@ -7,7 +7,8 @@
 fit_model(
   formula,
   data,
-  method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb", "bagging_ridge"),
+  method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb", "bagging_ridge",
+    "bayesian_ridge"),
   family = gaussian,
   alpha = 1,
   ...
@@ -25,6 +26,7 @@ fit_model(
 \item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 \item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 \item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 }}
 
 \item{family}{A description of the error distribution and link function to be used in the model.
