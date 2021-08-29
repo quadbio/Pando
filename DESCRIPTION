@@ -31,6 +31,7 @@ Imports:
     glmnetUtils,
     bayestestR,
     xgboost,
+    caret,
     brms
 Suggests: 
     rmarkdown,
