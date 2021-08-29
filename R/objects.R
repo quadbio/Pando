@@ -125,7 +125,7 @@ SeuratPlus <- setClass(
 #' @method GetNetwork SeuratPlus
 #' @export
 GetNetwork.SeuratPlus <- function(object, network='glm_network'){
-    return(object@grn@networks[[network]])
+    return(GetNetwork(object@grn, network=network))
 }
 
 #' Get network
@@ -133,7 +133,11 @@ GetNetwork.SeuratPlus <- function(object, network='glm_network'){
 #' @method GetNetwork RegulatoryNetwork
 #' @export
 GetNetwork.RegulatoryNetwork <- function(object, network='glm_network'){
-    return(object@networks[[network]])
+    if (!network%in%names(object@networks)){
+        stop(paste0('The requested network "', network, '" does not exist.'))
+    } else {
+        return(object@networks[[network]])
+    }
 }
 
 
