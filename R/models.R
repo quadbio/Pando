@@ -263,7 +263,7 @@ fit_bagging_ridge <- function(
     alpha = 1,
     solver = 'auto',
     bagging_number = 200L,
-    n_jobs = -1L,
+    n_jobs = 1,
     p_method = c('t','wilcox'),
     ...
 ){

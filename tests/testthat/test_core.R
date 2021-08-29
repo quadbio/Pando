@@ -99,6 +99,9 @@ test_that('infer_grn with diverse parameters does not through errors.', {
     expect_error(infer_grn(test_srt, verbose=F, parallel=T, family='poisson'), NA)
     expect_error(infer_grn(test_srt, verbose=F, method='brms'), NA)
     expect_error(infer_grn(test_srt, verbose=F, method='xgb'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='bagging_ridge', p_method='wilcox'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='bagging_ridge', alpha=0.5), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='bayesian_ridge'), NA)
 })
 
 
