@@ -43,18 +43,10 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
-test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'GREAT', parallel=T, method = 'cv.glmnet', nlambda=100, alpha=0.3)
-
-test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'GREAT', method = 'brms', backend='cmdstanr', prior=prior(lasso()), family='gaussian')
-
-test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb')
-
 test_srt <- infer_grn(test_srt, genes=genes_use, method='bayesian_ridge')
-test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', n_jobs=1)
+test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', n_jobs=1, p_method='wilcox')
 
-test_srt <- find_modules(test_srt, min_genes_per_module=0, network='xgb_network')
+test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
 Params(test_srt)
 NetworkParams(test_srt)

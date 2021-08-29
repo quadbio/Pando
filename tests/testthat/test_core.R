@@ -105,6 +105,27 @@ test_that('infer_grn with diverse parameters does not through errors.', {
 })
 
 
+test_that('infer_grn with diverse parameters does not through errors.', {
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, tf_cor=0.2), NA)
+    expect_error(infer_grn(test_srt, parallel=T, tf_cor=0.9), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, peak_cor=0.1), NA)
+    expect_error(infer_grn(test_srt, verbose=F, only_tss=T), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, method='glmnet'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='cv.glmnet', alpha=1), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, downstream=2000, upstream=0), NA)
+    expect_error(infer_grn(test_srt, verbose=F, downstream=0, upstream=8000), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, interaction_term='+'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, interaction_term='*'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, parallel=T, family='poisson'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='brms'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='xgb'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='bagging_ridge', p_method='wilcox'), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='bagging_ridge', alpha=0.5), NA)
+    expect_error(infer_grn(test_srt, verbose=F, method='bayesian_ridge'), NA)
+})
+
+
 test_that('find_modules works for glm models.', {
     tst <- infer_grn(test_srt, verbose=F, parallel=T)
     expect_error(find_modules(tst), NA)
