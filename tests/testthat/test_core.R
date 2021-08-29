@@ -7,6 +7,7 @@ library(matrixStats)
 library(doParallel)
 library(BSgenome.Hsapiens.UCSC.hg38)
 library(Pando)
+library(Seurat)
 
 data(motifs)
 

@@ -40,7 +40,7 @@ test_srt <- find_motifs(
 test_srt <- aggregate_assay(test_srt, group_name = 'seurat_clusters')
 
 test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'Signac', parallel=F,
+    peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
 test_srt <- infer_grn(test_srt, genes=genes_use,
@@ -52,6 +52,7 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
 test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb')
 
 test_srt <- infer_grn(test_srt, genes=genes_use, method='bayesian_ridge')
+test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', n_jobs=1)
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, network='xgb_network')
 
@@ -61,6 +62,7 @@ NetworkParams(test_srt)
 test_srt@grn@networks
 
 coef(test_srt)
+coef(test_srt, network='bayesian_ridge_network')
 coef(test_srt, network='bagging_ridge_network')
 gof(test_srt)
 modules <- NetworkModules(test_srt)
