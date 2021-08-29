@@ -64,7 +64,7 @@ class(modules@meta)
 aggregate_assay(test_srt, 'peaks_snn_res.50')
 
 
-np <- 10000
+np <- 100
 x <- seq(np) + rpois(np, 3)
 z <- seq(np) + rpois(np, 5)
 y <- rpois(np, 7) + x * 3 + z * 1.5
@@ -74,6 +74,15 @@ tbl <- tibble(
     y = y,
     z = z
 )
+
+strata <- sample(rep(LETTERS, 5))[1:100]
+
+cv_folds(tbl, strata=strata)
+
+flds <- createFolds(strat, k=10)
+
+strat[flds[[1]]]
+
 
 fit_bayesian_ridge(y ~ x + z, tbl)
 
