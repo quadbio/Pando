@@ -345,7 +345,6 @@ fit_bayesian_ridge <- function(
     data,
     ...
 ){
-    p_method <- match.arg(p_method)
     if (!require(reticulate, quietly = T)){
         stop('The reticulate package is required to use bayesian ridge.')
     }
