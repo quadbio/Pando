@@ -43,7 +43,8 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
-test_srt <- infer_grn(test_srt, genes=genes_use, method='bayesian_ridge')
+test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb', nrounds=100)
+
 test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', n_jobs=1, p_method='wilcox')
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
@@ -86,7 +87,8 @@ test <- tbl[flds[[1]], ]
 
 score_glmnet(formula, train, test)
 score_cvglmnet(formula, train, test)
-cv_model(formula, tbl, method = 'glmnet')
+score_xgb(formula, train, test)
+cv_model(formula, tbl, method = 'xgb')
 
 fit <- glmnetUtils::glmnet(formula, data=train)
 y_true <- test[[formula[[2]]]]

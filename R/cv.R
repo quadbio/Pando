@@ -12,7 +12,6 @@ NULL
 #' @param method A character string indicating the method to fit the model.
 #' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
-#' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 #' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 #' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
@@ -26,7 +25,7 @@ NULL
 cv_model <- function(
     formula,
     data,
-    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
+    method = c('glm', 'glmnet', 'cv.glmnet', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
     k_folds = 5,
     strata = NULL,
     ...
@@ -136,6 +135,48 @@ score_cvglmnet <- function(formula, train, test, alpha=0.5, ...){
     return(metrics)
 }
 
+
+#' Score a gradient boosting regression model on a test set
+#' using a range of regression metrics.
+#'
+#' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
+#' @param train A \code{data.frame} containing the training data.
+#' @param test A \code{data.frame} containing the test data.
+#' @param params A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}
+#' @param ... Other parameters for the model fitting function.
+#'
+#' @return A \code{data.frame} containing different evaluation metrics.
+#'
+#' @export
+score_xgb <- function(
+    formula,
+    train,
+    test,
+    params = list(
+        max_depth=3,
+        eta=0.01,
+        objective='reg:squarederror'),
+    nrounds = 1000,
+    ...
+){
+    train_mat <- stats::model.matrix(formula, data=train)
+    test_mat <- stats::model.matrix(formula, data=test)
+    response <- train[[formula[[2]]]]
+    fit <- xgboost::xgboost(
+        data = train_mat,
+        label = response,
+        verbose = 0,
+        params = params,
+        nrounds = nrounds,
+        ...
+    )
+    y_true <- test[[formula[[2]]]]
+    y_pred <- predict(fit, newdata=test_mat)
+    metrics <- compute_metrics(y_true, y_pred)
+    metrics$rsq <- r2(response, predict(fit, newdata=train_mat))
+    return(metrics)
+}
 
 
 
