@@ -5,6 +5,7 @@ NULL
 #' Fit (regularized) generalized linear model
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param method A character string indicating the method to fit the model.
 #' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
@@ -49,6 +50,7 @@ fit_model <- function(
 #' Fit generalized linear model
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -73,6 +75,7 @@ fit_glm <- function(formula, data, family=gaussian, ...){
 #' Fit regularized generalized linear model
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -115,6 +118,7 @@ fit_glmnet <- function(
 #' Cross-validation for regularized generalized linear models
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -159,6 +163,7 @@ fit_cvglmnet <- function(
 #' Fit a Bayesian regression model with brms and Stan
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -200,6 +205,7 @@ fit_brms <- function(
 #' Fit a gradient boosting regression model with XGBoost
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param params A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}
 #' @param ... Other parameters for the model fitting function.
@@ -244,6 +250,7 @@ fit_xgb <- function(
 #' Fit a bagging ridge regression model as implemented in scikit-learn (python)
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param alpha Positive float indicating the regularization strength.
 #' @param solver Solver to use in the computational routines.
@@ -321,7 +328,7 @@ fit_bagging_ridge <- function(
     )
     corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
     gof <- tibble(
-        rsq = sign(corr) * corr**2
+        rsq = corr**2
     )
     return(list(gof=gof, coefs=coefs))
 }
@@ -330,6 +337,7 @@ fit_bagging_ridge <- function(
 #' Fit a bayesian ridge regression model as implemented in scikit-learn (python)
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param ... Other parameters for the model fitting function.
 #'
