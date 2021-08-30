@@ -84,16 +84,14 @@ formula <- y ~ x + z
 train <- tbl[-flds[[1]], ]
 test <- tbl[flds[[1]], ]
 
-score_glm(formula, train, test)
-cv_model(formula, tbl)
+score_glmnet(formula, train, test)
+cv_model(formula, tbl, method = 'glmnet')
 
-fit <- glm(formula, data=train)
+fit <- glmnetUtils::glmnet(formula, data=train)
 y_true <- test[[formula[[2]]]]
 y_pred <- predict(fit, newdata=test)
 
-r2(y_true, y_pred)
-mse(y_true, y_pred)
-rse(y_true, y_pred)
+compute_metrics(y_true, y_pred)
 
 
 
