@@ -341,7 +341,11 @@ fit_grn_models.SeuratPlus <- function(
     tfs_use <- colnames(motif2tf)
     motif2tf <- motif2tf[, tfs_use, drop=FALSE]
 
-    log_message('Fitting models for ', length(features), ' target genes' , verbose=verbose)
+    if (mode=='inference'){
+        log_message('Fitting models for ', length(features), ' target genes' , verbose=verbose)
+    } else if (mode=='cv'){
+        log_message('Running CV for ', length(features), ' target genes' , verbose=verbose)
+    }
     names(features) <- features
     model_fits <- map_par(features, function(g){
 
