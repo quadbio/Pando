@@ -56,6 +56,8 @@ test_srt@grn@networks
 coef(test_srt)
 coef(test_srt, network='bayesian_ridge_network')
 coef(test_srt, network='bagging_ridge_network')
+gof(test_srt, network='bayesian_ridge_network')
+gof(test_srt, network='bagging_ridge_network')
 gof(test_srt)
 modules <- NetworkModules(test_srt)
 
@@ -75,18 +77,23 @@ tbl <- tibble(
     z = z
 )
 
-strata <- sample(rep(LETTERS, 5))[1:100]
+strata <- sample(rep(LETTERS, np))[1:np]
+flds <- cv_folds(tbl, strata=strata)
 
-cv_folds(tbl, strata=strata)
+formula <- y ~ x + z
+train <- tbl[-flds[[1]], ]
+test <- tbl[flds[[1]], ]
 
-flds <- createFolds(strat, k=10)
+score_glm(formula, train, test)
+cv_model(formula, tbl)
 
-strat[flds[[1]]]
+fit <- glm(formula, data=train)
+y_true <- test[[formula[[2]]]]
+y_pred <- predict(fit, newdata=test)
 
-
-fit_bayesian_ridge(y ~ x + z, tbl)
-
-
+r2(y_true, y_pred)
+mse(y_true, y_pred)
+rse(y_true, y_pred)
 
 
 

@@ -9,13 +9,14 @@ cv_model(
   data,
   method = c("glm", "glmnet", "cv.glmnet", "brms", "xgb", "bagging_ridge",
     "bayesian_ridge"),
-  folds = 5,
+  k_folds = 5,
   strata = NULL,
   ...
 )
 }
 \arguments{
-\item{formula}{An object of class \code{formula} with a symbolic description}
+\item{formula}{An object of class \code{formula} with a symbolic description
+of the model to be fitted.}
 
 \item{data}{A \code{data.frame} containing the variables in the model.}
 
@@ -29,7 +30,7 @@ cv_model(
 \item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 }}
 
-\item{folds}{Number of cross-validation folds.}
+\item{k_folds}{Number of cross-validation folds.}
 
 \item{...}{Other parameters for the model fitting function.}
 }

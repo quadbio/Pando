@@ -13,7 +13,8 @@ fit_brms(
 )
 }
 \arguments{
-\item{formula}{An object of class \code{formula} with a symbolic description}
+\item{formula}{An object of class \code{formula} with a symbolic description
+of the model to be fitted.}
 
 \item{data}{A \code{data.frame} containing the variables in the model.}
 
