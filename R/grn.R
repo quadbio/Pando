@@ -237,50 +237,77 @@ infer_grn.SeuratPlus <- function(
         if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
 
-        log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
-        fit <- try(fit_model(
-            model_frml,
-            data = model_mat,
-            family = family,
-            method = method,
-            alpha = alpha,
-            ...
-        ), silent=TRUE)
-        if (any(class(fit)=='try-error')){
-            log_message('Warning: Fitting model failed for ', g, verbose=verbose)
-            log_message(fit, verbose=verbose==2)
-            return()
-        } else {
-            fit$gof$nvariables <- nfeats
-            return(fit)
+        # Mode 'inference' fits models and returns the coefficients and goodness-of-fit measures
+        if (mode=='inference'){
+            log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
+            fit <- try(fit_model(
+                model_frml,
+                data = model_mat,
+                family = family,
+                method = method,
+                alpha = alpha,
+                ...
+            ), silent=TRUE)
+            if (any(class(fit)=='try-error')){
+                log_message('Warning: Fitting model failed for ', g, verbose=verbose)
+                log_message(fit, verbose=verbose==2)
+                return()
+            } else {
+                fit$gof$nvariables <- nfeats
+                return(fit)
+            }
+        # Mode 'cv' performs k-fold cross-validation and returns the computed metrics for each fold
+        } else if (mode=='cv'){
+            log_message('Running CV for ', g, verbose=verbose==2)
+            metrics <- try(cv_model(
+                model_frml,
+                data = model_mat,
+                method = method,
+                alpha = alpha,
+                ...
+            ), silent=TRUE)
+            if (any(class(fit)=='try-error')){
+                log_message('Warning: Fitting model failed for ', g, verbose=verbose)
+                log_message(fit, verbose=verbose==2)
+                return()
+            } else {
+                metrics$nvariables <- nfeats
+                return(metrics)
+            }
         }
     }, verbose=verbose, parallel=parallel)
     model_fits <- model_fits[!map_lgl(model_fits, is.null)]
     if (length(model_fits)==0){
         log_message('Warning: Fitting model failed for all genes.', verbose=verbose)
     }
-    coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
-    coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
-    gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
-    params <- list()
-    params[['method']] <- method
-    params[['family']] <- family
-    params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
-    params[['only_tss']] <- only_tss
-    params[['interaction']] <- interaction_term
-    params[['tf_cor']] <- tf_cor
-    params[['peak_cor']] <- peak_cor
+    if (mode=='inference'){
+        coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
+        coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
+        gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
-    network_obj <- new(
-        Class = 'Network',
-        features = features,
-        coefs = coefs,
-        fit = gof,
-        params = params
-    )
-    object@grn@networks[[network_name]] <- network_obj
-    return(object)
+        params <- list()
+        params[['method']] <- method
+        params[['family']] <- family
+        params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
+        params[['only_tss']] <- only_tss
+        params[['interaction']] <- interaction_term
+        params[['tf_cor']] <- tf_cor
+        params[['peak_cor']] <- peak_cor
+
+        network_obj <- new(
+            Class = 'Network',
+            features = features,
+            coefs = coefs,
+            fit = gof,
+            params = params
+        )
+        object@grn@networks[[network_name]] <- network_obj
+        return(object)
+    } else if (mode=='cv'){
+        metrics <- bind_rows(model_fits, .id='target')
+        return(metrics)
+    }
 }
 
 
