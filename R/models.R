@@ -204,6 +204,7 @@ fit_brms <- function(
 #' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param params A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}
+#' @param nrounds Max number of boosting iterations.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
