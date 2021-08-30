@@ -73,6 +73,191 @@ infer_grn.SeuratPlus <- function(
     method <- match.arg(method)
     peak_to_gene_method <- match.arg(peak_to_gene_method)
 
+    # Fit models in inference mode
+    object <- fit_grn_models(
+        object = object,
+        genes = genes,
+        mode = 'inference',
+        network_name = network_name,
+        peak_to_gene_method = peak_to_gene_method,
+        upstream = upstream,
+        downstream = downstream,
+        extend = extend,
+        only_tss = only_tss,
+        parallel = parallel,
+        tf_cor = tf_cor,
+        peak_cor = peak_cor,
+        aggregate_rna_col = aggregate_rna_col,
+        aggregate_peaks_col = aggregate_peaks_col,
+        method = method,
+        alpha = alpha,
+        family = family,
+        interaction_term = interaction_term,
+        adjust_method = adjust_method,
+        scale = scale,
+        verbose = verbose,
+        ...
+    )
+    return(object)
+}
+
+
+#' Cross-validation for GRN inference models
+#'
+#' @import Matrix
+#' @import sparseMatrixStats
+#' @importFrom purrr map_dfr map_lgl map_dbl map
+#' @importFrom stringr str_replace_all
+#'
+#' @param genes A character vector with the target genes to consider for GRN inference.
+#' Takes all VariableFeatures in the object per default.
+#' @param peak_to_gene_method Character specifying the method to
+#' link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.
+#' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
+#' @param downstream Integer defining the distance downstream of the gene to consider as potential regulatory region.
+#' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
+#' Only used of `peak_to_gene_method = 'GREAT'`.
+#' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
+#' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
+#' @param tf_cor Threshold for TF - target gene correlation.
+#' @param peak_cor Threshold for binding peak - target gene correlation.
+#' @param method A character string indicating the method to fit the model.
+#' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
+#' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
+#' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
+#' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' @param interaction_term The interaction term to use in the model between TF and binding site.
+#' * \code{'+'} for additive interaction.
+#' * \code{':'} for 'multiplicative' interaction.
+#' * \code{'*'} for crossing interaction, i.e. additive AND 'multiplicative'.
+#' For more info, see \code{\link[formula]{stats}}
+#' @param scale Logical. Whether to z-transform the expression and accessibility matrices.
+#' @param verbose Logical. Display messages
+#' @param ... Other parameters for the model fitting function.
+#'
+#' @return A SeuratPlus object.
+#'
+#' @rdname cv_grn
+#' @export
+#' @method cv_grn SeuratPlus
+cv_grn.SeuratPlus <- function(
+    object,
+    genes = NULL,
+    peak_to_gene_method = c('Signac', 'GREAT'),
+    upstream = 100000,
+    downstream = 0,
+    extend = 1000000,
+    only_tss = FALSE,
+    parallel = FALSE,
+    tf_cor = 0.1,
+    peak_cor = 0.,
+    aggregate_rna_col = NULL,
+    aggregate_peaks_col = NULL,
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
+    interaction_term = ':',
+    scale = FALSE,
+    verbose = TRUE,
+    ...
+){
+    # Match args
+    method <- match.arg(method)
+    peak_to_gene_method <- match.arg(peak_to_gene_method)
+
+    # Fit models in inference mode
+    metrics <- fit_grn_models(
+        object = object,
+        genes = genes,
+        mode = 'cv',
+        peak_to_gene_method = peak_to_gene_method,
+        upstream = upstream,
+        downstream = downstream,
+        extend = extend,
+        only_tss = only_tss,
+        parallel = parallel,
+        tf_cor = tf_cor,
+        peak_cor = peak_cor,
+        aggregate_rna_col = aggregate_rna_col,
+        aggregate_peaks_col = aggregate_peaks_col,
+        method = method,
+        interaction_term = interaction_term,
+        scale = scale,
+        verbose = verbose,
+        ...
+    )
+    return(metrics)
+}
+
+
+
+#' Fit models for gene expression
+#'
+#' @import Matrix
+#' @import sparseMatrixStats
+#' @importFrom purrr map_dfr map_lgl map_dbl map
+#' @importFrom stringr str_replace_all
+#'
+#' @param genes A character vector with the target genes to consider for GRN inference.
+#' Takes all VariableFeatures in the object per default.
+#' @param peak_to_gene_method Character specifying the method to
+#' link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.
+#' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
+#' @param downstream Integer defining the distance downstream of the gene to consider as potential regulatory region.
+#' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
+#' Only used of `peak_to_gene_method = 'GREAT'`.
+#' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
+#' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
+#' @param tf_cor Threshold for TF - target gene correlation.
+#' @param peak_cor Threshold for binding peak - target gene correlation.
+#' @param method A character string indicating the method to fit the model.
+#' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
+#' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
+#' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
+#' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' @param interaction_term The interaction term to use in the model between TF and binding site.
+#' * \code{'+'} for additive interaction.
+#' * \code{':'} for 'multiplicative' interaction.
+#' * \code{'*'} for crossing interaction, i.e. additive AND 'multiplicative'.
+#' For more info, see \code{\link[formula]{stats}}
+#' @param scale Logical. Whether to z-transform the expression and accessibility matrices.
+#' @param adjust_method Method for adjusting p-values.
+#' @param verbose Logical. Display messages
+#' @param ... Other parameters for the model fitting function.
+#'
+#' @return A SeuratPlus object.
+#'
+#' @rdname fit_grn_models
+#' @method fit_grn_models SeuratPlus
+fit_grn_models.SeuratPlus <- function(
+    object,
+    genes = NULL,
+    mode = c('inference', 'cv'),
+    network_name = paste0(method, '_network'),
+    peak_to_gene_method = c('Signac', 'GREAT'),
+    upstream = 100000,
+    downstream = 0,
+    extend = 1000000,
+    only_tss = FALSE,
+    parallel = FALSE,
+    tf_cor = 0.1,
+    peak_cor = 0.,
+    aggregate_rna_col = NULL,
+    aggregate_peaks_col = NULL,
+    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
+    interaction_term = ':',
+    adjust_method = 'fdr',
+    scale = FALSE,
+    verbose = TRUE,
+    ...
+){
+    # Match args
+    mode <- match.arg(mode)
+    method <- match.arg(method)
+    peak_to_gene_method <- match.arg(peak_to_gene_method)
+
     # Get variables from object
     params <- Params(object)
     motif2tf <- NetworkTFs(object)
@@ -243,9 +428,7 @@ infer_grn.SeuratPlus <- function(
             fit <- try(fit_model(
                 model_frml,
                 data = model_mat,
-                family = family,
                 method = method,
-                alpha = alpha,
                 ...
             ), silent=TRUE)
             if (any(class(fit)=='try-error')){
@@ -263,7 +446,6 @@ infer_grn.SeuratPlus <- function(
                 model_frml,
                 data = model_mat,
                 method = method,
-                alpha = alpha,
                 ...
             ), silent=TRUE)
             if (any(class(fit)=='try-error')){
