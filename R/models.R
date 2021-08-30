@@ -136,7 +136,6 @@ fit_cvglmnet <- function(
     data,
     family = gaussian,
     alpha = 0.5,
-    nfolds = 5,
     ...
 ){
     fit <- glmnetUtils::cv.glmnet(
@@ -144,7 +143,6 @@ fit_cvglmnet <- function(
         data = data,
         family = family,
         alpha = alpha,
-        nfolds = nfolds,
         ...
     )
     class(fit) <- 'cv.glmnet'
