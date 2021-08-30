@@ -131,8 +131,8 @@ score_cvglmnet <- function(formula, train, test, alpha=0.5, ...){
     y_true <- test[[formula[[2]]]]
     y_pred <- predict(fit, newdata=test)[, which_max]
     metrics <- compute_metrics(y_true, y_pred)
-    metrics$lambda <- fit$lambda.1se,
-    metrics$rsq <- fit$glmnet.fit$dev.ratio[which_max],
+    metrics$lambda <- fit$lambda.1se
+    metrics$rsq <- fit$glmnet.fit$dev.ratio[which_max]
     metrics$alpha <- alpha
     return(metrics)
 }

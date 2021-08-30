@@ -85,6 +85,7 @@ train <- tbl[-flds[[1]], ]
 test <- tbl[flds[[1]], ]
 
 score_glmnet(formula, train, test)
+score_cvglmnet(formula, train, test)
 cv_model(formula, tbl, method = 'glmnet')
 
 fit <- glmnetUtils::glmnet(formula, data=train)
