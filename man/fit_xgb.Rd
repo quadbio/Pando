@@ -20,6 +20,8 @@ of the model to be fitted.}
 
 \item{params}{A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}}
 
+\item{nrounds}{Max number of boosting iterations.}
+
 \item{...}{Other parameters for the model fitting function.}
 }
 \value{
