@@ -111,6 +111,8 @@ infer_grn.SeuratPlus <- function(
 #'
 #' @param genes A character vector with the target genes to consider for GRN inference.
 #' Takes all VariableFeatures in the object per default.
+#' @param k_folds Number of cross-validation folds.
+#' @param strata Metadata column with strata for stratified CV.
 #' @param peak_to_gene_method Character specifying the method to
 #' link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.
 #' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
@@ -124,7 +126,6 @@ infer_grn.SeuratPlus <- function(
 #' @param method A character string indicating the method to fit the model.
 #' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
-#' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 #' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 #' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
@@ -145,6 +146,8 @@ infer_grn.SeuratPlus <- function(
 cv_grn.SeuratPlus <- function(
     object,
     genes = NULL,
+    k_folds = 5,
+    strata = NULL,
     peak_to_gene_method = c('Signac', 'GREAT'),
     upstream = 100000,
     downstream = 0,
@@ -165,10 +168,16 @@ cv_grn.SeuratPlus <- function(
     method <- match.arg(method)
     peak_to_gene_method <- match.arg(peak_to_gene_method)
 
-    # Fit models in inference mode
+    if (!is.null(strata)){
+        strata <- object@meta.data[[strata]]
+    }
+
+    # Cross-validate models
     metrics <- fit_grn_models(
         object = object,
         genes = genes,
+        strata = strata,
+        k_folds = k_folds,
         mode = 'cv',
         peak_to_gene_method = peak_to_gene_method,
         upstream = upstream,
