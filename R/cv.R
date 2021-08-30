@@ -16,6 +16,7 @@ NULL
 #' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 #' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 #' @param k_folds Number of cross-validation folds.
+#' @param strata Character vector with strata for stratified CV.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
@@ -67,7 +68,7 @@ score_glm <- function(formula, train, test, ...){
     fit <- suppressWarnings(glm(formula, data=train, ...))
     s <- summary(fit)
     y_true <- test[[formula[[2]]]]
-    y_pred <- predict(fit, test)
+    y_pred <- suppressWarnings(predict(fit, test))
     metrics <- compute_metrics(y_true, y_pred)
     metrics$dsq <- with(s, 1 - deviance/null.deviance)
     return(metrics)
