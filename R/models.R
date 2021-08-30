@@ -235,11 +235,9 @@ fit_xgb <- function(
         nrounds = nrounds,
         ...
     )
-    pred <- predict(fit, newdata=model_mat)
-    resid <- sum((response - pred)**2)
-    tot <- sum((response - mean(response))**2)
+    y_pred <- predict(fit, newdata=model_mat)
     gof <- tibble(
-        rsq = 1 - resid / tot
+        rsq = r2(response, y_pred)
     )
     coefs <- as_tibble(as.matrix(xgboost::xgb.importance(model=fit)))
     colnames(coefs) <- c('term', 'gain', 'cover', 'frequency')
@@ -326,9 +324,9 @@ fit_bagging_ridge <- function(
         pval = p,
         neglog10p = -log10(ifelse(is.na(p), 1, p))
     )
-    corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
+    y_pred <- model_mat %*% matrix(coefs$estimate)
     gof <- tibble(
-        rsq = corr**2
+        rsq = r2(response, y_pred)
     )
     return(list(gof=gof, coefs=coefs))
 }
