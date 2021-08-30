@@ -123,8 +123,6 @@ fit_glmnet <- function(
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
-#' @param nlambda The number of \code{lambda} values.
-#' @param nfolds The number of folds for CV.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
