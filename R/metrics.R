@@ -14,6 +14,7 @@ compute_metrics <- function(y_true, y_pred){
         mae = mae(y_true, y_pred),
         mape = mape(y_true, y_pred)
     )
+    return(metrics)
 }
 
 
