@@ -10,6 +10,8 @@ cv_grn(object, ...)
 \method{cv_grn}{SeuratPlus}(
   object,
   genes = NULL,
+  k_folds = 5,
+  strata = NULL,
   peak_to_gene_method = c("Signac", "GREAT"),
   upstream = 1e+05,
   downstream = 0,
@@ -33,6 +35,10 @@ cv_grn(object, ...)
 \item{genes}{A character vector with the target genes to consider for GRN inference.
 Takes all VariableFeatures in the object per default.}
 
+\item{k_folds}{Number of cross-validation folds.}
+
+\item{strata}{Metadata column with strata for stratified CV.}
+
 \item{peak_to_gene_method}{Character specifying the method to
 link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.}
 
@@ -55,7 +61,6 @@ Only used of \code{peak_to_gene_method = 'GREAT'}.}
 \itemize{
 \item \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
 \item \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
-\item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 \item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
 \item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
 \item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.

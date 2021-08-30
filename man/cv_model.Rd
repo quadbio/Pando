@@ -30,6 +30,8 @@ of the model to be fitted.}
 
 \item{k_folds}{Number of cross-validation folds.}
 
+\item{strata}{Character vector with strata for stratified CV.}
+
 \item{...}{Other parameters for the model fitting function.}
 }
 \value{
