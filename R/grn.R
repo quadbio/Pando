@@ -199,7 +199,6 @@ cv_grn.SeuratPlus <- function(
 }
 
 
-
 #' Fit models for gene expression
 #'
 #' @import Matrix
@@ -436,41 +435,33 @@ fit_grn_models.SeuratPlus <- function(
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
 
         # Mode 'inference' fits models and returns the coefficients and goodness-of-fit measures
+        log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
         if (mode=='inference'){
-            log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
-            fit <- try(fit_model(
+            result <- try(fit_model(
                 model_frml,
                 data = model_mat,
                 method = method,
                 ...
             ), silent=TRUE)
-            if (any(class(fit)=='try-error')){
-                log_message('Warning: Fitting model failed for ', g, verbose=verbose)
-                log_message(fit, verbose=verbose==2)
-                return()
-            } else {
-                fit$gof$nvariables <- nfeats
-                return(fit)
-            }
-        # Mode 'cv' performs k-fold cross-validation and returns the computed metrics for each fold
         } else if (mode=='cv'){
             log_message('Running CV for ', g, verbose=verbose==2)
-            metrics <- try(cv_model(
+            result <- try(cv_model(
                 model_frml,
                 data = model_mat,
                 method = method,
                 ...
             ), silent=TRUE)
-            if (any(class(fit)=='try-error')){
-                log_message('Warning: Fitting model failed for ', g, verbose=verbose)
-                log_message(fit, verbose=verbose==2)
-                return()
-            } else {
-                metrics$nvariables <- nfeats
-                return(metrics)
-            }
+        }
+        if (any(class(result)=='try-error')){
+            log_message('Warning: Fitting model failed for ', g, verbose=verbose)
+            log_message(result, verbose=verbose==2)
+            return()
+        } else {
+            fit$gof$nvariables <- nfeats
+            return(result)
         }
     }, verbose=verbose, parallel=parallel)
+
     model_fits <- model_fits[!map_lgl(model_fits, is.null)]
     if (length(model_fits)==0){
         log_message('Warning: Fitting model failed for all genes.', verbose=verbose)
