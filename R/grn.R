@@ -155,7 +155,7 @@ cv_grn.SeuratPlus <- function(
     peak_cor = 0.,
     aggregate_rna_col = NULL,
     aggregate_peaks_col = NULL,
-    method = c('glm', 'glmnet', 'cv.glmnet', 'brms', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
+    method = c('glm', 'glmnet', 'cv.glmnet', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
     interaction_term = ':',
     scale = FALSE,
     verbose = TRUE,
