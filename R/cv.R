@@ -179,7 +179,110 @@ score_xgb <- function(
 }
 
 
+#' Score a bagging ridge regression model on a test set
+#' using a range of regression metrics.
+#'
+#' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
+#' @param train A \code{data.frame} containing the training data.
+#' @param test A \code{data.frame} containing the test data.
+#' @param alpha Positive float indicating the regularization strength.
+#' @param solver Solver to use in the computational routines.
+#' Options include ‘auto’, ‘svd’, ‘cholesky’, ‘lsqr’, ‘sparse_cg’, ‘sag’, ‘saga’.
+#' @param bagging_number The number of ridge regression model in the bagging.
+#' @param n_jobs The number of cores used to fit the model.
+#' @param ... Other parameters for the model fitting function.
+#'
+#' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
+#' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
+score_bagging_ridge <- function(
+    formula,
+    train,
+    test,
+    alpha = 1,
+    solver = 'auto',
+    bagging_number = 200L,
+    n_jobs = 1,
+    ...
+){
+    if (!require(reticulate, quietly = T)){
+        stop('The reticulate package is required to use bagging ridge.')
+    }
+    np <- reticulate::import('numpy')
+    pd <- reticulate::import('pandas')
+    sklearn <- reticulate::import('sklearn')
+
+    train_mat <- stats::model.matrix(formula, data=train)[,-1]
+    test_mat <- stats::model.matrix(formula, data=test)[,-1]
+    if (is.null(ncol(train_mat))){
+        stop('The bagging ridge model requires at least two variables.')
+    }
+    response <- train[[formula[[2]]]]
+
+    model <- sklearn$ensemble$BaggingRegressor(
+        base_estimator = sklearn$linear_model$Ridge(
+            alpha = alpha,
+            solver = solver,
+            random_state = as.integer(123),
+            ...
+        ),
+        n_estimators = as.integer(bagging_number),
+        bootstrap = TRUE,
+        max_features = 0.8,
+        n_jobs = as.integer(n_jobs),
+        verbose = FALSE
+    )
+    model <- model$fit(train_mat, response)
+    y_true <- test[[formula[[2]]]]
+    y_pred <- model$predict(test_mat)
+    metrics <- compute_metrics(y_true, y_pred)
+    metrics$rsq <- r2(response, model$predict(train_mat))
+    return(metrics)
+}
 
 
+#' Score a bagging ridge regression model on a test set
+#' using a range of regression metrics.
+#'
+#' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
+#' @param train A \code{data.frame} containing the training data.
+#' @param test A \code{data.frame} containing the test data.
+#' @param ... Other parameters for the model fitting function.
+#'
+#' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
+#' \code{coefs} contains the fitted coefficients.
+#'
+#' @export
+score_bayesian_ridge <- function(
+    formula,
+    train,
+    test,
+    ...
+){
+    if (!require(reticulate, quietly = T)){
+        stop('The reticulate package is required to use bayesian ridge.')
+    }
+    np <- reticulate::import('numpy')
+    pd <- reticulate::import('pandas')
+    sklearn <- reticulate::import('sklearn')
+
+    model_mat <- stats::model.matrix(formula, data=data)[,-1]
+    if (is.null(ncol(model_mat))){
+        stop('The bayesian ridge model requires at least two variables.')
+    }
+    response <- train[[formula[[2]]]]
+
+    model <- sklearn$linear_model$BayesianRidge(...)
+    model <- model$fit(model_mat, response)
+    model <- model$fit(train_mat, response)
+    y_true <- test[[formula[[2]]]]
+    y_pred <- model$predict(test_mat)
+    metrics <- compute_metrics(y_true, y_pred)
+    metrics$rsq <- model$score(model_mat, response)
+    return(metrics)
+}
 
 

@@ -87,12 +87,12 @@ test <- tbl[flds[[1]], ]
 
 score_glmnet(formula, train, test)
 score_cvglmnet(formula, train, test)
-score_xgb(formula, train, test)
-cv_model(formula, tbl, method = 'xgb')
+score_bagging_ridge(formula, train, test)
+cv_model(formula, tbl, method = 'bayesian_ridge', k_folds=5)
 
 fit <- glmnetUtils::glmnet(formula, data=train)
 y_true <- test[[formula[[2]]]]
-y_pred <- predict(fit, newdata=test)
+y_pred <- predict(fit, newdata=test)[,1]
 
 compute_metrics(y_true, y_pred)
 
