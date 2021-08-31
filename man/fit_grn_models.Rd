@@ -61,8 +61,8 @@ Only used of \code{peak_to_gene_method = 'GREAT'}.}
 \item \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 \item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 \item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 }}
 
 \item{interaction_term}{The interaction term to use in the model between TF and binding site.

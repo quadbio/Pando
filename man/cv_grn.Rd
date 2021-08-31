@@ -62,8 +62,8 @@ Only used of \code{peak_to_gene_method = 'GREAT'}.}
 \item \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
 \item \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 \item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 }}
 
 \item{interaction_term}{The interaction term to use in the model between TF and binding site.
@@ -79,7 +79,7 @@ For more info, see \code{\link[formula]{stats}}
 \item{verbose}{Logical. Display messages}
 }
 \value{
-A SeuratPlus object.
+A \code{data.frame} with cross-validation metrics.
 }
 \description{
 Cross-validation for GRN inference models

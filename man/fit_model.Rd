@@ -26,8 +26,8 @@ of the model to be fitted.}
 \item \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 \item \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 \item \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+\item \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+\item \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 }}
 
 \item{family}{A description of the error distribution and link function to be used in the model.
