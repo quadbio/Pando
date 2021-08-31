@@ -12,8 +12,8 @@ NULL
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 #' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.

@@ -26,8 +26,8 @@ NULL
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 #' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -127,8 +127,8 @@ infer_grn.SeuratPlus <- function(
 #' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 #' @param interaction_term The interaction term to use in the model between TF and binding site.
 #' * \code{'+'} for additive interaction.
 #' * \code{':'} for 'multiplicative' interaction.
@@ -138,7 +138,7 @@ infer_grn.SeuratPlus <- function(
 #' @param verbose Logical. Display messages
 #' @param ... Other parameters for the model fitting function.
 #'
-#' @return A SeuratPlus object.
+#' @return A \code{data.frame} with cross-validation metrics.
 #'
 #' @rdname cv_grn
 #' @export
@@ -223,8 +223,8 @@ cv_grn.SeuratPlus <- function(
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 #' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 #' @param interaction_term The interaction term to use in the model between TF and binding site.
 #' * \code{'+'} for additive interaction.
 #' * \code{':'} for 'multiplicative' interaction.
