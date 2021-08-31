@@ -354,6 +354,8 @@ fit_grn_models.SeuratPlus <- function(
     } else if (mode=='cv'){
         log_message('Running CV for ', length(features), ' target genes' , verbose=verbose)
     }
+
+    # Loop through features and fit models/run CV for each
     names(features) <- features
     model_fits <- map_par(features, function(g){
 
