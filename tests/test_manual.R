@@ -43,11 +43,13 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
-cv_metrics <- cv_grn(test_srt, genes=genes_use, method='bayesian_ridge', fit_intercept=T)
+cv_metrics <- cv_grn(test_srt, genes=genes_use, method='xgb', fit_intercept=T, alpha=1)
+cv_metrics <- cv_grn(test_srt, genes=genes_use, method='bagging_ridge', fit_intercept=T, alpha=1)
 
-test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb', nrounds=100)
+test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb', nrounds=100, nthread=-1)
 
-test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', n_jobs=1, p_method='wilcox')
+test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', alpha=0.5, p_method='wilcox')
+test_srt <- infer_grn(test_srt, genes=genes_use, method='bayesian_ridge', alpha=0.5, p_method='wilcox')
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0)
 
