@@ -459,7 +459,8 @@ fit_grn_models.SeuratPlus <- function(
             log_message(result, verbose=verbose==2)
             return()
         } else {
-            fit$gof$nvariables <- nfeats
+            if (mode=='cv') result$nvariables <- nfeats
+            if (mode=='inference') result$gof$nvariables <- nfeats
             return(result)
         }
     }, verbose=verbose, parallel=parallel)
