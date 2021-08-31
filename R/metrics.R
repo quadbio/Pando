@@ -8,6 +8,7 @@ compute_metrics <- function(y_true, y_pred){
     metrics <- tibble(
         corr = cor(y_true, y_pred),
         r2 = r2(y_true, y_pred),
+        rse = rse(y_true, y_pred),
         sse = sse(y_true, y_pred),
         mse = mse(y_true, y_pred),
         rmse = rmse(y_true, y_pred),
