@@ -437,8 +437,8 @@ fit_grn_models.SeuratPlus <- function(
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
 
         # Mode 'inference' fits models and returns the coefficients and goodness-of-fit measures
-        log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
         if (mode=='inference'){
+            log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
             result <- try(fit_model(
                 model_frml,
                 data = model_mat,
