@@ -219,6 +219,7 @@ fit_xgb <- function(
         eta=0.01,
         objective='reg:squarederror'),
     nrounds = 1000,
+    nthread = -1,
     ...
 ){
 
@@ -230,6 +231,7 @@ fit_xgb <- function(
         verbose = 0,
         params = params,
         nrounds = nrounds,
+        nthread = nthread,
         ...
     )
     y_pred <- predict(fit, newdata=model_mat)

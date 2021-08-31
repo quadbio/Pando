@@ -205,7 +205,7 @@ score_bagging_ridge <- function(
     alpha = 1,
     solver = 'auto',
     bagging_number = 200L,
-    n_jobs = 1,
+    n_jobs = -1,
     ...
 ){
     if (!require(reticulate, quietly = T)){

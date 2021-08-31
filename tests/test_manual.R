@@ -43,7 +43,7 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
-cv_metrics <- cv_grn(test_srt, genes=genes_use)
+cv_metrics <- cv_grn(test_srt, genes=genes_use, method='bayesian_ridge', fit_intercept=T)
 
 test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb', nrounds=100)
 
