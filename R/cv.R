@@ -159,6 +159,7 @@ score_xgb <- function(
         eta=0.01,
         objective='reg:squarederror'),
     nrounds = 1000,
+    nthread = -1,
     ...
 ){
     train_mat <- stats::model.matrix(formula, data=train)
@@ -170,6 +171,7 @@ score_xgb <- function(
         verbose = 0,
         params = params,
         nrounds = nrounds,
+        nthread = nthread,
         ...
     )
     y_true <- test[[formula[[2]]]]
