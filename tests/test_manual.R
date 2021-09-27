@@ -30,12 +30,16 @@ test_srt <- initiate_grn(
     test_srt,
     regions = phastConsElements20Mammals.UCSC.hg38
 )
+
+
 test_srt <- find_motifs(
     test_srt,
     motif_tfs = motif2tf_use,
     pfm = motifs[1:10],
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
+
+NetworkTFs(test_srt)
 
 test_srt <- aggregate_assay(test_srt, group_name = 'seurat_clusters')
 
