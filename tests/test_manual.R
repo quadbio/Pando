@@ -26,11 +26,16 @@ registerDoParallel(2)
 
 test_srt <- read_rds('../data/test_seurat.rds')
 
+test_mat <- test_srt[['RNA']]@data
+rownames(test_mat)[rownames(test_mat)=='NFIA'] <- '2610316D01Rik'
+test_srt2 <- CreateSeuratObject(test_mat, assay='RNA')
+test_srt2[['peaks']] <- test_srt[['peaks']]
+motif2tf_use$tf[motif2tf_use$tf=='NFIA'] <- '2610316D01Rik'
+
 test_srt <- initiate_grn(
-    test_srt,
+    test_srt2,
     regions = phastConsElements20Mammals.UCSC.hg38
 )
-
 
 test_srt <- find_motifs(
     test_srt,
