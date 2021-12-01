@@ -268,7 +268,7 @@ fit_bagging_ridge <- function(
     solver = 'auto',
     bagging_number = 200L,
     n_jobs = 1,
-    p_method = c('t','wilcox'),
+    p_method = c('wilcox', 't'),
     ...
 ){
     p_method <- match.arg(p_method)
