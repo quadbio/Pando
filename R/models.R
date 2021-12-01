@@ -41,7 +41,7 @@ fit_model <- function(
         'brms' = fit_brms(formula, data, family=family, ...),
         'xgb' = fit_xgb(formula, data, ...),
         'bagging_ridge' = fit_bagging_ridge(formula, data, alpha=alpha, ...),
-        'bayesian_ridge' = fit_bagging_ridge(formula, data, ...)
+        'bayesian_ridge' = fit_bayesian_ridge(formula, data, ...)
     )
     return(result)
 }
