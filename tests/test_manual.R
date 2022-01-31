@@ -26,15 +26,10 @@ registerDoParallel(2)
 
 test_srt <- read_rds('../data/test_seurat.rds')
 
-test_mat <- test_srt[['RNA']]@data
-rownames(test_mat)[rownames(test_mat)=='NFIA'] <- '2610316D01Rik'
-test_srt2 <- CreateSeuratObject(test_mat, assay='RNA')
-test_srt2[['peaks']] <- test_srt[['peaks']]
-motif2tf_use$tf[motif2tf_use$tf=='NFIA'] <- '2610316D01Rik'
-
 test_srt <- initiate_grn(
-    test_srt2,
-    regions = phastConsElements20Mammals.UCSC.hg38
+    test_srt,
+    regions = phastConsElements20Mammals.UCSC.hg38,
+    exclude_exons = F
 )
 
 test_srt <- find_motifs(
@@ -51,6 +46,9 @@ test_srt <- aggregate_assay(test_srt, group_name = 'seurat_clusters')
 test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
+
+test_srt <- infer_grn(test_srt, genes=genes_use,
+    peak_to_gene_method = 'Signac', parallel=F, verbose=2)
 
 cv_metrics <- cv_grn(test_srt, genes=genes_use, method='xgb', fit_intercept=T, alpha=1)
 cv_metrics <- cv_grn(test_srt, genes=genes_use, method='bagging_ridge', fit_intercept=T, alpha=1)
