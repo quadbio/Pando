@@ -9,6 +9,9 @@ plot_gof(object, ...)
 
 \method{plot_gof}{SeuratPlus}(object, point_size = 0.5)
 }
+\arguments{
+\item{point_size}{Float indicating the point size.}
+}
 \value{
 A ggplot2 object.
 }

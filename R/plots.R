@@ -56,6 +56,9 @@ no_y_text <- function(){
 #' Plot goodness-of-fit metrics.
 #'
 #' @import ggpointdensity patchwork
+#'
+#' @param point_size Float indicating the point size.
+#'
 #' @return A ggplot2 object.
 #'
 #' @rdname plot_gof
@@ -136,7 +139,7 @@ plot_gof.SeuratPlus <- function(
 
 #' Plot module metrics number of genes, number of peaks and number of TFs per gene.
 #'
-#' @import patchwork
+#' @import patchwork ggh4x
 #' @return A ggplot2 object.
 #'
 #' @rdname plot_module_metrics
@@ -186,7 +189,9 @@ plot_module_metrics.SeuratPlus <- function(
         theme_bw() +
         theme_rangeframe() + scale_axis_rangeframe() +
         no_x_text() +
-        scale_y_continuous(trans=scales::pseudo_log_trans(base = 10), breaks=c(0, 1, 10, 100, 1000, 10000)) +
+        scale_y_continuous(
+            trans=scales::pseudo_log_trans(base = 10)
+        ) +
         theme(
             axis.line.x = element_blank(),
             axis.title.x = element_blank()
