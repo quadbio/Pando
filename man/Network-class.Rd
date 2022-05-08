@@ -19,6 +19,8 @@ process as well as graph representations of the network.
 
 \item{\code{features}}{A names list of lists with a set of fetures (genes/peaks) for each module.}
 
+\item{\code{params}}{A names list of lists with module selection parameters.}
+
 \item{\code{fit}}{A dataframe with goodness of fit measures.}
 
 \item{\code{coefs}}{A dataframe with the fitted coefficients.}
@@ -26,5 +28,7 @@ process as well as graph representations of the network.
 \item{\code{modules}}{A list TF modules.}
 
 \item{\code{graph}}{A graphical representation of the inferred network.}
+
+\item{\code{params}}{A names list of lists with GRN inference.}
 }}
 
