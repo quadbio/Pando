@@ -38,7 +38,7 @@ NULL
 #' For more info, see \code{\link[formula]{stats}}
 #' @param scale Logical. Whether to z-transform the expression and accessibility matrices.
 #' @param adjust_method Method for adjusting p-values.
-#' @param verbose Logical. Display messages
+#' @param verbose Logical. Display messages. Set verbose to '2' to print errors for all model fits.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A SeuratPlus object.
@@ -73,11 +73,10 @@ infer_grn.SeuratPlus <- function(
     method <- match.arg(method)
     peak_to_gene_method <- match.arg(peak_to_gene_method)
 
-    # Fit models in inference mode
+    # Fit models
     object <- fit_grn_models(
         object = object,
         genes = genes,
-        mode = 'inference',
         network_name = network_name,
         peak_to_gene_method = peak_to_gene_method,
         upstream = upstream,
@@ -100,104 +99,6 @@ infer_grn.SeuratPlus <- function(
     )
     return(object)
 }
-
-
-#' Cross-validation for GRN inference models
-#'
-#' @import Matrix
-#' @import sparseMatrixStats
-#' @importFrom purrr map_dfr map_lgl map_dbl map
-#' @importFrom stringr str_replace_all
-#'
-#' @param genes A character vector with the target genes to consider for GRN inference.
-#' Takes all VariableFeatures in the object per default.
-#' @param k_folds Number of cross-validation folds.
-#' @param strata Metadata column with strata for stratified CV.
-#' @param peak_to_gene_method Character specifying the method to
-#' link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.
-#' @param upstream Integer defining the distance upstream of the gene to consider as potential regulatory region.
-#' @param downstream Integer defining the distance downstream of the gene to consider as potential regulatory region.
-#' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
-#' Only used of `peak_to_gene_method = 'GREAT'`.
-#' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
-#' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
-#' @param tf_cor Threshold for TF - target gene correlation.
-#' @param peak_cor Threshold for binding peak - target gene correlation.
-#' @param method A character string indicating the method to fit the model.
-#' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
-#' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
-#' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
-#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
-#' @param interaction_term The interaction term to use in the model between TF and binding site.
-#' * \code{'+'} for additive interaction.
-#' * \code{':'} for 'multiplicative' interaction.
-#' * \code{'*'} for crossing interaction, i.e. additive AND 'multiplicative'.
-#' For more info, see \code{\link[formula]{stats}}
-#' @param scale Logical. Whether to z-transform the expression and accessibility matrices.
-#' @param verbose Logical. Display messages
-#' @param ... Other parameters for the model fitting function.
-#'
-#' @return A \code{data.frame} with cross-validation metrics.
-#'
-#' @rdname cv_grn
-#' @export
-#' @method cv_grn SeuratPlus
-cv_grn.SeuratPlus <- function(
-    object,
-    genes = NULL,
-    k_folds = 5,
-    strata = NULL,
-    peak_to_gene_method = c('Signac', 'GREAT'),
-    upstream = 100000,
-    downstream = 0,
-    extend = 1000000,
-    only_tss = FALSE,
-    parallel = FALSE,
-    tf_cor = 0.1,
-    peak_cor = 0.,
-    aggregate_rna_col = NULL,
-    aggregate_peaks_col = NULL,
-    method = c('glm', 'glmnet', 'cv.glmnet', 'xgb', 'bagging_ridge', 'bayesian_ridge'),
-    interaction_term = ':',
-    scale = FALSE,
-    verbose = TRUE,
-    ...
-){
-    # Match args
-    method <- match.arg(method)
-    peak_to_gene_method <- match.arg(peak_to_gene_method)
-
-    if (!is.null(strata)){
-        strata <- object@meta.data[[strata]]
-    }
-
-    # Cross-validate models
-    metrics <- fit_grn_models(
-        object = object,
-        genes = genes,
-        strata = strata,
-        k_folds = k_folds,
-        mode = 'cv',
-        peak_to_gene_method = peak_to_gene_method,
-        upstream = upstream,
-        downstream = downstream,
-        extend = extend,
-        only_tss = only_tss,
-        parallel = parallel,
-        tf_cor = tf_cor,
-        peak_cor = peak_cor,
-        aggregate_rna_col = aggregate_rna_col,
-        aggregate_peaks_col = aggregate_peaks_col,
-        method = method,
-        interaction_term = interaction_term,
-        scale = scale,
-        verbose = verbose,
-        ...
-    )
-    return(metrics)
-}
-
 
 #' Fit models for gene expression
 #'
@@ -242,7 +143,6 @@ cv_grn.SeuratPlus <- function(
 fit_grn_models.SeuratPlus <- function(
     object,
     genes = NULL,
-    mode = c('inference', 'cv'),
     network_name = paste0(method, '_network'),
     peak_to_gene_method = c('Signac', 'GREAT'),
     upstream = 100000,
@@ -262,7 +162,6 @@ fit_grn_models.SeuratPlus <- function(
     ...
 ){
     # Match args
-    mode <- match.arg(mode)
     method <- match.arg(method)
     peak_to_gene_method <- match.arg(peak_to_gene_method)
 
@@ -349,12 +248,7 @@ fit_grn_models.SeuratPlus <- function(
     tfs_use <- colnames(motif2tf)
     motif2tf <- motif2tf[, tfs_use, drop=FALSE]
 
-    if (mode=='inference'){
-        log_message('Fitting models for ', length(features), ' target genes' , verbose=verbose)
-    } else if (mode=='cv'){
-        log_message('Running CV for ', length(features), ' target genes' , verbose=verbose)
-    }
-
+    log_message('Fitting models for ', length(features), ' target genes' , verbose=verbose)
     # Loop through features and fit models/run CV for each
     names(features) <- features
     model_fits <- map_par(features, function(g){
@@ -436,31 +330,19 @@ fit_grn_models.SeuratPlus <- function(
         if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
         colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
 
-        # Mode 'inference' fits models and returns the coefficients and goodness-of-fit measures
-        if (mode=='inference'){
-            log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
-            result <- try(fit_model(
-                model_frml,
-                data = model_mat,
-                method = method,
-                ...
-            ), silent=TRUE)
-        } else if (mode=='cv'){
-            log_message('Running CV for ', g, verbose=verbose==2)
-            result <- try(cv_model(
-                model_frml,
-                data = model_mat,
-                method = method,
-                ...
-            ), silent=TRUE)
-        }
+        log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
+        result <- try(fit_model(
+            model_frml,
+            data = model_mat,
+            method = method,
+            ...
+        ), silent=TRUE)
         if (any(class(result)=='try-error')){
             log_message('Warning: Fitting model failed for ', g, verbose=verbose)
             log_message(result, verbose=verbose==2)
             return()
         } else {
-            if (mode=='cv') result$nvariables <- nfeats
-            if (mode=='inference') result$gof$nvariables <- nfeats
+            result$gof$nvariables <- nfeats
             return(result)
         }
     }, verbose=verbose, parallel=parallel)
@@ -470,33 +352,28 @@ fit_grn_models.SeuratPlus <- function(
         log_message('Warning: Fitting model failed for all genes.', verbose=verbose)
     }
 
-    if (mode=='inference'){
-        coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
-        coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
-        gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
+    coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
+    coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
+    gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
-        params <- list()
-        params[['method']] <- method
-        params[['family']] <- family
-        params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
-        params[['only_tss']] <- only_tss
-        params[['interaction']] <- interaction_term
-        params[['tf_cor']] <- tf_cor
-        params[['peak_cor']] <- peak_cor
+    params <- list()
+    params[['method']] <- method
+    params[['family']] <- family
+    params[['dist']] <- c('upstream'=upstream, 'downstream'=downstream)
+    params[['only_tss']] <- only_tss
+    params[['interaction']] <- interaction_term
+    params[['tf_cor']] <- tf_cor
+    params[['peak_cor']] <- peak_cor
 
-        network_obj <- new(
-            Class = 'Network',
-            features = features,
-            coefs = coefs,
-            fit = gof,
-            params = params
-        )
-        object@grn@networks[[network_name]] <- network_obj
-        return(object)
-    } else if (mode=='cv'){
-        metrics <- bind_rows(model_fits, .id='target')
-        return(metrics)
-    }
+    network_obj <- new(
+        Class = 'Network',
+        features = features,
+        coefs = coefs,
+        fit = gof,
+        params = params
+    )
+    object@grn@networks[[network_name]] <- network_obj
+    return(object)
 }
 
 

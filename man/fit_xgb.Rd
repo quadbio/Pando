@@ -9,6 +9,7 @@ fit_xgb(
   data,
   params = list(max_depth = 3, eta = 0.01, objective = "reg:squarederror"),
   nrounds = 1000,
+  nthread = -1,
   ...
 )
 }

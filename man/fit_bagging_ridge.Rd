@@ -11,7 +11,7 @@ fit_bagging_ridge(
   solver = "auto",
   bagging_number = 200L,
   n_jobs = 1,
-  p_method = c("t", "wilcox"),
+  p_method = c("wilcox", "t"),
   ...
 )
 }

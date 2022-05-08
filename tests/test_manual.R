@@ -40,17 +40,18 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 
-NetworkTFs(test_srt)
-
 test_srt <- aggregate_assay(test_srt, group_name = 'seurat_clusters')
 
 test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
+test_srt <- infer_grn(test_srt, genes=genes_use, method = 'bayesian_ridge')
+
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 
 plot_gof(test_srt, point_size=2)
+plot_module_metrics(test_srt)
 
 Params(test_srt)
 NetworkParams(test_srt)

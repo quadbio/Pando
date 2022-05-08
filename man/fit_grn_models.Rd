@@ -10,7 +10,6 @@ fit_grn_models(object, ...)
 \method{fit_grn_models}{SeuratPlus}(
   object,
   genes = NULL,
-  mode = c("inference", "cv"),
   network_name = paste0(method, "_network"),
   peak_to_gene_method = c("Signac", "GREAT"),
   upstream = 1e+05,

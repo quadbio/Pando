@@ -16,6 +16,12 @@ infer_grn <- function(object, ...){
     UseMethod(generic = 'infer_grn', object = object)
 }
 
+#' @rdname fit_grn_models
+#' @export fit_grn_models
+fit_grn_models <- function(object, ...){
+    UseMethod(generic = 'fit_grn_models', object = object)
+}
+
 #' @rdname plot_gof
 #' @export plot_gof
 plot_gof <- function(object, ...){

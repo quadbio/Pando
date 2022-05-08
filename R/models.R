@@ -365,7 +365,7 @@ fit_bayesian_ridge <- function(
 
     coefs <- model$coef_
     coef_var <- diag(model$sigma_)
-    p <- qnorm(x=0, mean=abs(coefs), sd=sqrt(coef_var)) * 2
+    p <- pnorm(q=0, mean=abs(coefs), sd=sqrt(coef_var)) * 2
     coefs <- tibble(
         term = colnames(model_mat),
         estimate = coefs,

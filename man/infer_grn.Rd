@@ -83,7 +83,7 @@ For more info, see \code{\link[formula]{stats}}
 
 \item{scale}{Logical. Whether to z-transform the expression and accessibility matrices.}
 
-\item{verbose}{Logical. Display messages}
+\item{verbose}{Logical. Display messages. Set verbose to '2' to print errors for all model fits.}
 }
 \value{
 A SeuratPlus object.

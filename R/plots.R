@@ -145,9 +145,7 @@ plot_gof.SeuratPlus <- function(
 plot_module_metrics.SeuratPlus <- function(
     object
 ){
-
     modules <- NetworkModules(object)@meta
-
     plot_df <- modules %>%
         distinct(target, n_regions)
 
