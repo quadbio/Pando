@@ -31,13 +31,18 @@ Imports:
     glmnetUtils,
     bayestestR,
     xgboost,
-    brms
-Suggests: 
-    rmarkdown,
-    testthat,
+    brms,
+    ggpointdensity,
+    ggraph,
+    tidygraph,
+    pals,
+    patchwork,
     presto,
     TFBSTools,
     foreach,
-    sparseMatrixStats,
-    cmdstanr,
-    reticulate
+    sparseMatrixStats
+Suggests: 
+    rmarkdown,
+    testthat,
+    reticulate,
+    cmdstanr
