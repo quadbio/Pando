@@ -15,14 +15,15 @@ data(phastConsElements20Mammals.UCSC.hg38)
 data(SCREEN.ccRE.UCSC.hg38)
 data(motif2tf)
 
-genes_use <- c('PAX6', 'POU5F1', 'DLX6', 'NFIA')
-tfs_use <- c('PAX6', 'POU5F1', 'DLX6', 'NFIA')
+registerDoParallel(2)
+
+genes_use <- c('PAX6', 'POU5F1', 'DLX6', 'NFIA', 'NEUROD6', 'NFIB', 'RAX', 'FGF8', 'CRABP1', 'JUNB',
+    'HOPX', 'LHX9', 'NEUROG2', 'LHX1', 'SIX6', 'FOXC1', 'DKK1', 'PCP4', 'SPRY1')
+tfs_use <- unique(c(genes_use, 'PAX6', 'POU5F1', 'DLX6', 'NFIA', 'GLI3', 'NFIX', 'SOX3', 'SIX3'))
 
 motif2tf_use <- motif2tf %>%
-    filter(origin=='JASPAR2020') %>%
+    filter(tf%in%tfs_use) %>%
     rename('mot'=motif)
-
-registerDoParallel(2)
 
 test_srt <- read_rds('../data/test_seurat.rds')
 
@@ -35,7 +36,7 @@ test_srt <- initiate_grn(
 test_srt <- find_motifs(
     test_srt,
     motif_tfs = motif2tf_use,
-    pfm = motifs[1:10],
+    pfm = motifs[unique(motif2tf_use$mot)],
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 
@@ -47,21 +48,14 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
-test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'Signac', parallel=F, verbose=2)
+test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 
-cv_metrics <- cv_grn(test_srt, genes=genes_use, method='xgb', fit_intercept=T, alpha=1)
-cv_metrics <- cv_grn(test_srt, genes=genes_use, method='bagging_ridge', fit_intercept=T, alpha=1)
-
-test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb', nrounds=100, nthread=-1)
-
-test_srt <- infer_grn(test_srt, genes=genes_use, method='bagging_ridge', alpha=0.5, p_method='wilcox')
-test_srt <- infer_grn(test_srt, genes=genes_use, method='bayesian_ridge', alpha=0.5, p_method='wilcox')
-
-test_srt <- find_modules(test_srt, min_genes_per_module=0)
+plot_gof(test_srt, point_size=2)
 
 Params(test_srt)
 NetworkParams(test_srt)
+NetworkModules(test_srt)@meta
+NetworkModules(test_srt)@params
 
 test_srt@grn@networks
 
