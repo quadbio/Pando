@@ -22,6 +22,12 @@ plot_gof <- function(object, ...){
     UseMethod(generic = 'plot_gof', object = object)
 }
 
+#' @rdname plot_module_metrics
+#' @export plot_module_metrics
+plot_module_metrics <- function(object, ...){
+    UseMethod(generic = 'plot_module_metrics', object = object)
+}
+
 #' @rdname GetGRN
 #' @export GetGRN
 GetGRN <- function(object, ...){

@@ -7,7 +7,7 @@
 \usage{
 plot_gof(object, ...)
 
-\method{plot_gof}{SeuratPlus}(object, point_size = 0.1)
+\method{plot_gof}{SeuratPlus}(object, point_size = 0.5)
 }
 \value{
 A ggplot2 object.

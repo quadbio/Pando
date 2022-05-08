@@ -19,6 +19,40 @@ no_margin <- function(){
     )
 }
 
+#' Rangeframe scales.
+scale_axis_rangeframe <- function(){
+    guides(x='axis_truncated', y='axis_truncated')
+}
+
+#' Theme rangeframe.
+theme_rangeframe <- function(){
+    theme(
+        axis.line = element_line(colour='black', lineend='round', size=0.3),
+        axis.ticks = element_line(size=0.3),
+        panel.border = element_blank()
+    )
+}
+
+#' Removes x axis text.
+#'
+#' @export
+no_x_text <- function(){
+    theme(
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank()
+    )
+}
+
+#' Removes y axis text.
+#'
+#' @export
+no_y_text <- function(){
+    theme(
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank()
+    )
+}
+
 #' Plot goodness-of-fit metrics.
 #'
 #' @import ggpointdensity patchwork
@@ -109,17 +143,18 @@ plot_gof.SeuratPlus <- function(
 #' @export
 #' @method plot_module_metrics SeuratPlus
 plot_module_metrics.SeuratPlus <- function(
-    object,
-    point_size = 0.5
+    object
 ){
 
-    plot_df <- NetworkModules(object)@meta %>%
+    modules <- NetworkModules(object)@meta
+
+    plot_df <- modules %>%
         distinct(target, n_regions)
 
     p1 <- ggplot(plot_df, aes(1, n_regions)) +
         geom_violin(size=0.2, fill='darkgrey', color='black') +
+        theme_bw() +
         theme_rangeframe() + scale_axis_rangeframe() +
-        article_text() +
         no_x_text() +
         theme(
             axis.line.x = element_blank(),
@@ -130,12 +165,12 @@ plot_module_metrics.SeuratPlus <- function(
 
 
     plot_df <- modules %>%
-        distinct(target, ntfs)
+        distinct(target, n_tfs)
 
-    p2 <- ggplot(plot_df, aes(1, ntfs)) +
+    p2 <- ggplot(plot_df, aes(1, n_tfs)) +
         geom_violin(size=0.2, fill='darkgrey', color='black') +
+        theme_bw() +
         theme_rangeframe() + scale_axis_rangeframe() +
-        article_text() +
         no_x_text() +
         theme(
             axis.line.x = element_blank(),
@@ -146,12 +181,12 @@ plot_module_metrics.SeuratPlus <- function(
 
 
     plot_df <- modules %>%
-        distinct(tf, ngenes)
+        distinct(tf, n_genes)
 
-    p3 <- ggplot(plot_df, aes(1, ngenes)) +
+    p3 <- ggplot(plot_df, aes(1, n_genes)) +
         geom_violin(size=0.2, fill='darkgrey', color='black') +
+        theme_bw() +
         theme_rangeframe() + scale_axis_rangeframe() +
-        article_text() +
         no_x_text() +
         scale_y_continuous(trans=scales::pseudo_log_trans(base = 10), breaks=c(0, 1, 10, 100, 1000, 10000)) +
         theme(
@@ -161,5 +196,6 @@ plot_module_metrics.SeuratPlus <- function(
         geom_boxplot(width=0.2, outlier.shape=NA, size=0.2) +
         labs(y=expression('# genes'))
 
-    p1 | p2 | p3 & no_margin()
+    p_out <- p1 | p2 | p3 & no_margin()
+    return(p_out)
 }
