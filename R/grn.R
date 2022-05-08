@@ -442,8 +442,14 @@ find_modules.Network <- function(
         'regions_neg' = regions_neg
     )
 
-    object@modules@meta <- modules
+    object@modules@meta <- select(modules, tf, target, everything())
     object@modules@features <- module_feats
+    object@modules@params <- list(
+        p_thresh = p_thresh,
+        rsq_thresh = rsq_thresh,
+        nvar_thresh = nvar_thresh,
+        min_genes_per_module = min_genes_per_module
+    )
 
     return(object)
 }

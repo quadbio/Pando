@@ -11,6 +11,7 @@ NULL
 #'
 #' @slot meta A dataframe with meta data about the modules.
 #' @slot features A names list of lists with a set of fetures (genes/peaks) for each module.
+#' @slot params A names list of lists with module selection parameters.
 #'
 #' @name Network-class
 #' @rdname Network-class
@@ -19,7 +20,8 @@ Modules <- setClass(
     Class = 'Modules',
     slots = list(
         meta = 'data.frame',
-        features = 'list'
+        features = 'list',
+        params = 'list'
     )
 )
 
@@ -33,6 +35,7 @@ Modules <- setClass(
 #' @slot coefs A dataframe with the fitted coefficients.
 #' @slot modules A list TF modules.
 #' @slot graph A graphical representation of the inferred network.
+#' @slot params A names list of lists with GRN inference.
 #'
 #' @name Network-class
 #' @rdname Network-class
