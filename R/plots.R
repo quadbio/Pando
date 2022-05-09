@@ -53,6 +53,22 @@ no_y_text <- function(){
     )
 }
 
+#' Compute UMAP embedding
+get_umap <- function(
+    x,
+    n_pcs = 40,
+    ...
+){
+    pca_mat <- prcomp_irlba(x, n=n_pcs)$x
+    rownames(pca_mat) <- rownames(x)
+    umap_tbl <- uwot::umap(as.matrix(pca_mat), ...) %>%
+        {rownames(.) <- rownames(pca_mat); .} %>%
+        as_tibble(rownames='cell')
+    colnames(umap_tbl) <- c('cell', paste0('UMAP', seq(ncol(umap_tbl)-1)))
+    return(umap_tbl)
+}
+
+
 #' Plot goodness-of-fit metrics.
 #'
 #' @import ggpointdensity patchwork
@@ -202,3 +218,68 @@ plot_module_metrics.SeuratPlus <- function(
     p_out <- p1 | p2 | p3 & no_margin()
     return(p_out)
 }
+
+
+#' Compute network graph embedding using UMAP.
+#'
+#' @importFrom purrr map tidygraph
+#'
+#' @param object An object.
+#' @param network Name of the network to use.
+#' @param graph_name Name of the graph.
+#' @param rna_assay Name of the RNA assay.
+#' @param rna_slot Name of the RNA slot to use.
+#'
+#' @return A SeuratPlus object.
+#'
+#' @rdname get_network_graph
+#' @export
+#' @method get_network_graph SeuratPlus
+get_network_graph.SeuratPlus <- function(
+    object,
+    network = 'glm_network',
+    graph_name = 'module_graph',
+    rna_assay = 'RNA',
+    rna_slot = 'data',
+    use_coexpression = TRUE,
+    features = NULL,
+    random_seed = 111
+){
+    rna_expr <- t(GetAssayData(object, assay=rna_assay, slot=rna_slot))
+    features_use <- intersect(features, colnames(rna_expr))
+    rna_expr <- rna_expr[, features_use]
+
+    gene_cor <- sparse_cor(rna_expr)
+    gene_cor_df <- gene_cor %>%
+        as_tibble(rownames='source') %>%
+        pivot_longer(!source, names_to='target', values_to='corr')
+
+    # Get adjacency df and matrix
+    modules <- NetworkModules(object)
+
+    modules_use <- modules %>%
+        filter(target%in%features_use, tf%in%features_use)
+
+    tf_net <- modules_use %>%
+        select(tf, target, everything()) %>%
+        group_by(target) %>%
+        left_join(gene_cor_df, by=c('tf'='source', 'target')) %>%
+        {.$corr[is.na(.$corr)] <- 0; .}
+
+    reg_mat <- tf_net %>%
+        select(target, tf, estimate) %>%
+        pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
+        as_matrix() %>% Matrix::Matrix(sparse=T)
+
+    # Layout with UMAP on adjacency matrix
+    reg_factor_mat <- abs(reg_mat) + 1
+    coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
+
+    set.seed(random_seed)
+    coex_umap <- umap(weighted_coex_mat, n_pcs=30)
+
+}
+
+
+
+

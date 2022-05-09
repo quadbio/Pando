@@ -34,6 +34,12 @@ plot_module_metrics <- function(object, ...){
     UseMethod(generic = 'plot_module_metrics', object = object)
 }
 
+#' @rdname get_network_graph
+#' @export get_network_graph
+get_network_graph <- function(object, ...){
+    UseMethod(generic = 'get_network_graph', object = object)
+}
+
 #' @rdname GetGRN
 #' @export GetGRN
 GetGRN <- function(object, ...){

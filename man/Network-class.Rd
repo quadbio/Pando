@@ -27,7 +27,7 @@ process as well as graph representations of the network.
 
 \item{\code{modules}}{A list TF modules.}
 
-\item{\code{graph}}{A graphical representation of the inferred network.}
+\item{\code{graphs}}{A graphical representations of the inferred network.}
 
 \item{\code{params}}{A names list of lists with GRN inference.}
 }}
