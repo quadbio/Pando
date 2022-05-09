@@ -48,6 +48,7 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 test_srt <- get_network_graph(test_srt, n_neighbors=2)
+plot_network_graph(test_srt)
 
 NetworkGraph(test_srt)
 

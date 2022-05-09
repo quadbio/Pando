@@ -213,7 +213,6 @@ plot_module_metrics.SeuratPlus <- function(
 
 #' Compute network graph embedding using UMAP.
 #'
-#' @importFrom purrr map
 #' @importFrom tidyr pivot_longer
 #' @import tidygraph
 #'
@@ -328,5 +327,75 @@ get_network_graph.SeuratPlus <- function(
 }
 
 
+#' Plot network graph.
+#'
+#' @import tidygraph
+#' @import ggraph
+#'
+#' @param object An object.
+#' @param network Name of the network to use.
+#' @param graph_name Name of the graph.
+#' @param layout Layout for the graph. Can be 'umap' or any force-directed layout
+#' implemented in \code{\link[ggraph]{ggraph}}
+#' @param edge_width Edge width.
+#' @param edge_color Edge color.
+#' @param node_color Node color or color gradient.
+#' @param node_size Edge size range.
+#' @param text_size Text width.
+#' @param color_nodes Logical, Whether to color nodes by centrality.
+#' @param label_nodes Logical, Whether to label nodes with gene name.
+#' @param color_edges Logical, Whether to color edges by direction.
+#'
+#' @return A SeuratPlus object.
+#'
+#' @rdname plot_network_graph
+#' @export
+#' @method plot_network_graph SeuratPlus
+plot_network_graph.SeuratPlus <- function(
+    object,
+    network = 'glm_network',
+    graph_name = 'module_graph',
+    layout = 'umap',
+    edge_width = 0.2,
+    edge_color = c('-1'='darkgrey', '1'='orange'),
+    node_color = pals::magma(100),
+    node_size = c(1,5),
+    text_size = 10,
+    color_nodes = TRUE,
+    label_nodes = TRUE,
+    color_edges = TRUE
+){
+    gene_graph <- NetworkGraph(object)
 
+    if (layout=='umap'){
+        p <- ggraph(gene_graph, x=UMAP_1, y=UMAP_2)
+    } else {
+        p <- ggraph(gene_graph, layout=layout)
+    }
+
+    if (color_edges){
+        p <- p + geom_edge_diagonal(aes(color=factor(dir)), width=edge_width) +
+            scale_edge_color_manual(values=edge_color)
+    } else {
+        p <- p + geom_edge_diagonal(width=edge_width, color=edge_color[1])
+    }
+
+    if (color_nodes){
+        p <- p + geom_node_point(aes(fill=centrality, size=centrality), color='darkgrey', shape=21) +
+            scale_fill_gradientn(colors=node_color)
+    } else {
+        p <- p + geom_node_point(aes(size=centrality), color='darkgrey', shape=21, fill=node_color[1])
+    }
+
+    if (label_nodes){
+        p <- p + geom_node_text(
+            aes(label=name),
+            repel=T, size=text_size/ggplot2::.pt, max.overlaps=99999
+        )
+    }
+    p <- p + scale_size_continuous(range=node_size) +
+        theme_void() + no_legend()
+
+    return(p)
+}
 

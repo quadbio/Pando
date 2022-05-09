@@ -40,6 +40,12 @@ get_network_graph <- function(object, ...){
     UseMethod(generic = 'get_network_graph', object = object)
 }
 
+#' @rdname plot_network_graph
+#' @export plot_network_graph
+plot_network_graph <- function(object, ...){
+    UseMethod(generic = 'plot_network_graph', object = object)
+}
+
 #' @rdname NetworkGraph
 #' @export NetworkGraph
 NetworkGraph <- function(object, ...){
