@@ -583,6 +583,11 @@ find_modules.SeuratPlus <- function(
     modules@features[['peaks_pos']] <- peaks_pos
     modules@features[['peaks_neg']] <- peaks_neg
     object@grn@networks[[network]]@modules <- modules
-    object@grn@networks[[network]]@graphs$module_graph <- as_tbl_graph(modules@meta)
     return(object)
 }
+
+
+
+
+
+
