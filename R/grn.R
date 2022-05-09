@@ -423,6 +423,7 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 
 #' Find TF modules in regulatory network
 #'
+#' @import tidygraph
 #' @importFrom purrr map map_chr
 #' @importFrom stringr str_split str_replace_all
 #'
@@ -535,7 +536,8 @@ find_modules.Network <- function(
         'regions_neg' = regions_neg
     )
 
-    object@modules@meta <- select(modules, tf, target, everything())
+    module_meta <- select(modules, tf, target, everything())
+    object@modules@meta <- module_meta
     object@modules@features <- module_feats
     object@modules@params <- list(
         p_thresh = p_thresh,
@@ -543,7 +545,6 @@ find_modules.Network <- function(
         nvar_thresh = nvar_thresh,
         min_genes_per_module = min_genes_per_module
     )
-
     return(object)
 }
 
@@ -581,7 +582,7 @@ find_modules.SeuratPlus <- function(
     peaks_neg <- modules@features$regions_neg %>% map(function(x) unique(reg2peaks[x]))
     modules@features[['peaks_pos']] <- peaks_pos
     modules@features[['peaks_neg']] <- peaks_neg
-
     object@grn@networks[[network]]@modules <- modules
+    object@grn@networks[[network]]@graphs$module_graph <- as_tbl_graph(modules@meta)
     return(object)
 }
