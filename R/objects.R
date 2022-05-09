@@ -34,7 +34,7 @@ Modules <- setClass(
 #' @slot fit A dataframe with goodness of fit measures.
 #' @slot coefs A dataframe with the fitted coefficients.
 #' @slot modules A list TF modules.
-#' @slot graph A graphical representation of the inferred network.
+#' @slot graphs A graphical representations of the inferred network.
 #' @slot params A names list of lists with GRN inference.
 #'
 #' @name Network-class
@@ -47,7 +47,7 @@ Network <- setClass(
         fit = 'data.frame',
         coefs = 'data.frame',
         modules = 'Modules',
-        graph = 'ANY',
+        graphs = 'ANY',
         params = 'list'
     )
 )
