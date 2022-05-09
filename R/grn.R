@@ -551,7 +551,10 @@ find_modules.Network <- function(
 
 #' @importFrom purrr map
 #'
-#' @return A Network object.
+#' @return A SeuratPlus object.
+#'
+#' @param object An object.
+#' @param network Name of the network to use.
 #'
 #' @rdname find_modules
 #' @export
