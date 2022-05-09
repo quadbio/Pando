@@ -56,15 +56,16 @@ no_y_text <- function(){
 #' Compute UMAP embedding
 get_umap <- function(
     x,
-    n_pcs = 40,
     ...
 ){
-    pca_mat <- prcomp_irlba(x, n=n_pcs)$x
-    rownames(pca_mat) <- rownames(x)
-    umap_tbl <- uwot::umap(as.matrix(pca_mat), ...) %>%
-        {rownames(.) <- rownames(pca_mat); .} %>%
-        as_tibble(rownames='cell')
-    colnames(umap_tbl) <- c('cell', paste0('UMAP', seq(ncol(umap_tbl)-1)))
+    if (ncol(x)>100){
+        pca_mat <- irlba::prcomp_irlba(x, n=n_pcs)$x
+        rownames(pca_mat) <- rownames(x)
+        x <- as.matrix(pca_mat)
+    }
+    umap_tbl <- uwot::umap(x, ...) %>%
+        {colnames(.) <- c('UMAP_1', 'UMAP_2'); .} %>%
+        as_tibble(rownames='gene')
     return(umap_tbl)
 }
 
@@ -73,6 +74,8 @@ get_umap <- function(
 #'
 #' @import ggpointdensity patchwork
 #'
+#' @param object An object.
+#' @param network Name of the network to use.
 #' @param point_size Float indicating the point size.
 #'
 #' @return A ggplot2 object.
@@ -82,32 +85,15 @@ get_umap <- function(
 #' @method plot_gof SeuratPlus
 plot_gof.SeuratPlus <- function(
     object,
+    network = 'glm_network',
     point_size = 0.5
 ){
 
-    module_params <- NetworkModules(object)@params
+    module_params <- NetworkModules(object, network=network)@params
 
-    gof <- gof(object) %>%
-        dplyr::filter(rsq<=1, rsq>=0) %>%
+    gof <- gof(object, network=network) %>%
+        filter(rsq<=1, rsq>=0) %>%
         mutate(nice=rsq>module_params$rsq_thresh&nvariables>module_params$nvar_thresh)
-
-    models_use <- gof %>%
-        filter(nice) %>%
-        pull(target) %>%
-        unique()
-
-    coefs_use <- coef(object) %>%
-        mutate(padj = p.adjust(pval, method = 'fdr')) %>%
-        filter(target%in%models_use) %>%
-        dplyr::filter(term!='(Intercept)') %>%
-        mutate(
-            tf_ = str_replace(term, '(.+):(.+)', '\\1'),
-            peak_ = str_replace(term, '(.+):(.+)', '\\2')
-        ) %>%
-        mutate(
-            tf = ifelse(str_detect(tf_, 'chr'), peak_, tf_),
-            peak = ifelse(!str_detect(tf_, 'chr'), peak_, tf_)
-        ) %>% dplyr::select(-peak_, -tf_)
 
     p1 <- ggplot(gof, aes(rsq, nvariables, alpha=nice)) +
         geom_pointdensity(size=point_size, shape=16) +
@@ -156,15 +142,20 @@ plot_gof.SeuratPlus <- function(
 #' Plot module metrics number of genes, number of peaks and number of TFs per gene.
 #'
 #' @import patchwork ggh4x
+#'
+#' @param object An object.
+#' @param network Name of the network to use.
+#'
 #' @return A ggplot2 object.
 #'
 #' @rdname plot_module_metrics
 #' @export
 #' @method plot_module_metrics SeuratPlus
 plot_module_metrics.SeuratPlus <- function(
-    object
+    object,
+    network = 'glm_network'
 ){
-    modules <- NetworkModules(object)@meta
+    modules <- NetworkModules(object, network=network)@meta
     plot_df <- modules %>%
         distinct(target, n_regions)
 
@@ -222,13 +213,20 @@ plot_module_metrics.SeuratPlus <- function(
 
 #' Compute network graph embedding using UMAP.
 #'
-#' @importFrom purrr map tidygraph
+#' @importFrom purrr map
+#' @importFrom tidyr pivot_longer
+#' @import tidygraph
 #'
 #' @param object An object.
 #' @param network Name of the network to use.
 #' @param graph_name Name of the graph.
 #' @param rna_assay Name of the RNA assay.
 #' @param rna_slot Name of the RNA slot to use.
+#' @param edge_method Method to compute edge weights:
+#' * \code{'weighted'} - Correlation weighted by GRN coefficient.
+#' * \code{'corr'} - Only correlation.
+#' * \code{'coef'} - Only GRN coefficient.
+#' @param ... Additional arguments for \code{\link[umap]{uwot}}.
 #'
 #' @return A SeuratPlus object.
 #'
@@ -241,43 +239,92 @@ get_network_graph.SeuratPlus <- function(
     graph_name = 'module_graph',
     rna_assay = 'RNA',
     rna_slot = 'data',
-    use_coexpression = TRUE,
+    edge_method = c('weighted', 'corr', 'coef'),
     features = NULL,
-    random_seed = 111
+    random_seed = 111,
+    ...
 ){
-    rna_expr <- t(GetAssayData(object, assay=rna_assay, slot=rna_slot))
-    features_use <- intersect(features, colnames(rna_expr))
-    rna_expr <- rna_expr[, features_use]
+    edge_method <- match.arg(edge_method)
+    modules <- NetworkModules(object, network=network)
 
-    gene_cor <- sparse_cor(rna_expr)
-    gene_cor_df <- gene_cor %>%
-        as_tibble(rownames='source') %>%
-        pivot_longer(!source, names_to='target', values_to='corr')
+    if (edge_method=='weighted'){
+        rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
+        if (!is.null(features)){
+            features <- intersect(features, colnames(rna_expr))
+            rna_expr <- rna_expr[, features]
+        }
+        rna_expr <- rna_expr
 
-    # Get adjacency df and matrix
-    modules <- NetworkModules(object)
+        gene_cor <- sparse_cor(rna_expr)
+        gene_cor_df <- gene_cor %>%
+            as_tibble(rownames='source') %>%
+            pivot_longer(!source, names_to='target', values_to='corr')
 
-    modules_use <- modules %>%
-        filter(target%in%features_use, tf%in%features_use)
+        modules_use <- modules@meta %>%
+            filter(target%in%colnames(rna_expr), tf%in%colnames(rna_expr))
 
-    tf_net <- modules_use %>%
-        select(tf, target, everything()) %>%
-        group_by(target) %>%
-        left_join(gene_cor_df, by=c('tf'='source', 'target')) %>%
-        {.$corr[is.na(.$corr)] <- 0; .}
+        gene_net <- modules_use %>%
+            select(tf, target, everything()) %>%
+            group_by(target) %>%
+            left_join(gene_cor_df, by=c('tf'='source', 'target')) %>%
+            {.$corr[is.na(.$corr)] <- 0; .}
 
-    reg_mat <- tf_net %>%
-        select(target, tf, estimate) %>%
-        pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
-        as_matrix() %>% Matrix::Matrix(sparse=T)
+        reg_mat <- gene_net %>%
+            select(target, tf, estimate) %>%
+            pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
+            column_to_rownames('target') %>% as.matrix() %>% Matrix::Matrix(sparse=T)
 
-    # Layout with UMAP on adjacency matrix
-    reg_factor_mat <- abs(reg_mat) + 1
-    coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
+        # Layout with UMAP on adjacency matrix
+        reg_factor_mat <- abs(reg_mat) + 1
+        coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
+
+    } else if (edge_method=='corr'){
+        rna_expr <- t(GetAssayData(object, assay=rna_assay, slot=rna_slot))
+        features <- intersect(features, colnames(rna_expr))
+        rna_expr <- rna_expr[, features]
+
+        coex_mat <- sparse_cor(rna_expr)
+        gene_cor_df <- coex_mat %>%
+            as_tibble(rownames='source') %>%
+            pivot_longer(!source, names_to='target', values_to='corr')
+
+        # Get adjacency df and matrix
+        modules_use <- modules %>%
+            filter(target%in%features, tf%in%features)
+
+        gene_net <- modules_use %>%
+            select(tf, target, everything()) %>%
+            group_by(target) %>%
+            left_join(gene_cor_df, by=c('tf'='source', 'target')) %>%
+            {.$corr[is.na(.$corr)] <- 0; .}
+
+    } else if (edge_method=='coef'){
+        modules_use <- modules %>%
+            filter(target%in%features, tf%in%features)
+
+        gene_net <- modules_use %>%
+            select(tf, target, everything()) %>%
+            group_by(target)
+
+        coex_mat <- gene_net %>%
+            select(target, tf, estimate) %>%
+            pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
+            as_matrix() %>% Matrix::Matrix(sparse=T)
+    }
 
     set.seed(random_seed)
-    coex_umap <- umap(weighted_coex_mat, n_pcs=30)
+    coex_umap <- get_umap(coex_mat, ...)
 
+    gene_graph <- as_tbl_graph(gene_net) %>%
+        activate(edges) %>%
+        mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
+        mutate(dir=sign(estimate)) %>%
+        activate(nodes) %>%
+        mutate(centrality=centrality_pagerank()) %>%
+        inner_join(coex_umap, by=c('name'='gene'))
+
+    object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
+    return(object)
 }
 
 

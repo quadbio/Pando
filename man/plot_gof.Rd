@@ -7,9 +7,13 @@
 \usage{
 plot_gof(object, ...)
 
-\method{plot_gof}{SeuratPlus}(object, point_size = 0.5)
+\method{plot_gof}{SeuratPlus}(object, network = "glm_network", point_size = 0.5)
 }
 \arguments{
+\item{object}{An object.}
+
+\item{network}{Name of the network to use.}
+
 \item{point_size}{Float indicating the point size.}
 }
 \value{

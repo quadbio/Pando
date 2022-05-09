@@ -13,10 +13,31 @@ get_network_graph(object, ...)
   graph_name = "module_graph",
   rna_assay = "RNA",
   rna_slot = "data",
-  use_coexpression = TRUE,
+  edge_method = c("weighted", "corr", "coef"),
   features = NULL,
-  random_seed = 111
+  random_seed = 111,
+  ...
 )
+}
+\arguments{
+\item{object}{An object.}
+
+\item{...}{Additional arguments for \code{\link[umap]{uwot}}.}
+
+\item{network}{Name of the network to use.}
+
+\item{graph_name}{Name of the graph.}
+
+\item{rna_assay}{Name of the RNA assay.}
+
+\item{rna_slot}{Name of the RNA slot to use.}
+
+\item{edge_method}{Method to compute edge weights:
+\itemize{
+\item \code{'weighted'} - Correlation weighted by GRN coefficient.
+\item \code{'corr'} - Only correlation.
+\item \code{'coef'} - Only GRN coefficient.
+}}
 }
 \value{
 A SeuratPlus object.
