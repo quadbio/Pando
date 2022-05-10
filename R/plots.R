@@ -320,7 +320,7 @@ get_network_graph.SeuratPlus <- function(
         mutate(dir=sign(estimate)) %>%
         activate(nodes) %>%
         mutate(centrality=centrality_pagerank()) %>%
-        inner_join(coex_umap, by=c('name'='gene'))
+        left_join(coex_umap, by=c('name'='gene'))
 
     object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
     return(object)
