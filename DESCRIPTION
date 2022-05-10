@@ -41,7 +41,9 @@ Imports:
     TFBSTools,
     foreach,
     ggh4x,
-    sparseMatrixStats
+    sparseMatrixStats,
+    irlba,
+    uwot
 Suggests: 
     rmarkdown,
     testthat,
