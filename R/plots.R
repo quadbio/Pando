@@ -225,6 +225,7 @@ plot_module_metrics.SeuratPlus <- function(
 #' * \code{'weighted'} - Correlation weighted by GRN coefficient.
 #' * \code{'corr'} - Only correlation.
 #' * \code{'coef'} - Only GRN coefficient.
+#' @param features
 #' @param ... Additional arguments for \code{\link[umap]{uwot}}.
 #'
 #' @return A SeuratPlus object.
@@ -241,19 +242,23 @@ get_network_graph.SeuratPlus <- function(
     edge_method = c('weighted', 'corr', 'coef'),
     features = NULL,
     random_seed = 111,
+    verbose = TRUE,
     ...
 ){
     edge_method <- match.arg(edge_method)
     modules <- NetworkModules(object, network=network)
 
     if (edge_method=='weighted'){
+        net_features <- NetworkFeatures(object)
         rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
-        if (!is.null(features)){
-            features <- intersect(features, colnames(rna_expr))
-            rna_expr <- rna_expr[, features]
-        }
-        rna_expr <- rna_expr
 
+        if (!is.null(features)){
+            features <- intersect(intersect(features, colnames(rna_expr)), net_features)
+        } else {
+            features <- net_features
+        }
+
+        rna_expr <- rna_expr[, features]
         gene_cor <- sparse_cor(rna_expr)
         gene_cor_df <- gene_cor %>%
             as_tibble(rownames='source') %>%
@@ -278,10 +283,16 @@ get_network_graph.SeuratPlus <- function(
         coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
 
     } else if (edge_method=='corr'){
-        rna_expr <- t(GetAssayData(object, assay=rna_assay, slot=rna_slot))
-        features <- intersect(features, colnames(rna_expr))
-        rna_expr <- rna_expr[, features]
+        net_features <- NetworkFeatures(object)
+        rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
 
+        if (!is.null(features)){
+            features <- intersect(intersect(features, colnames(rna_expr)), net_features)
+        } else {
+            features <- net_features
+        }
+
+        rna_expr <- rna_expr[, features]
         coex_mat <- sparse_cor(rna_expr)
         gene_cor_df <- coex_mat %>%
             as_tibble(rownames='source') %>%
