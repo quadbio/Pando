@@ -299,7 +299,7 @@ get_network_graph.SeuratPlus <- function(
             pivot_longer(!source, names_to='target', values_to='corr')
 
         # Get adjacency df and matrix
-        modules_use <- modules %>%
+        modules_use <- modules@meta %>%
             filter(target%in%features, tf%in%features)
 
         gene_net <- modules_use %>%
@@ -331,7 +331,7 @@ get_network_graph.SeuratPlus <- function(
         mutate(dir=sign(estimate)) %>%
         activate(nodes) %>%
         mutate(centrality=centrality_pagerank()) %>%
-        left_join(coex_umap, by=c('name'='gene'))
+        inner_join(coex_umap, by=c('name'='gene'))
 
     object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
     return(object)
