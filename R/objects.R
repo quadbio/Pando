@@ -34,7 +34,7 @@ Modules <- setClass(
 #' @slot fit A dataframe with goodness of fit measures.
 #' @slot coefs A dataframe with the fitted coefficients.
 #' @slot modules A list TF modules.
-#' @slot graph A graphical representation of the inferred network.
+#' @slot graphs A graphical representations of the inferred network.
 #' @slot params A names list of lists with GRN inference.
 #'
 #' @name Network-class
@@ -47,7 +47,7 @@ Network <- setClass(
         fit = 'data.frame',
         coefs = 'data.frame',
         modules = 'Modules',
-        graph = 'ANY',
+        graphs = 'list',
         params = 'list'
     )
 )
@@ -244,6 +244,29 @@ NetworkParams.RegulatoryNetwork <- function(object, network='glm_network'){
 #' @export
 NetworkParams.Network <- function(object){
     return(object@params)
+}
+
+
+#' Get network parameters
+#' @rdname NetworkGraph
+#' @method NetworkGraph SeuratPlus
+#' @export
+NetworkGraph.SeuratPlus <- function(object, network='glm_network', graph='module_graph'){
+    return(GetNetwork(object, network=network)@graphs[[graph]])
+}
+
+#' @rdname NetworkGraph
+#' @method NetworkGraph RegulatoryNetwork
+#' @export
+NetworkGraph.RegulatoryNetwork <- function(object, network='glm_network', graph='module_graph'){
+    return(GetNetwork(object, network=network)@graphs[[graph]])
+}
+
+#' @rdname NetworkGraph
+#' @method NetworkGraph Network
+#' @export
+NetworkGraph.Network <- function(object, graph='module_graph'){
+    return(object@graphs[[graph]])
 }
 
 

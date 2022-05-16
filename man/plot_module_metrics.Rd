@@ -7,7 +7,12 @@
 \usage{
 plot_module_metrics(object, ...)
 
-\method{plot_module_metrics}{SeuratPlus}(object)
+\method{plot_module_metrics}{SeuratPlus}(object, network = "glm_network")
+}
+\arguments{
+\item{object}{An object.}
+
+\item{network}{Name of the network to use.}
 }
 \value{
 A ggplot2 object.

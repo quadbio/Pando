@@ -26,6 +26,8 @@ find_modules(object, ...)
 )
 }
 \arguments{
+\item{object}{An object.}
+
 \item{p_thresh}{Float indicating the significance threshold on the adjusted p-value.}
 
 \item{rsq_thresh}{Float indicating the \eqn{R^2} threshold on the adjusted p-value.}
@@ -33,11 +35,13 @@ find_modules(object, ...)
 \item{nvar_thresh}{Integer indicating the minimum number of variables in the model.}
 
 \item{min_genes_per_module}{Integer indicating the minimum number of genes in a module.}
+
+\item{network}{Name of the network to use.}
 }
 \value{
 A Network object.
 
-A Network object.
+A SeuratPlus object.
 }
 \description{
 Find TF modules in regulatory network

@@ -16,6 +16,12 @@ infer_grn <- function(object, ...){
     UseMethod(generic = 'infer_grn', object = object)
 }
 
+#' @rdname fit_grn_models
+#' @export fit_grn_models
+fit_grn_models <- function(object, ...){
+    UseMethod(generic = 'fit_grn_models', object = object)
+}
+
 #' @rdname plot_gof
 #' @export plot_gof
 plot_gof <- function(object, ...){
@@ -26,6 +32,24 @@ plot_gof <- function(object, ...){
 #' @export plot_module_metrics
 plot_module_metrics <- function(object, ...){
     UseMethod(generic = 'plot_module_metrics', object = object)
+}
+
+#' @rdname get_network_graph
+#' @export get_network_graph
+get_network_graph <- function(object, ...){
+    UseMethod(generic = 'get_network_graph', object = object)
+}
+
+#' @rdname plot_network_graph
+#' @export plot_network_graph
+plot_network_graph <- function(object, ...){
+    UseMethod(generic = 'plot_network_graph', object = object)
+}
+
+#' @rdname NetworkGraph
+#' @export NetworkGraph
+NetworkGraph <- function(object, ...){
+    UseMethod(generic = 'NetworkGraph', object = object)
 }
 
 #' @rdname GetGRN

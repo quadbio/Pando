@@ -9,15 +9,19 @@ fit_xgb(
   data,
   params = list(max_depth = 3, eta = 0.01, objective = "reg:squarederror"),
   nrounds = 1000,
+  nthread = -1,
   ...
 )
 }
 \arguments{
-\item{formula}{An object of class \code{formula} with a symbolic description}
+\item{formula}{An object of class \code{formula} with a symbolic description
+of the model to be fitted.}
 
 \item{data}{A \code{data.frame} containing the variables in the model.}
 
 \item{params}{A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}}
+
+\item{nrounds}{Max number of boosting iterations.}
 
 \item{...}{Other parameters for the model fitting function.}
 }

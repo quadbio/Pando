@@ -5,14 +5,15 @@ NULL
 #' Fit (regularized) generalized linear model
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param method A character string indicating the method to fit the model.
 #' * \code{'glm'} - Generalized Liner Model with \code{\link[glm]{stats}}.
 #' * \code{'glmnet'}, \code{'cv.glmnet'} - Regularized Generalized Liner Model with \code{\link[glmnet]{glmnet}}.
 #' * \code{'brms'} - Bayesian Regression Models using \code{\link[brms-package]{brms}}.
 #' * \code{'xgb'} - Gradient Boosting Regression using \code{\link[xgboost]{xgboost}}.
-#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
-#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[xgboost]{reticulate}.
+#' * \code{'bagging_ridge'} - Bagging Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
+#' * \code{'bayesian_ridge'} - Bayesian Ridge Regression using scikit-learn via \link[reticulate]{reticulate}.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
@@ -40,7 +41,7 @@ fit_model <- function(
         'brms' = fit_brms(formula, data, family=family, ...),
         'xgb' = fit_xgb(formula, data, ...),
         'bagging_ridge' = fit_bagging_ridge(formula, data, alpha=alpha, ...),
-        'bayesian_ridge' = fit_bagging_ridge(formula, data, ...)
+        'bayesian_ridge' = fit_bayesian_ridge(formula, data, ...)
     )
     return(result)
 }
@@ -49,6 +50,7 @@ fit_model <- function(
 #' Fit generalized linear model
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -73,6 +75,7 @@ fit_glm <- function(formula, data, family=gaussian, ...){
 #' Fit regularized generalized linear model
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -115,12 +118,11 @@ fit_glmnet <- function(
 #' Cross-validation for regularized generalized linear models
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
 #' @param alpha The elasticnet mixing parameter. See \code{\link[glmnet]{glmnet}} for details.
-#' @param nlambda The number of \code{lambda} values.
-#' @param nfolds The number of folds for CV.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
@@ -132,7 +134,6 @@ fit_cvglmnet <- function(
     data,
     family = gaussian,
     alpha = 0.5,
-    nfolds = 5,
     ...
 ){
     fit <- glmnetUtils::cv.glmnet(
@@ -140,7 +141,6 @@ fit_cvglmnet <- function(
         data = data,
         family = family,
         alpha = alpha,
-        nfolds = nfolds,
         ...
     )
     class(fit) <- 'cv.glmnet'
@@ -159,6 +159,7 @@ fit_cvglmnet <- function(
 #' Fit a Bayesian regression model with brms and Stan
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param family A description of the error distribution and link function to be used in the model.
 #' See \code{\link[family]{stats}} for mode details.
@@ -200,8 +201,10 @@ fit_brms <- function(
 #' Fit a gradient boosting regression model with XGBoost
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param params A list with model parameters. For details, see \code{\link[xgb.train]{xgboost}}
+#' @param nrounds Max number of boosting iterations.
 #' @param ... Other parameters for the model fitting function.
 #'
 #' @return A list with two data frames: \code{gof} contains goodness of fit measures of the fit and
@@ -216,6 +219,7 @@ fit_xgb <- function(
         eta=0.01,
         objective='reg:squarederror'),
     nrounds = 1000,
+    nthread = -1,
     ...
 ){
 
@@ -227,13 +231,12 @@ fit_xgb <- function(
         verbose = 0,
         params = params,
         nrounds = nrounds,
+        nthread = nthread,
         ...
     )
-    pred <- predict(fit, newdata=model_mat)
-    resid <- sum((response - pred)**2)
-    tot <- sum((response - mean(response))**2)
+    y_pred <- predict(fit, newdata=model_mat)
     gof <- tibble(
-        rsq = 1 - resid / tot
+        rsq = r2(response, y_pred)
     )
     coefs <- as_tibble(as.matrix(xgboost::xgb.importance(model=fit)))
     colnames(coefs) <- c('term', 'gain', 'cover', 'frequency')
@@ -244,6 +247,7 @@ fit_xgb <- function(
 #' Fit a bagging ridge regression model as implemented in scikit-learn (python)
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param alpha Positive float indicating the regularization strength.
 #' @param solver Solver to use in the computational routines.
@@ -264,7 +268,7 @@ fit_bagging_ridge <- function(
     solver = 'auto',
     bagging_number = 200L,
     n_jobs = 1,
-    p_method = c('t','wilcox'),
+    p_method = c('wilcox', 't'),
     ...
 ){
     p_method <- match.arg(p_method)
@@ -319,9 +323,9 @@ fit_bagging_ridge <- function(
         pval = p,
         neglog10p = -log10(ifelse(is.na(p), 1, p))
     )
-    corr <- cor(response, model_mat %*% matrix(coefs$estimate))[1,1]
+    y_pred <- model_mat %*% matrix(coefs$estimate)
     gof <- tibble(
-        rsq = sign(corr) * corr**2
+        rsq = r2(response, y_pred)
     )
     return(list(gof=gof, coefs=coefs))
 }
@@ -330,6 +334,7 @@ fit_bagging_ridge <- function(
 #' Fit a bayesian ridge regression model as implemented in scikit-learn (python)
 #'
 #' @param formula An object of class \code{formula} with a symbolic description
+#' of the model to be fitted.
 #' @param data A \code{data.frame} containing the variables in the model.
 #' @param ... Other parameters for the model fitting function.
 #'
@@ -342,7 +347,6 @@ fit_bayesian_ridge <- function(
     data,
     ...
 ){
-    p_method <- match.arg(p_method)
     if (!require(reticulate, quietly = T)){
         stop('The reticulate package is required to use bayesian ridge.')
     }
@@ -361,7 +365,7 @@ fit_bayesian_ridge <- function(
 
     coefs <- model$coef_
     coef_var <- diag(model$sigma_)
-    p <- qnorm(x=0, mean=abs(coefs), sd=sqrt(coef_var)) * 2
+    p <- pnorm(q=0, mean=abs(coefs), sd=sqrt(coef_var)) * 2
     coefs <- tibble(
         term = colnames(model_mat),
         estimate = coefs,

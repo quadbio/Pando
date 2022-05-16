@@ -122,6 +122,9 @@ find_motifs.SeuratPlus <- function(
         tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
         column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
     tfs_use <- intersect(rownames(GetAssay(object, params$rna_assay)), colnames(motif2tf))
+    if (length(tfs_use)==0){
+        stop('None of the provided TFs were found in the dataset. Consider providing a custom motif-to-TF map as `motif_tfs`')
+    }
     object@grn@regions@tfs <- motif2tf[, tfs_use]
 
     # Find motif positions with Signac/motifmatchr

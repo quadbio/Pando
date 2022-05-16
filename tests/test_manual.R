@@ -29,8 +29,10 @@ test_srt <- read_rds('../data/test_seurat.rds')
 
 test_srt <- initiate_grn(
     test_srt,
-    regions = phastConsElements20Mammals.UCSC.hg38
+    regions = phastConsElements20Mammals.UCSC.hg38,
+    exclude_exons = F
 )
+
 test_srt <- find_motifs(
     test_srt,
     motif_tfs = motif2tf_use,
@@ -45,8 +47,13 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
+test_srt <- get_network_graph(test_srt, n_neighbors=2)
+plot_network_graph(test_srt, layout='fr')
+
+NetworkGraph(test_srt)
 
 plot_gof(test_srt, point_size=2)
+plot_module_metrics(test_srt)
 
 Params(test_srt)
 NetworkParams(test_srt)
@@ -58,6 +65,8 @@ test_srt@grn@networks
 coef(test_srt)
 coef(test_srt, network='bayesian_ridge_network')
 coef(test_srt, network='bagging_ridge_network')
+gof(test_srt, network='bayesian_ridge_network')
+gof(test_srt, network='bagging_ridge_network')
 gof(test_srt)
 modules <- NetworkModules(test_srt)
 
@@ -66,7 +75,7 @@ class(modules@meta)
 aggregate_assay(test_srt, 'peaks_snn_res.50')
 
 
-np <- 10000
+np <- 100
 x <- seq(np) + rpois(np, 3)
 z <- seq(np) + rpois(np, 5)
 y <- rpois(np, 7) + x * 3 + z * 1.5
@@ -77,9 +86,23 @@ tbl <- tibble(
     z = z
 )
 
-fit_bayesian_ridge(y ~ x + z, tbl)
+strata <- sample(rep(LETTERS, np))[1:np]
+flds <- cv_folds(tbl, strata=strata)
 
+formula <- y ~ x + z
+train <- tbl[-flds[[1]], ]
+test <- tbl[flds[[1]], ]
 
+score_glmnet(formula, train, test)
+score_cvglmnet(formula, train, test)
+score_bagging_ridge(formula, train, test)
+cv_model(formula, tbl, method = 'bayesian_ridge', k_folds=5)
+
+fit <- glmnetUtils::glmnet(formula, data=train)
+y_true <- test[[formula[[2]]]]
+y_pred <- predict(fit, newdata=test)[,1]
+
+compute_metrics(y_true, y_pred)
 
 
 
