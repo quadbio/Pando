@@ -47,5 +47,4 @@ Imports:
 Suggests: 
     rmarkdown,
     testthat,
-    reticulate,
-    cmdstanr
+    reticulate
