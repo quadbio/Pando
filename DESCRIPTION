@@ -37,7 +37,6 @@ Imports:
     tidygraph,
     pals,
     patchwork,
-    presto,
     TFBSTools,
     foreach,
     ggh4x,
@@ -48,3 +47,5 @@ Suggests:
     rmarkdown,
     testthat,
     reticulate
+Remotes: 
+    github::immunogenomics/presto
