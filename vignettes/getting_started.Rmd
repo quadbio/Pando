@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-This vignette gives you an introduction to the Pando workflow and gives a broad overview of the functionality. Pando is a package to infer gene regulatory networks (GRNs) from multiome data, specifically scRNA-seq and scATAC-seq. It's is designed to interact with Seurat objects and relies on functionality from both [Seurat](https://satijalab.org/seurat/) and [Signac](https://satijalab.org/signac/). 
+This vignette gives you an introduction to the Pando workflow and gives a broad overview of the functionality. Pando is a package to infer gene regulatory networks (GRNs) from multiome data, specifically scRNA-seq and scATAC-seq. It's is designed to interact with Seurat objects and relies on functionality from both [`Seurat`](https://satijalab.org/seurat/) and [`Signac`](https://satijalab.org/signac/). 
 
 Ok, so let's get started. First we need a Seurat object that has both RNA and ATAC modalities with gene expression and chromatin accessibility measurements, respectively. Here we use multiome data from early brain orgnaoid development
 
@@ -155,7 +155,7 @@ coef(muo_data)
 
 ## Module discovery
 
-Using the inferred parameters, we can now use `find_modules()` to construct TF modules, i.e. the set of genes that is regulated by each transcription factor. How exactly this is done depends on the model choice in `infer_grn()`, but generally Pando chooses the most confident connections for each TF. The function allows setting different selection criteria like a p-value threshold or an R-squared threshold to filter models by goodness-of-fit. For the purpose of this tutorial we will choose rather lenient thresholds:
+Using the inferred parameters, we can now use `find_modules()` to construct TF modules, i.e. the set of genes that is regulated by each transcription factor. How exactly this is done depends on the model choice in `infer_grn()`, but generally Pando chooses the most confident connections for each TF. The function allows setting different selection criteria like a p-value threshold or an $R^2$ threshold to filter models by goodness-of-fit. For the purpose of this tutorial we will choose rather lenient thresholds:
 
 
 ```{r, eval=T, echo=T}
@@ -176,6 +176,19 @@ modules <- NetworkModules(muo_data)
 modules@meta
 ```
 
+The goodness-of-fit metrics can be plotted with 
+
+```{r, eval=T, echo=T}
+plot_gof(muo_data, point_size=3)
+```
+
+and the size of the modules can be plotted with 
+
+```{r, eval=T, echo=T}
+plot_module_metrics(muo_data)
+```
+
+
 
 ## Visualizing the GRN
 
@@ -191,7 +204,7 @@ Then we can plot the graph with `plot_network_graph()`:
 plot_network_graph(muo_data)
 ```
 
-The default here is to use a UMAP embedding, but you can choose any layout option provided by [igraph](https://igraph.org/)/[ggraph](https://ggraph.data-imaginist.com/index.html), for instance the force-directed Fruchterman–Reingold layout:
+The default here is to use a UMAP embedding, but you can choose any layout option provided by [`igraph`](https://igraph.org/)/[`ggraph`](https://ggraph.data-imaginist.com/index.html), for instance the force-directed Fruchterman–Reingold layout:
 
 ```{r, eval=T, echo=T}
 plot_network_graph(muo_data, layout='fr')

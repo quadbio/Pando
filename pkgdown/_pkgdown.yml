@@ -6,6 +6,13 @@ navbar:
     reference:
       text: Reference
       href: reference/index.html
+    articles:
+      text: Vignettes
+      menu:
+      - text: Basic workflow
+        href: articles/getting_started.html
+      - text: Visualization
+        href: articles/visualization.html
   right:
     homepage:
       icon: "fas fa-university fa-lg"
@@ -21,6 +28,10 @@ reference:
       - '`find_motifs`'
       - '`infer_grn`'
       - '`find_modules`'
+   - title: Plotting
+    desc: Functions to visualize the GRN
+    contents:
+      - starts_with('plot_')
   - title: Object interaction
     desc: Functions to interact with Seurat and Network objects
     contents:
