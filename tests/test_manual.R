@@ -47,7 +47,7 @@ test_srt <- get_network_graph(test_srt, n_neighbors=2)
 plot_network_graph(test_srt, layout='umap')
 
 test_srt <- get_tf_network(test_srt, tf='NFIB')
-plot_tf_network(test_srt, tf='NFIB', circular=F, label_nodes = 'tfs')
+plot_tf_network(test_srt, tf='NFIB', circular=F, label_nodes = 'tfs', edge_width = 3)
 
 
 NetworkGraph(test_srt)

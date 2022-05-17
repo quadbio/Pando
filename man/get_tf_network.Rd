@@ -15,6 +15,7 @@ get_tf_network(object, ...)
   features = NULL,
   order = 3,
   keep_all_edges = FALSE,
+  verbose = TRUE,
   parallel = FALSE
 )
 }
@@ -33,6 +34,8 @@ get_tf_network(object, ...)
 
 \item{keep_all_edges}{Logical, whether to maintain all edges to each leaf
 or prune to the strongest overall connection.}
+
+\item{verbose}{Logical. Whether to print messages.}
 
 \item{parallel}{Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.}
 }

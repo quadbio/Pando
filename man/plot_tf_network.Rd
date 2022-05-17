@@ -15,10 +15,8 @@ plot_tf_network(object, ...)
   circular = TRUE,
   edge_width = 0.2,
   edge_color = c(`-1` = "darkgrey", `1` = "orange"),
-  node_color = pals::magma(100),
-  node_size = c(1, 5),
+  node_size = 3,
   text_size = 10,
-  color_nodes = TRUE,
   label_nodes = c("tfs", "all", "none"),
   color_edges = TRUE
 )
@@ -38,13 +36,9 @@ plot_tf_network(object, ...)
 
 \item{edge_color}{Edge color.}
 
-\item{node_color}{Node color or color gradient.}
-
-\item{node_size}{Edge size range.}
+\item{node_size}{Node size.}
 
 \item{text_size}{Font size for labels.}
-
-\item{color_nodes}{Logical, whether to color nodes by centrality.}
 
 \item{label_nodes}{String, indicating what to label.
 \itemize{

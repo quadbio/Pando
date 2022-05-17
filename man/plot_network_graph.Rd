@@ -38,7 +38,7 @@ implemented in \code{\link[ggraph]{ggraph}}}
 
 \item{node_color}{Node color or color gradient.}
 
-\item{node_size}{Edge size range.}
+\item{node_size}{Node size range.}
 
 \item{text_size}{Font size for labels.}
 
