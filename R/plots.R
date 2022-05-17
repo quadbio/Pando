@@ -248,6 +248,10 @@ get_network_graph.SeuratPlus <- function(
     umap_method <- match.arg(umap_method)
     modules <- NetworkModules(object, network=network)
 
+    if (length(modules@params)==0){
+        stop('No modules found, please run `find_modules()` first.')
+    }
+
     if (is.null(features)){
         features <- NetworkFeatures(object)
     }
@@ -393,6 +397,15 @@ plot_network_graph.SeuratPlus <- function(
     color_edges = TRUE
 ){
     gene_graph <- NetworkGraph(object)
+
+    if (is.null(gene_graph)){
+        stop('No graph found, please run `get_network_graph()` first.')
+    }
+
+    has_umap <- 'UMAP_1' %in% colnames(as_tibble(activate(gene_graph, 'nodes')))
+    if (layout=='umap' & !has_umap){
+        stop('No UMAP coordinates found, please run `get_network_graph()` first.')
+    }
 
     if (layout=='umap'){
         p <- ggraph(gene_graph, x=UMAP_1, y=UMAP_2)

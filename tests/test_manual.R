@@ -40,16 +40,14 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 
-test_srt <- aggregate_assay(test_srt, group_name = 'seurat_clusters')
 
 test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'GREAT', parallel=F,
-    aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
+    peak_to_gene_method = 'GREAT', parallel=F)
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 
-test_srt <- get_network_graph(test_srt, umap_method = 'none')
-plot_network_graph(test_srt, layout='umap')
+test_srt <- get_network_graph(test_srt)
+plot_network_graph(test_srt, layout='tree')
 
 NetworkGraph(test_srt)
 
