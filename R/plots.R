@@ -56,6 +56,7 @@ no_y_text <- function(){
 #' Compute UMAP embedding
 get_umap <- function(
     x,
+    n_pcs = 30,
     ...
 ){
     if (ncol(x)>100){
@@ -284,7 +285,7 @@ get_network_graph.SeuratPlus <- function(
         reg_mat <- gene_net %>%
             select(target, tf, estimate) %>%
             pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
-            column_to_rownames('target') %>% as.matrix() %>% Matrix::Matrix(sparse=T)
+            column_to_rownames('target') %>% as.matrix()
 
         log_message('Computing weighted regulatory factor', verbose=verbose)
         # Layout with UMAP on adjacency matrix
@@ -329,7 +330,7 @@ get_network_graph.SeuratPlus <- function(
         coex_mat <- gene_net %>%
             select(target, tf, estimate) %>%
             pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
-            as_matrix() %>% Matrix::Matrix(sparse=T)
+            column_to_rownames('target') %>% as.matrix()
 
     } else if (umap_method=='none' | is.null(umap_method)){
         modules_use <- modules@meta %>%
