@@ -382,7 +382,7 @@ get_network_graph.SeuratPlus <- function(
 #' @param edge_width Edge width.
 #' @param edge_color Edge color.
 #' @param node_color Node color or color gradient.
-#' @param node_size Edge size range.
+#' @param node_size Node size range.
 #' @param text_size Font size for labels.
 #' @param color_nodes Logical, Whether to color nodes by centrality.
 #' @param label_nodes Logical, Whether to label nodes with gene name.
@@ -575,10 +575,8 @@ get_tf_network.SeuratPlus <- function(
 #' @param circular Logical. Layout tree in circular layout.
 #' @param edge_width Edge width.
 #' @param edge_color Edge color.
-#' @param node_color Node color or color gradient.
-#' @param node_size Edge size range.
+#' @param node_size Node size.
 #' @param text_size Font size for labels.
-#' @param color_nodes Logical, whether to color nodes by centrality.
 #' @param label_nodes String, indicating what to label.
 #' * \code{'tfs'} - Label all TFs.
 #' * \code{'all'} - Label all genes.
@@ -598,10 +596,8 @@ plot_tf_network.SeuratPlus <- function(
     circular = TRUE,
     edge_width = 0.2,
     edge_color = c('-1'='darkgrey', '1'='orange'),
-    node_color = pals::magma(100),
-    node_size = c(1,5),
+    node_size = 3,
     text_size = 10,
-    color_nodes = TRUE,
     label_nodes = c('tfs', 'all', 'none'),
     color_edges = TRUE
 ){
@@ -619,23 +615,20 @@ plot_tf_network.SeuratPlus <- function(
         p <- p + geom_edge_diagonal(width=edge_width, color=edge_color[1])
     }
 
-    if (color_nodes){
-        p <- p + geom_node_point(color='darkgrey', shape=21) +
-            scale_fill_gradientn(colors=node_color)
-    } else {
-        p <- p + geom_node_point(color='darkgrey', shape=21, fill=node_color[1])
-    }
+    p <- p + geom_node_point(
+        color='darkgrey', shape=21, fill='lightgrey', size=node_size, stroke=0.5
+    )
 
     if (label_nodes=='tfs'){
         p <- p + geom_node_label(
-            aes(label=name),
+            aes(label=name, filter=name%in%net_tfs),
             size=text_size/ggplot2::.pt,
             label.padding=unit(0.1, 'line')
         )
     } else if (label_nodes=='all'){
         net_tfs <- colnames(NetworkTFs(object))
         p <- p + geom_node_label(
-            aes(label=name, filter=name%in%net_tfs),
+            aes(label=name),
             size=text_size/ggplot2::.pt,
             label.padding=unit(0.1, 'line')
         )
