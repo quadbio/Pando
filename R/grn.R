@@ -462,7 +462,7 @@ find_modules.Network <- function(
     fit_method <- NetworkParams(object)$method
     xgb_method <- match.arg(xgb_method)
 
-    if (!fit_method %in% c('glm', 'cv.glmnet', 'glmnet', 'brms')){
+    if (!fit_method %in% c('glm', 'cv.glmnet', 'glmnet', 'brms', 'xgb')){
         stop(paste0('find_modules() is not yet implemented for "', fit_method, '" models'))
     }
 
@@ -478,7 +478,10 @@ find_modules.Network <- function(
         modules <- modules %>%
             filter(estimate != 0)
     } else if (fit_method == 'xgb'){
-        print('asdfas')
+        modules <- modules %>%
+            group_by_at(xgb_method) %>%
+            top_n(xgb_top, gain) %>%
+            mutate(estimate=sign(corr)*gain)
     } else {
         modules <- modules %>%
             filter(ifelse(is.na(padj), T, padj<p_thresh))
@@ -498,7 +501,7 @@ find_modules.Network <- function(
         mutate(gene_per_tf=length(unique(target))) %>%
         group_by(target, tf)
 
-    if (fit_method %in% c('cv.glmnet', 'glmnet')){
+    if (fit_method %in% c('cv.glmnet', 'glmnet', 'xgb')){
         modules <- modules %>%
             summarize(
                 estimate=sum(estimate),
