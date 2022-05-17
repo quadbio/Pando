@@ -129,7 +129,7 @@ SeuratPlus <- setClass(
 #' @rdname GetNetwork
 #' @method GetNetwork SeuratPlus
 #' @export
-GetNetwork.SeuratPlus <- function(object, network='glm_network'){
+GetNetwork.SeuratPlus <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object@grn, network=network))
 }
 
@@ -137,12 +137,14 @@ GetNetwork.SeuratPlus <- function(object, network='glm_network'){
 #' @rdname GetNetwork
 #' @method GetNetwork RegulatoryNetwork
 #' @export
-GetNetwork.RegulatoryNetwork <- function(object, network='glm_network'){
+GetNetwork.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
+    if (length(network)==0){
+        stop(paste0('Network not found, try running `infer_network()` first.'))
+    }
     if (!network%in%names(object@networks)){
         stop(paste0('The requested network "', network, '" does not exist.'))
-    } else {
-        return(object@networks[[network]])
     }
+    return(object@networks[[network]])
 }
 
 
@@ -150,14 +152,14 @@ GetNetwork.RegulatoryNetwork <- function(object, network='glm_network'){
 #' @rdname NetworkFeatures
 #' @method NetworkFeatures SeuratPlus
 #' @export
-NetworkFeatures.SeuratPlus <- function(object, network='glm_network'){
+NetworkFeatures.SeuratPlus <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@features)
 }
 
 #' @rdname NetworkFeatures
 #' @method NetworkFeatures RegulatoryNetwork
 #' @export
-NetworkFeatures.RegulatoryNetwork <- function(object, network='glm_network'){
+NetworkFeatures.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@features)
 }
 
@@ -207,14 +209,14 @@ GetGRN.SeuratPlus <- function(object){
 #' @rdname NetworkModules
 #' @method NetworkModules SeuratPlus
 #' @export
-NetworkModules.SeuratPlus <- function(object, network='glm_network'){
+NetworkModules.SeuratPlus <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@modules)
 }
 
 #' @rdname NetworkModules
 #' @method NetworkModules RegulatoryNetwork
 #' @export
-NetworkModules.RegulatoryNetwork <- function(object, network='glm_network'){
+NetworkModules.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@modules)
 }
 
@@ -230,14 +232,14 @@ NetworkModules.Network <- function(object){
 #' @rdname NetworkParams
 #' @method NetworkParams SeuratPlus
 #' @export
-NetworkParams.SeuratPlus <- function(object, network='glm_network'){
+NetworkParams.SeuratPlus <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@params)
 }
 
 #' @rdname NetworkParams
 #' @method NetworkParams RegulatoryNetwork
 #' @export
-NetworkParams.RegulatoryNetwork <- function(object, network='glm_network'){
+NetworkParams.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@params)
 }
 
@@ -253,14 +255,14 @@ NetworkParams.Network <- function(object){
 #' @rdname NetworkGraph
 #' @method NetworkGraph SeuratPlus
 #' @export
-NetworkGraph.SeuratPlus <- function(object, network='glm_network', graph='module_graph'){
+NetworkGraph.SeuratPlus <- function(object, network=DefaultNetwork(object), graph='module_graph'){
     return(GetNetwork(object, network=network)@graphs[[graph]])
 }
 
 #' @rdname NetworkGraph
 #' @method NetworkGraph RegulatoryNetwork
 #' @export
-NetworkGraph.RegulatoryNetwork <- function(object, network='glm_network', graph='module_graph'){
+NetworkGraph.RegulatoryNetwork <- function(object, network=DefaultNetwork(object), graph='module_graph'){
     return(GetNetwork(object, network=network)@graphs[[graph]])
 }
 
@@ -271,6 +273,7 @@ NetworkGraph.Network <- function(object, graph='module_graph'){
     return(object@graphs[[graph]])
 }
 
+#' Get active network
 #' @rdname DefaultNetwork
 #' @method DefaultNetwork SeuratPlus
 #' @export
@@ -290,14 +293,14 @@ DefaultNetwork.RegulatoryNetwork <- function(object){
 #' @rdname coef
 #' @method coef SeuratPlus
 #' @export
-coef.SeuratPlus <- function(object, network='glm_network'){
+coef.SeuratPlus <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@coefs)
 }
 
 #' @rdname coef
 #' @method coef RegulatoryNetwork
 #' @export
-coef.RegulatoryNetwork <- function(object, network='glm_network'){
+coef.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@coefs)
 }
 
@@ -313,21 +316,21 @@ coef.Network <- function(object){
 #' @rdname gof
 #' @method gof SeuratPlus
 #' @export
-gof.SeuratPlus <- function(object, network='glm_network'){
+gof.SeuratPlus <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@fit)
 }
 
 #' @rdname gof
 #' @method gof RegulatoryNetwork
 #' @export
-gof.RegulatoryNetwork <- function(object, network='glm_network'){
+gof.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@fit)
 }
 
 #' @rdname gof
 #' @method gof Network
 #' @export
-gof.Network <- function(object, network='glm_network'){
+gof.Network <- function(object, network=DefaultNetwork(object)){
     return(object@fit)
 }
 

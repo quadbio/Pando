@@ -218,7 +218,7 @@ plot_module_metrics.SeuratPlus <- function(
 #'
 #' @param object An object.
 #' @param network Name of the network to use.
-#' @param graph_name Name of the graph.
+#' @param graph Name of the graph.
 #' @param rna_assay Name of the RNA assay.
 #' @param rna_slot Name of the RNA slot to use.
 #' @param umap_method Method to compute edge weights for UMAP:
@@ -227,7 +227,7 @@ plot_module_metrics.SeuratPlus <- function(
 #' * \code{'coef'} - Only GRN coefficient.
 #' * \code{'none'} - Don't compute UMAP and create the graph directly
 #' from modules.
-#' @param features Featrues to use to create the graph. If \code{NULL}
+#' @param features Features to use to create the graph. If \code{NULL}
 #' uses all features in the network.
 #' @param random_seed Random seed for UMAP computation
 #' @param ... Additional arguments for \code{\link[umap]{uwot}}.
@@ -241,7 +241,7 @@ plot_module_metrics.SeuratPlus <- function(
 get_network_graph.SeuratPlus <- function(
     object,
     network = DefaultNetwork(object),
-    graph_name = 'module_graph',
+    graph = 'module_graph',
     rna_assay = 'RNA',
     rna_slot = 'data',
     umap_method = c('weighted', 'corr', 'coef', 'none'),
@@ -258,7 +258,7 @@ get_network_graph.SeuratPlus <- function(
     }
 
     if (is.null(features)){
-        features <- NetworkFeatures(object)
+        features <- NetworkFeatures(object, network=network)
     }
 
     if (umap_method=='weighted'){
@@ -292,7 +292,7 @@ get_network_graph.SeuratPlus <- function(
         coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
 
     } else if (umap_method=='corr'){
-        net_features <- NetworkFeatures(object)
+        net_features <- NetworkFeatures(object, network=network)
         rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
 
         if (!is.null(features)){
@@ -347,7 +347,7 @@ get_network_graph.SeuratPlus <- function(
             activate(nodes) %>%
             mutate(centrality=centrality_pagerank())
 
-        object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
+        object@grn@networks[[network]]@graphs[[graph]] <- gene_graph
         return(object)
     }
 
@@ -364,7 +364,7 @@ get_network_graph.SeuratPlus <- function(
         mutate(centrality=centrality_pagerank()) %>%
         inner_join(coex_umap, by=c('name'='gene'))
 
-    object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
+    object@grn@networks[[network]]@graphs[[graph]] <- gene_graph
     return(object)
 }
 
@@ -376,7 +376,7 @@ get_network_graph.SeuratPlus <- function(
 #'
 #' @param object An object.
 #' @param network Name of the network to use.
-#' @param graph_name Name of the graph.
+#' @param graph Name of the graph.
 #' @param layout Layout for the graph. Can be 'umap' or any force-directed layout
 #' implemented in \code{\link[ggraph]{ggraph}}
 #' @param edge_width Edge width.
@@ -396,7 +396,7 @@ get_network_graph.SeuratPlus <- function(
 plot_network_graph.SeuratPlus <- function(
     object,
     network = DefaultNetwork(object),
-    graph_name = 'module_graph',
+    graph = 'module_graph',
     layout = 'umap',
     edge_width = 0.2,
     edge_color = c('-1'='darkgrey', '1'='orange'),
@@ -407,10 +407,10 @@ plot_network_graph.SeuratPlus <- function(
     label_nodes = TRUE,
     color_edges = TRUE
 ){
-    gene_graph <- NetworkGraph(object)
+    gene_graph <- NetworkGraph(object, network=network, graph=graph)
 
     if (is.null(gene_graph)){
-        stop('No graph found, please run `get_network_graph()` first.')
+        stop('Graph not found, please run `get_network_graph()` first.')
     }
 
     has_umap <- 'UMAP_1' %in% colnames(as_tibble(activate(gene_graph, 'nodes')))
@@ -451,15 +451,18 @@ plot_network_graph.SeuratPlus <- function(
 }
 
 
-#' Plot network centered around one TF.
+#' Plot sub-network centered around one TF.
 #'
 #' @import tidygraph
 #' @import ggraph
 #'
 #' @param object An object.
+#' @param tf The transcription factor to center around.
 #' @param network Name of the network to use.
-#' @param graph_name Name of the graph.
+#' @param graph Name of the graph.
 #' @param circular Logical. Layout tree in circular layout.
+#' @param order Integer indicating the maximal order of the graph.
+#' @param features Features to use. If \code{NULL} uses all features in the graph.
 #' @param edge_width Edge width.
 #' @param edge_color Edge color.
 #' @param node_color Node color or color gradient.
@@ -476,9 +479,11 @@ plot_network_graph.SeuratPlus <- function(
 #' @method plot_tf_network SeuratPlus
 plot_tf_network.SeuratPlus <- function(
     object,
+    tf,
     network = DefaultNetwork(object),
-    graph_name = 'module_graph',
+    graph = 'module_graph',
     circular = TRUE,
+    order = 3,
     edge_width = 0.2,
     edge_color = c('-1'='darkgrey', '1'='orange'),
     node_color = pals::magma(100),
@@ -488,11 +493,40 @@ plot_tf_network.SeuratPlus <- function(
     label_tfs = TRUE,
     color_edges = TRUE
 ){
-    gene_graph <- NetworkGraph(object)
+    gene_graph <- NetworkGraph(object, network=network, graph=graph)
 
     if (is.null(gene_graph)){
         stop('No graph found, please run `get_network_graph()` first.')
     }
+
+    if (is.null(features)){
+        features <- NetworkFeatures(object, network=network)
+    }
+
+    spaths <- all_shortest_paths(gene_graph, tf, features, mode='out')$res
+    spath_list <- map(spaths, function(p){
+        edg <- names(p)
+        edg_graph <- gene_graph %>%
+            filter(name%in%edg) %>%
+            convert(to_shortest_path, from=which(.N()$name==edg[1]), to=which(.N()$name==edg[length(edg)])) %E>%
+            mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
+            as_tibble()
+        edg_dir <- edg_graph %>% pull(estimate) %>% sign() %>% prod()
+        edg_p <- edg_graph %>% pull(log_padj) %>% mean()
+        return(
+            list(
+                path = tibble(
+                    start_node = edg[1],
+                    end_node = edg[length(edg)],
+                    dir = edg_dir,
+                    path = paste(edg, collapse=';'),
+                    order = length(edg)-1,
+                    mean_padj = edg_p
+                ),
+                graph = mutate(edg_graph, path=paste(edg, collapse=';'), end_node=edg[length(edg)], comb_dir=edg_dir)
+            )
+        )
+    })
 
     p <- ggraph(gene_graph, layout='tree')
 
