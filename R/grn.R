@@ -382,6 +382,7 @@ fit_grn_models.SeuratPlus <- function(
         params = params
     )
     object@grn@networks[[network_name]] <- network_obj
+    object@grn@active_network <- network_name
     return(object)
 }
 
