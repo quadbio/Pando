@@ -1,0 +1,202 @@
+---
+title: "Getting started with Pando"
+author: "Jonas Simon Fleck"
+date: "17/05/2022"
+output: html_document
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+This vignette gives you an introduction to the Pando workflow and gives a broad overview of the functionality. Pando is a package to infer gene regulatory networks (GRNs) from multiome data, specifically scRNA-seq and scATAC-seq. It's is designed to interact with Seurat objects and relies on functionality from both [Seurat](https://satijalab.org/seurat/) and [Signac](https://satijalab.org/signac/). 
+
+Ok, so let's get started. First we need a Seurat object that has both RNA and ATAC modalities with gene expression and chromatin accessibility measurements, respectively. Here we use multiome data from early brain orgnaoid development
+
+```{r, results='hide'}
+library(tidyverse)
+library(Pando)
+```
+```{r, eval=T, echo=T}
+muo_data <- read_rds('~/projects/Pando/data/nepi_test_pre.rds')
+muo_data
+```
+
+So let's see if we got everything we need. We have an RNA assay with gene expression...
+
+```{r, eval=T, echo=T}
+muo_data[['RNA']]
+```
+
+...and also a `ChomatinAssay` with the ATAC data. Also we can see that we have a gene annotation already in the object. This will be important for Pando later.
+
+```{r, eval=T, echo=T}
+muo_data[['peaks']]
+```
+
+
+## Initiating the GRN
+
+The first step in the Pando workflow is to initiate the GRN with `initiate_grn()`. This function also takes care of pre-selecting candidate regulatory regions to consider for GRN inference. This is optional, but in our experience constraining the set of peaks to more confident regions cuts down on runtime and makes the resulting GRN more robust. Similar to what we've done in [our preprint](https://www.biorxiv.org/content/10.1101/2021.08.24.457460v1) we will here select conserved regions in mammals. The necessary data is already included in Pando:
+
+
+```{r, eval=T, echo=T}
+data('phastConsElements20Mammals.UCSC.hg38')
+muo_data <- initiate_grn(
+    muo_data,
+    rna_assay = 'RNA',
+    peak_assay = 'peaks',
+    regions = phastConsElements20Mammals.UCSC.hg38 
+)
+```
+
+We have now added a `RegulatoryNetwork` object to the Seurat object. Also, you might notice that the new object is now called `SeuratPlus`. 
+
+```{r, eval=T, echo=T}
+muo_data
+```
+
+```{r, eval=T, echo=T}
+GetGRN(muo_data)
+```
+
+We can also inspect the candidate regulatory regions that we have selected:
+
+```{r, eval=T, echo=T}
+regions <- NetworkRegions(muo_data)
+regions@ranges
+```
+
+
+## Scanning for motifs
+
+The next step is to scan the candidate regions for TF binding motifs, in order to have some idea where TFs might *potentially* bind. In Pando, this is done with the function `find_motifs()`. In addition to the `SeuratPlus` object the function needs the genome and motif info in form of a `PFMatrixList`. Pando already provides a curated motif collection, but you can of course supply your own. If you choose to do so, you also need to proved a dataframe mapping motif IDs (1st column) to TF names (2nd column) with the `motif_tfs` argument. Also, if you want to infer the GRN only for a subset of TFs, you can constrain it with this function.
+
+Here, we use the motifs provided by Pando, but constrain them to only contain genes involved in patterning:
+
+```{r, eval=F, echo=T}
+data('motifs')
+data('motif2tf')
+patterning_genes <- read_tsv('patterning_genes.tsv')
+```
+```{r, eval=T, echo=F, results='hide'}
+data('motifs')
+data('motif2tf')
+patterning_genes <- read_tsv('~/projects/Pando/data/patterning_genes.tsv')
+```
+```{r, eval=T, echo=T}
+pattern_tfs <- patterning_genes %>% 
+    filter(type=='Transcription factor') %>% 
+    pull(symbol)
+motif2tf_use <- motif2tf %>%
+    filter(tf %in% pattern_tfs)
+motifs_use <- motifs[unique(motif2tf_use$motif)]
+motif2tf_use
+```
+
+Using these TF motifs, we can now scan the candidate regions:
+
+
+```{r, eval=T, echo=T}
+library(BSgenome.Hsapiens.UCSC.hg38)
+muo_data <- find_motifs(
+    muo_data, 
+    pfm = motifs_use, 
+    motif_tfs = motif2tf_use,
+    genome = BSgenome.Hsapiens.UCSC.hg38
+)
+```
+
+Our `Regions` object has not gotten a new slot containing the `Motif` object. This object stores a sparse peak x motif matrix with the matches and some other information.
+
+```{r, eval=T, echo=T}
+regions <- NetworkRegions(muo_data)
+regions@motifs@data[1:5,1:5]
+```
+
+## Inferring the GRN
+
+Now we should have everything ready to infer the GRN. GRN inference in Pando is very much inspired by other methods such as [SCENIC](https://scenic.aertslab.org/). These methods assume that the expression of a gene can be modeled by a function of the expression of the TFs that regulate it. Pando extends this notion to harness multiome measurements by considering co-accessibility in addition to co-expression. The underlying idea is that in order for a TF to regulate a gene, the TF needs to be expressed **and** the binding peak needs to be accessible. For this, Pando fits one regression model per gene, and models it's expression based on TF expression and accessibility of the binding peaks. These TF-peak interactions are additively combined. If you are familiar with the R formula syntax, you might recognize something like this:
+
+```{r, eval=F, echo=T}
+PAX6 ~ HES4*chr1-911275-911316 + OTX2*chr1-921178-921198 + MSX2*chr1-921178-921198 + ...
+```
+
+In this example, PAX6 expression is modeled by adding up the TF-peak interactions of HES4, OTX2 and MSX2.
+
+The function `infer_grn()` takes care of fitting these models for all genes and identifies significant connections between TF-region pairs and target gene expression. With the `genes` argument, we can select a subset of genes that we want to use for GRN inference. Here we stick with the theme above and use pattering-related genes. This is of course optional, but for runtime reasons we recommend to constrain the set of genes somehow, e.g. by using `VariableFeatures()`. Also, we use the method used by [GREAT](http://great.stanford.edu/public/html/) to associate genes with peaks and parallelize the computation using 16 cores:
+
+```{r, eval=T, echo=T}
+library(doParallel)
+registerDoParallel(16)
+muo_data <- infer_grn(
+    muo_data,
+    peak_to_gene_method = 'GREAT',
+    genes = patterning_genes$symbol,
+    parallel = T
+)
+```
+
+The function `infer_grn()` has many more parameters to choose different models or tweek the association between peaks and genes, but we'll go into this in another vignette.
+
+The inferred `Network` object can be accessed with `GetNetwork()`
+
+```{r, eval=T, echo=T}
+GetNetwork(muo_data)
+```
+
+and the parameters of the models can be inspected with `coef()`. This returns a dataframe coefficients (`estimate`) and p-values (`pval`) for each TF/region-target gene pair:
+
+
+```{r, eval=T, echo=T}
+coef(muo_data)
+```
+
+
+## Module discovery
+
+Using the inferred parameters, we can now use `find_modules()` to construct TF modules, i.e. the set of genes that is regulated by each transcription factor. How exactly this is done depends on the model choice in `infer_grn()`, but generally Pando chooses the most confident connections for each TF. The function allows setting different selection criteria like a p-value threshold or an R-squared threshold to filter models by goodness-of-fit. For the purpose of this tutorial we will choose rather lenient thresholds:
+
+
+```{r, eval=T, echo=T}
+muo_data <- find_modules(
+    muo_data, 
+    p_thresh = 0.1,
+    nvar_thresh = 2, 
+    min_genes_per_module = 1, 
+    rsq_thresh = 0.05
+)
+```
+
+The `Modules` object can be accessed with `NetworkModules()`. The `meta` slot contains meta data about the module network and lists with feature sets for each TF can be accessed in the `features` slot.
+
+
+```{r, eval=T, echo=T}
+modules <- NetworkModules(muo_data) 
+modules@meta
+```
+
+
+## Visualizing the GRN
+
+Finally, we can vizualize the GRN. For this, we first need to create the graph to be visualized and optionally a UMAP embedding for the nodes with the function `get_network_graph()`. 
+
+```{r, eval=T, echo=T}
+muo_data <- get_network_graph(muo_data)
+```
+
+Then we can plot the graph with `plot_network_graph()`:
+
+```{r, eval=T, echo=T}
+plot_network_graph(muo_data)
+```
+
+The default here is to use a UMAP embedding, but you can choose any layout option provided by [igraph](https://igraph.org/)/[ggraph](https://ggraph.data-imaginist.com/index.html), for instance the force-directed Fruchterman–Reingold layout:
+
+```{r, eval=T, echo=T}
+plot_network_graph(muo_data, layout='fr')
+```
+
+
+
+
