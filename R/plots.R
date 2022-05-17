@@ -221,7 +221,7 @@ plot_module_metrics.SeuratPlus <- function(
 #' @param graph_name Name of the graph.
 #' @param rna_assay Name of the RNA assay.
 #' @param rna_slot Name of the RNA slot to use.
-#' @param edge_method Method to compute edge weights:
+#' @param umap_method Method to compute edge weights:
 #' * \code{'weighted'} - Correlation weighted by GRN coefficient.
 #' * \code{'corr'} - Only correlation.
 #' * \code{'coef'} - Only GRN coefficient.
@@ -239,24 +239,22 @@ get_network_graph.SeuratPlus <- function(
     graph_name = 'module_graph',
     rna_assay = 'RNA',
     rna_slot = 'data',
-    edge_method = c('weighted', 'corr', 'coef'),
+    umap_method = c('weighted', 'corr', 'coef', 'none'),
     features = NULL,
     random_seed = 111,
     verbose = TRUE,
     ...
 ){
-    edge_method <- match.arg(edge_method)
+    umap_method <- match.arg(umap_method)
     modules <- NetworkModules(object, network=network)
 
-    if (edge_method=='weighted'){
-        net_features <- NetworkFeatures(object)
-        rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
+    if (is.null(features)){
+        features <- NetworkFeatures(object)
+    }
 
-        if (!is.null(features)){
-            features <- intersect(intersect(features, colnames(rna_expr)), net_features)
-        } else {
-            features <- net_features
-        }
+    if (umap_method=='weighted'){
+        rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
+        features <- intersect(features, colnames(rna_expr))
 
         rna_expr <- rna_expr[, features]
         gene_cor <- sparse_cor(rna_expr)
@@ -282,7 +280,7 @@ get_network_graph.SeuratPlus <- function(
         reg_factor_mat <- abs(reg_mat) + 1
         coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
 
-    } else if (edge_method=='corr'){
+    } else if (umap_method=='corr'){
         net_features <- NetworkFeatures(object)
         rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
 
@@ -308,8 +306,8 @@ get_network_graph.SeuratPlus <- function(
             left_join(gene_cor_df, by=c('tf'='source', 'target')) %>%
             {.$corr[is.na(.$corr)] <- 0; .}
 
-    } else if (edge_method=='coef'){
-        modules_use <- modules %>%
+    } else if (umap_method=='coef'){
+        modules_use <- modules@meta %>%
             filter(target%in%features, tf%in%features)
 
         gene_net <- modules_use %>%
@@ -320,6 +318,24 @@ get_network_graph.SeuratPlus <- function(
             select(target, tf, estimate) %>%
             pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
             as_matrix() %>% Matrix::Matrix(sparse=T)
+
+    } else if (umap_method=='none' | is.null(umap_method)){
+        modules_use <- modules@meta %>%
+            filter(target%in%features, tf%in%features)
+
+        gene_net <- modules_use %>%
+            select(tf, target, everything()) %>%
+            group_by(target)
+
+        gene_graph <- as_tbl_graph(gene_net) %>%
+            activate(edges) %>%
+            mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
+            mutate(dir=sign(estimate)) %>%
+            activate(nodes) %>%
+            mutate(centrality=centrality_pagerank())
+
+        object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
+        return(object)
     }
 
     set.seed(random_seed)

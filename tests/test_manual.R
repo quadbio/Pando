@@ -47,8 +47,9 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     aggregate_peaks_col='seurat_clusters', aggregate_rna_col='seurat_clusters')
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
-test_srt <- get_network_graph(test_srt, n_neighbors=2)
-plot_network_graph(test_srt, layout='fr')
+
+test_srt <- get_network_graph(test_srt, umap_method = 'none')
+plot_network_graph(test_srt, layout='umap')
 
 NetworkGraph(test_srt)
 
