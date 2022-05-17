@@ -541,7 +541,7 @@ get_tf_network.SeuratPlus <- function(
         group_by(end_node) %>% filter(order<=order)
 
     if (!keep_all_edges){
-        if ('padj' %in% colnames(edg_graph)){
+        if ('padj' %in% colnames(grn_pruned)){
             grn_pruned <- filter(grn_pruned, order==1 | mean_padj==max(mean_padj))
         } else {
             grn_pruned <- filter(grn_pruned, order==1 | mean_estimate==max(mean_estimate))
