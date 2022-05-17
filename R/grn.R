@@ -584,7 +584,7 @@ find_modules.Network <- function(
 #' @method find_modules SeuratPlus
 find_modules.SeuratPlus <- function(
     object,
-    network = 'glm_network',
+    network = DefaultNetwork(object),
     p_thresh = 0.05,
     rsq_thresh = 0.1,
     nvar_thresh = 10,

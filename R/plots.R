@@ -85,7 +85,7 @@ get_umap <- function(
 #' @method plot_gof SeuratPlus
 plot_gof.SeuratPlus <- function(
     object,
-    network = 'glm_network',
+    network = DefaultNetwork(object),
     point_size = 0.5
 ){
 
@@ -153,7 +153,7 @@ plot_gof.SeuratPlus <- function(
 #' @method plot_module_metrics SeuratPlus
 plot_module_metrics.SeuratPlus <- function(
     object,
-    network = 'glm_network'
+    network = DefaultNetwork(object)
 ){
     modules <- NetworkModules(object, network=network)@meta
     plot_df <- modules %>%
@@ -235,7 +235,7 @@ plot_module_metrics.SeuratPlus <- function(
 #' @method get_network_graph SeuratPlus
 get_network_graph.SeuratPlus <- function(
     object,
-    network = 'glm_network',
+    network = DefaultNetwork(object),
     graph_name = 'module_graph',
     rna_assay = 'RNA',
     rna_slot = 'data',
@@ -390,7 +390,7 @@ get_network_graph.SeuratPlus <- function(
 #' @method plot_network_graph SeuratPlus
 plot_network_graph.SeuratPlus <- function(
     object,
-    network = 'glm_network',
+    network = DefaultNetwork(object),
     graph_name = 'module_graph',
     layout = 'umap',
     edge_width = 0.2,
