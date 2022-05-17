@@ -6,9 +6,9 @@
 \alias{coef.Network}
 \title{Get fitted coefficients}
 \usage{
-\method{coef}{SeuratPlus}(object, network = "glm_network")
+\method{coef}{SeuratPlus}(object, network = DefaultNetwork(object))
 
-\method{coef}{RegulatoryNetwork}(object, network = "glm_network")
+\method{coef}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 
 \method{coef}{Network}(object)
 }

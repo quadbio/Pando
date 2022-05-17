@@ -9,9 +9,9 @@
 \usage{
 NetworkParams(object, ...)
 
-\method{NetworkParams}{SeuratPlus}(object, network = "glm_network")
+\method{NetworkParams}{SeuratPlus}(object, network = DefaultNetwork(object))
 
-\method{NetworkParams}{RegulatoryNetwork}(object, network = "glm_network")
+\method{NetworkParams}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 
 \method{NetworkParams}{Network}(object)
 }

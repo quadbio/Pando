@@ -13,12 +13,14 @@ find_modules(object, ...)
   p_thresh = 0.05,
   rsq_thresh = 0.1,
   nvar_thresh = 10,
-  min_genes_per_module = 5
+  min_genes_per_module = 5,
+  xgb_method = c("tf", "target"),
+  xgb_top = 50
 )
 
 \method{find_modules}{SeuratPlus}(
   object,
-  network = "glm_network",
+  network = DefaultNetwork(object),
   p_thresh = 0.05,
   rsq_thresh = 0.1,
   nvar_thresh = 10,
@@ -35,6 +37,14 @@ find_modules(object, ...)
 \item{nvar_thresh}{Integer indicating the minimum number of variables in the model.}
 
 \item{min_genes_per_module}{Integer indicating the minimum number of genes in a module.}
+
+\item{xgb_method}{Method to get modules from xgb models
+\itemize{
+\item \code{'tf'} - Choose top targets for each TF.
+\item \code{'target'} - Choose top TFs for each target gene.
+}}
+
+\item{xgb_top}{Interger indicating how many top targets/TFs to return.}
 
 \item{network}{Name of the network to use.}
 }

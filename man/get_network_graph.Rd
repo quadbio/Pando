@@ -9,13 +9,14 @@ get_network_graph(object, ...)
 
 \method{get_network_graph}{SeuratPlus}(
   object,
-  network = "glm_network",
-  graph_name = "module_graph",
+  network = DefaultNetwork(object),
+  graph = "module_graph",
   rna_assay = "RNA",
   rna_slot = "data",
-  edge_method = c("weighted", "corr", "coef"),
+  umap_method = c("weighted", "corr", "coef", "none"),
   features = NULL,
   random_seed = 111,
+  verbose = TRUE,
   ...
 )
 }
@@ -26,18 +27,27 @@ get_network_graph(object, ...)
 
 \item{network}{Name of the network to use.}
 
-\item{graph_name}{Name of the graph.}
+\item{graph}{Name of the graph.}
 
 \item{rna_assay}{Name of the RNA assay.}
 
 \item{rna_slot}{Name of the RNA slot to use.}
 
-\item{edge_method}{Method to compute edge weights:
+\item{umap_method}{Method to compute edge weights for UMAP:
 \itemize{
 \item \code{'weighted'} - Correlation weighted by GRN coefficient.
 \item \code{'corr'} - Only correlation.
 \item \code{'coef'} - Only GRN coefficient.
+\item \code{'none'} - Don't compute UMAP and create the graph directly
+from modules.
 }}
+
+\item{features}{Features to use to create the graph. If \code{NULL}
+uses all features in the network.}
+
+\item{random_seed}{Random seed for UMAP computation}
+
+\item{verbose}{Print messages.}
 }
 \value{
 A SeuratPlus object.

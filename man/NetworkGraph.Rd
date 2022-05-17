@@ -9,9 +9,9 @@
 \usage{
 NetworkGraph(object, ...)
 
-\method{NetworkGraph}{SeuratPlus}(object, network = "glm_network", graph = "module_graph")
+\method{NetworkGraph}{SeuratPlus}(object, network = DefaultNetwork(object), graph = "module_graph")
 
-\method{NetworkGraph}{RegulatoryNetwork}(object, network = "glm_network", graph = "module_graph")
+\method{NetworkGraph}{RegulatoryNetwork}(object, network = DefaultNetwork(object), graph = "module_graph")
 
 \method{NetworkGraph}{Network}(object, graph = "module_graph")
 }

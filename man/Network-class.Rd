@@ -17,9 +17,9 @@ process as well as graph representations of the network.
 \describe{
 \item{\code{meta}}{A dataframe with meta data about the modules.}
 
-\item{\code{features}}{A names list of lists with a set of fetures (genes/peaks) for each module.}
+\item{\code{features}}{A named list with a set of fetures (genes/peaks) for each module.}
 
-\item{\code{params}}{A names list of lists with module selection parameters.}
+\item{\code{params}}{A named list with module selection parameters.}
 
 \item{\code{fit}}{A dataframe with goodness of fit measures.}
 
@@ -27,8 +27,8 @@ process as well as graph representations of the network.
 
 \item{\code{modules}}{A list TF modules.}
 
-\item{\code{graphs}}{A graphical representations of the inferred network.}
+\item{\code{graphs}}{Graphical representations of the inferred network.}
 
-\item{\code{params}}{A names list of lists with GRN inference.}
+\item{\code{params}}{A named list with GRN inference parameters.}
 }}
 

@@ -9,11 +9,11 @@
 \usage{
 gof(object, ...)
 
-\method{gof}{SeuratPlus}(object, network = "glm_network")
+\method{gof}{SeuratPlus}(object, network = DefaultNetwork(object))
 
-\method{gof}{RegulatoryNetwork}(object, network = "glm_network")
+\method{gof}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 
-\method{gof}{Network}(object, network = "glm_network")
+\method{gof}{Network}(object, network = DefaultNetwork(object))
 }
 \description{
 Get goodness-of-fit info

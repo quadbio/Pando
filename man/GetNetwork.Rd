@@ -8,9 +8,9 @@
 \usage{
 GetNetwork(object, ...)
 
-\method{GetNetwork}{SeuratPlus}(object, network = "glm_network")
+\method{GetNetwork}{SeuratPlus}(object, network = DefaultNetwork(object))
 
-\method{GetNetwork}{RegulatoryNetwork}(object, network = "glm_network")
+\method{GetNetwork}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 }
 \description{
 Get network

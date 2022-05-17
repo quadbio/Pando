@@ -7,7 +7,7 @@
 \usage{
 plot_gof(object, ...)
 
-\method{plot_gof}{SeuratPlus}(object, network = "glm_network", point_size = 0.5)
+\method{plot_gof}{SeuratPlus}(object, network = DefaultNetwork(object), point_size = 0.5)
 }
 \arguments{
 \item{object}{An object.}

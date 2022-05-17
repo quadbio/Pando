@@ -7,7 +7,7 @@
 \usage{
 plot_module_metrics(object, ...)
 
-\method{plot_module_metrics}{SeuratPlus}(object, network = "glm_network")
+\method{plot_module_metrics}{SeuratPlus}(object, network = DefaultNetwork(object))
 }
 \arguments{
 \item{object}{An object.}

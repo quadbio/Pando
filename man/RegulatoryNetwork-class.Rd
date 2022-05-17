@@ -23,5 +23,7 @@ the genomic regions included in the network.}
 network and information about the model fit.}
 
 \item{\code{params}}{A list storing parameters for GRN inference.}
+
+\item{\code{active_network}}{A string indicating the active network.}
 }}
 
