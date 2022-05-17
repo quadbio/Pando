@@ -100,6 +100,12 @@ NetworkModules <- function(object, ...){
     UseMethod(generic = 'NetworkModules', object = object)
 }
 
+#' @rdname DefaultNetwork
+#' @export DefaultNetwork
+DefaultNetwork <- function(object, ...){
+    UseMethod(generic = 'DefaultNetwork', object = object)
+}
+
 #' @rdname gof
 #' @export gof
 gof <- function(object, ...){

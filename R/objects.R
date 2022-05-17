@@ -10,8 +10,8 @@ NULL
 #' The Modules object stores the TF modules extracted from the inferred network..
 #'
 #' @slot meta A dataframe with meta data about the modules.
-#' @slot features A names list of lists with a set of fetures (genes/peaks) for each module.
-#' @slot params A names list of lists with module selection parameters.
+#' @slot features A named list with a set of fetures (genes/peaks) for each module.
+#' @slot params A named list with module selection parameters.
 #'
 #' @name Network-class
 #' @rdname Network-class
@@ -34,8 +34,8 @@ Modules <- setClass(
 #' @slot fit A dataframe with goodness of fit measures.
 #' @slot coefs A dataframe with the fitted coefficients.
 #' @slot modules A list TF modules.
-#' @slot graphs A graphical representations of the inferred network.
-#' @slot params A names list of lists with GRN inference.
+#' @slot graphs Graphical representations of the inferred network.
+#' @slot params A named list with GRN inference parameters.
 #'
 #' @name Network-class
 #' @rdname Network-class
