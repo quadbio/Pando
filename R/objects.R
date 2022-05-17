@@ -271,6 +271,20 @@ NetworkGraph.Network <- function(object, graph='module_graph'){
     return(object@graphs[[graph]])
 }
 
+#' @rdname DefaultNetwork
+#' @method DefaultNetwork SeuratPlus
+#' @export
+DefaultNetwork.SeuratPlus <- function(object){
+    return(DefaultNetwork(GetGRN(object)))
+}
+
+#' @rdname DefaultNetwork
+#' @method DefaultNetwork RegulatoryNetwork
+#' @export
+DefaultNetwork.RegulatoryNetwork <- function(object){
+    return(object@active_network)
+}
+
 
 #' Get fitted coefficients
 #' @rdname coef
