@@ -50,7 +50,7 @@ Only used of \code{peak_to_gene_method = 'GREAT'}.}
 
 \item{only_tss}{Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).}
 
-\item{parallel}{Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.}
+\item{parallel}{Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.}
 
 \item{tf_cor}{Threshold for TF - target gene correlation.}
 

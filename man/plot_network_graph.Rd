@@ -40,7 +40,7 @@ implemented in \code{\link[ggraph]{ggraph}}}
 
 \item{node_size}{Edge size range.}
 
-\item{text_size}{Text width.}
+\item{text_size}{Font size for labels.}
 
 \item{color_nodes}{Logical, Whether to color nodes by centrality.}
 
