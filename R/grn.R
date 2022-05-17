@@ -297,6 +297,12 @@ fit_grn_models.SeuratPlus <- function(
             log_message('Warning: No correlating TFs found for ', g, verbose=verbose==2)
             return()
         }
+        tf_g_corr_df <- as_tibble(
+                tf_g_cor[unique(tfs_use), , drop=F],
+                rownames='tf',
+                .name_repair='check_unique'
+            ) %>%
+            rename('tf'=1, 'corr'=2)
 
         # Filter TFs and make formula string
         frml_string <- map(names(gene_peak_tfs), function(p){
@@ -343,6 +349,7 @@ fit_grn_models.SeuratPlus <- function(
             return()
         } else {
             result$gof$nvariables <- nfeats
+            result$corr <- tf_g_corr_df
             return(result)
         }
     }, verbose=verbose, parallel=parallel)
@@ -354,6 +361,8 @@ fit_grn_models.SeuratPlus <- function(
 
     coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
     coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
+    corrs <- map_dfr(model_fits, function(x) x$corr, .id='target')
+    coefs <- suppressMessages(left_join(coefs, corrs))
     gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
     params <- list()
