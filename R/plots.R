@@ -460,6 +460,7 @@ plot_network_graph.SeuratPlus <- function(
 #' @param order Integer indicating the maximal order of the graph.
 #' @param keep_all_edges Logical, whether to maintain all edges to each leaf
 #' or prune to the strongest overall connection.
+#' @param verbose Logical. Whether to print messages.
 #' @param parallel Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.
 #'
 #' @return A SeuratPlus object.
@@ -475,6 +476,7 @@ get_tf_network.SeuratPlus <- function(
     features = NULL,
     order = 3,
     keep_all_edges = FALSE,
+    verbose = TRUE,
     parallel = FALSE
 ){
     gene_graph <- NetworkGraph(object, network=network, graph=graph)
@@ -486,6 +488,7 @@ get_tf_network.SeuratPlus <- function(
 
     features <- intersect(features, gene_graph_nodes$name)
 
+    log_message('Getting shortest paths from TF', verbose=verbose)
     spaths <- igraph::all_shortest_paths(gene_graph, tf, features, mode='out')$res
     spath_list <- map_par(spaths, function(p){
         edg <- names(p)
@@ -524,6 +527,7 @@ get_tf_network.SeuratPlus <- function(
         )
     }, parallel=parallel)
 
+    log_message('Pruning graph', verbose=verbose)
     spath_dir <- map_dfr(spath_list, function(x) x$path) %>%
         mutate(
             path_genes=str_split(path, ';'),
@@ -549,8 +553,8 @@ get_tf_network.SeuratPlus <- function(
 
     grn_graph_pruned <- gene_graph %E>%
         mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
-        as_tibble() %>% distinct() %>%
-        inner_join(spath_graph_pruned) %>%
+        as_tibble() %>% distinct()
+    grn_graph_pruned <- suppressMessages(inner_join(grn_graph_pruned, spath_graph_pruned)) %>%
         select(from_node, to_node, everything(), -from, -to) %>%
         arrange(comb_dir) %>% as_tbl_graph()
 
