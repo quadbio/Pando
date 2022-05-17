@@ -432,7 +432,9 @@ plot_network_graph.SeuratPlus <- function(
         p <- p + geom_node_point(aes(fill=centrality, size=centrality), color='darkgrey', shape=21) +
             scale_fill_gradientn(colors=node_color)
     } else {
-        p <- p + geom_node_point(aes(size=centrality), color='darkgrey', shape=21, fill=node_color[1])
+        p <- p + geom_node_point(
+            color='darkgrey', shape=21, fill='lightgrey', size=node_size, stroke=0.5
+        )
     }
 
     if (label_nodes){
