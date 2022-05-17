@@ -219,7 +219,7 @@ plot_module_metrics.SeuratPlus <- function(
 #'
 #' @param object An object.
 #' @param network Name of the network to use.
-#' @param graph Name of the graph.
+#' @param graph_name Name of the graph.
 #' @param rna_assay Name of the RNA assay.
 #' @param rna_slot Name of the RNA slot to use.
 #' @param umap_method Method to compute edge weights for UMAP:
@@ -242,7 +242,7 @@ plot_module_metrics.SeuratPlus <- function(
 get_network_graph.SeuratPlus <- function(
     object,
     network = DefaultNetwork(object),
-    graph = 'module_graph',
+    graph_name = 'module_graph',
     rna_assay = 'RNA',
     rna_slot = 'data',
     umap_method = c('weighted', 'corr', 'coef', 'none'),
@@ -348,7 +348,7 @@ get_network_graph.SeuratPlus <- function(
             activate(nodes) %>%
             mutate(centrality=centrality_pagerank())
 
-        object@grn@networks[[network]]@graphs[[graph]] <- gene_graph
+        object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
         return(object)
     }
 
