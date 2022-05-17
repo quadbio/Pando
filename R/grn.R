@@ -169,7 +169,7 @@ fit_grn_models.SeuratPlus <- function(
     params <- Params(object)
     motif2tf <- NetworkTFs(object)
     if (is.null(motif2tf)){
-        stop('Motif matches have not been found. Please run find_motifs() first.')
+        stop('Motif matches have not been found. Please run `find_motifs()` first.')
     }
     gene_annot <- Signac::Annotation(object[[params$peak_assay]])
     if (is.null(gene_annot)){
@@ -179,7 +179,7 @@ fit_grn_models.SeuratPlus <- function(
     if (is.null(genes)){
         genes <- VariableFeatures(object, assay=params$rna_assay)
         if (is.null(genes)){
-            stop('Please provide a set of features or run FindVariableFeatures()')
+            stop('Please provide a set of features or run `FindVariableFeatures()`')
         }
     }
 
@@ -431,6 +431,10 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 #' @param rsq_thresh Float indicating the \eqn{R^2} threshold on the adjusted p-value.
 #' @param nvar_thresh Integer indicating the minimum number of variables in the model.
 #' @param min_genes_per_module Integer indicating the minimum number of genes in a module.
+#' @param xgb_method Method to get modules from xgb models
+#' * \code{'tf'} - Choose top targets for each TF.
+#' * \code{'target'} - Choose top TFs for each target gene.
+#'@param xgb_top Interger indicating how many top targets/TFs to return.
 #'
 #' @return A Network object.
 #'
@@ -442,9 +446,13 @@ find_modules.Network <- function(
     p_thresh = 0.05,
     rsq_thresh = 0.1,
     nvar_thresh = 10,
-    min_genes_per_module = 5
+    min_genes_per_module = 5,
+    xgb_method = c('tf', 'target'),
+    xgb_top = 50
 ){
     fit_method <- NetworkParams(object)$method
+    xgb_method <- match.arg(xgb_method)
+
     if (!fit_method %in% c('glm', 'cv.glmnet', 'glmnet', 'brms')){
         stop(paste0('find_modules() is not yet implemented for "', fit_method, '" models'))
     }
@@ -460,6 +468,8 @@ find_modules.Network <- function(
     if (fit_method %in% c('cv.glmnet', 'glmnet')){
         modules <- modules %>%
             filter(estimate != 0)
+    } else if (fit_method == 'xgb'){
+        print('asdfas')
     } else {
         modules <- modules %>%
             filter(ifelse(is.na(padj), T, padj<p_thresh))
