@@ -20,6 +20,7 @@ no_margin <- function(){
 }
 
 #' Rangeframe scales.
+#' @import ggh4x
 scale_axis_rangeframe <- function(){
     guides(x='axis_truncated', y='axis_truncated')
 }
