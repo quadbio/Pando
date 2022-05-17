@@ -221,12 +221,17 @@ plot_module_metrics.SeuratPlus <- function(
 #' @param graph_name Name of the graph.
 #' @param rna_assay Name of the RNA assay.
 #' @param rna_slot Name of the RNA slot to use.
-#' @param umap_method Method to compute edge weights:
+#' @param umap_method Method to compute edge weights for UMAP:
 #' * \code{'weighted'} - Correlation weighted by GRN coefficient.
 #' * \code{'corr'} - Only correlation.
 #' * \code{'coef'} - Only GRN coefficient.
-#' @param features
+#' * \code{'none'} - Don't compute UMAP and create the graph directly
+#' from modules.
+#' @param features Featrues to use to create the graph. If \code{NULL}
+#' uses all features in the network.
+#' @param random_seed Random seed for UMAP computation
 #' @param ... Additional arguments for \code{\link[umap]{uwot}}.
+#' @param verbose Print messages.
 #'
 #' @return A SeuratPlus object.
 #'
@@ -444,4 +449,78 @@ plot_network_graph.SeuratPlus <- function(
 
     return(p)
 }
+
+
+#' Plot network centered around one TF.
+#'
+#' @import tidygraph
+#' @import ggraph
+#'
+#' @param object An object.
+#' @param network Name of the network to use.
+#' @param graph_name Name of the graph.
+#' @param circular Logical. Layout tree in circular layout.
+#' @param edge_width Edge width.
+#' @param edge_color Edge color.
+#' @param node_color Node color or color gradient.
+#' @param node_size Edge size range.
+#' @param text_size Text width.
+#' @param color_nodes Logical, Whether to color nodes by centrality.
+#' @param label_tfs Logical, Whether to label TFs with gene name.
+#' @param color_edges Logical, Whether to color edges by direction.
+#'
+#' @return A SeuratPlus object.
+#'
+#' @rdname plot_tf_network
+#' @export
+#' @method plot_tf_network SeuratPlus
+plot_tf_network.SeuratPlus <- function(
+    object,
+    network = DefaultNetwork(object),
+    graph_name = 'module_graph',
+    circular = TRUE,
+    edge_width = 0.2,
+    edge_color = c('-1'='darkgrey', '1'='orange'),
+    node_color = pals::magma(100),
+    node_size = c(1,5),
+    text_size = 10,
+    color_nodes = TRUE,
+    label_tfs = TRUE,
+    color_edges = TRUE
+){
+    gene_graph <- NetworkGraph(object)
+
+    if (is.null(gene_graph)){
+        stop('No graph found, please run `get_network_graph()` first.')
+    }
+
+    p <- ggraph(gene_graph, layout='tree')
+
+    if (color_edges){
+        p <- p + geom_edge_diagonal(aes(color=factor(dir)), width=edge_width) +
+            scale_edge_color_manual(values=edge_color)
+    } else {
+        p <- p + geom_edge_diagonal(width=edge_width, color=edge_color[1])
+    }
+
+    if (color_nodes){
+        p <- p + geom_node_point(aes(fill=centrality, size=centrality), color='darkgrey', shape=21) +
+            scale_fill_gradientn(colors=node_color)
+    } else {
+        p <- p + geom_node_point(aes(size=centrality), color='darkgrey', shape=21, fill=node_color[1])
+    }
+
+    if (label_nodes){
+        p <- p + geom_node_text(
+            aes(label=name),
+            repel=T, size=text_size/ggplot2::.pt, max.overlaps=99999
+        )
+    }
+    p <- p + scale_size_continuous(range=node_size) +
+        theme_void() + no_legend()
+
+    return(p)
+}
+
+
 

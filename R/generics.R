@@ -46,6 +46,12 @@ plot_network_graph <- function(object, ...){
     UseMethod(generic = 'plot_network_graph', object = object)
 }
 
+#' @rdname plot_tf_network
+#' @export plot_tf_network
+plot_tf_network <- function(object, ...){
+    UseMethod(generic = 'plot_tf_network', object = object)
+}
+
 #' @rdname NetworkGraph
 #' @export NetworkGraph
 NetworkGraph <- function(object, ...){
