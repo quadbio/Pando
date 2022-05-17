@@ -19,20 +19,6 @@ no_margin <- function(){
     )
 }
 
-#' Rangeframe scales.
-#' @import ggh4x
-scale_axis_rangeframe <- function(){
-    guides(x='axis_truncated', y='axis_truncated')
-}
-
-#' Theme rangeframe.
-theme_rangeframe <- function(){
-    theme(
-        axis.line = element_line(colour='black', lineend='round', size=0.3),
-        axis.ticks = element_line(size=0.3),
-        panel.border = element_blank()
-    )
-}
 
 #' Removes x axis text.
 #'
@@ -143,8 +129,6 @@ plot_gof.SeuratPlus <- function(
 
 #' Plot module metrics number of genes, number of peaks and number of TFs per gene.
 #'
-#' @import patchwork ggh4x
-#'
 #' @param object An object.
 #' @param network Name of the network to use.
 #'
@@ -164,7 +148,6 @@ plot_module_metrics.SeuratPlus <- function(
     p1 <- ggplot(plot_df, aes(1, n_regions)) +
         geom_violin(size=0.2, fill='darkgrey', color='black') +
         theme_bw() +
-        theme_rangeframe() + scale_axis_rangeframe() +
         no_x_text() +
         theme(
             axis.line.x = element_blank(),
@@ -181,7 +164,6 @@ plot_module_metrics.SeuratPlus <- function(
     p2 <- ggplot(plot_df, aes(1, n_tfs)) +
         geom_violin(size=0.2, fill='darkgrey', color='black') +
         theme_bw() +
-        theme_rangeframe() + scale_axis_rangeframe() +
         no_x_text() +
         theme(
             axis.line.x = element_blank(),
@@ -198,7 +180,6 @@ plot_module_metrics.SeuratPlus <- function(
     p3 <- ggplot(plot_df, aes(1, n_genes)) +
         geom_violin(size=0.2, fill='darkgrey', color='black') +
         theme_bw() +
-        theme_rangeframe() + scale_axis_rangeframe() +
         no_x_text() +
         scale_y_continuous(
             trans=scales::pseudo_log_trans(base = 10)
