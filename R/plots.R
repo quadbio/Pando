@@ -620,6 +620,7 @@ plot_tf_network.SeuratPlus <- function(
         color='darkgrey', shape=21, fill='lightgrey', size=node_size, stroke=0.5
     )
 
+    net_tfs <- colnames(NetworkTFs(object))
     if (label_nodes=='tfs'){
         p <- p + geom_node_label(
             aes(label=name, filter=name%in%net_tfs),
@@ -627,7 +628,6 @@ plot_tf_network.SeuratPlus <- function(
             label.padding=unit(0.1, 'line')
         )
     } else if (label_nodes=='all'){
-        net_tfs <- colnames(NetworkTFs(object))
         p <- p + geom_node_label(
             aes(label=name),
             size=text_size/ggplot2::.pt,
