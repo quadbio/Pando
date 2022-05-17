@@ -18,7 +18,7 @@ NULL
 #' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
 #' Only used of `peak_to_gene_method = 'GREAT'`.
 #' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
-#' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
+#' @param parallel Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.
 #' @param tf_cor Threshold for TF - target gene correlation.
 #' @param peak_cor Threshold for binding peak - target gene correlation.
 #' @param method A character string indicating the method to fit the model.
