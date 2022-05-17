@@ -256,20 +256,23 @@ NetworkParams.Network <- function(object){
 #' @method NetworkGraph SeuratPlus
 #' @export
 NetworkGraph.SeuratPlus <- function(object, network=DefaultNetwork(object), graph='module_graph'){
-    return(GetNetwork(object, network=network)@graphs[[graph]])
+    return(NetworkGraph(GetNetwork(object, network=network), graph=graph))
 }
 
 #' @rdname NetworkGraph
 #' @method NetworkGraph RegulatoryNetwork
 #' @export
 NetworkGraph.RegulatoryNetwork <- function(object, network=DefaultNetwork(object), graph='module_graph'){
-    return(GetNetwork(object, network=network)@graphs[[graph]])
+    return(NetworkGraph(GetNetwork(object, network=network), graph=graph))
 }
 
 #' @rdname NetworkGraph
 #' @method NetworkGraph Network
 #' @export
 NetworkGraph.Network <- function(object, graph='module_graph'){
+    if (!graph%in%names(object@graphs)){
+        stop(paste0('The requested graph "', graph, '" does not exist. Try (re-)running `get_network_graph().`'))
+    }
     return(object@graphs[[graph]])
 }
 

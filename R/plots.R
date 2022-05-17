@@ -409,10 +409,6 @@ plot_network_graph.SeuratPlus <- function(
 ){
     gene_graph <- NetworkGraph(object, network=network, graph=graph)
 
-    if (is.null(gene_graph)){
-        stop('Graph not found, please run `get_network_graph()` first.')
-    }
-
     has_umap <- 'UMAP_1' %in% colnames(as_tibble(activate(gene_graph, 'nodes')))
     if (layout=='umap' & !has_umap){
         stop('No UMAP coordinates found, please run `get_network_graph()` first.')
@@ -494,10 +490,6 @@ plot_tf_network.SeuratPlus <- function(
     color_edges = TRUE
 ){
     gene_graph <- NetworkGraph(object, network=network, graph=graph)
-
-    if (is.null(gene_graph)){
-        stop('No graph found, please run `get_network_graph()` first.')
-    }
 
     if (is.null(features)){
         features <- NetworkFeatures(object, network=network)
