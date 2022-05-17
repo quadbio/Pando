@@ -39,7 +39,6 @@ Imports:
     patchwork,
     TFBSTools,
     foreach,
-    ggh4x,
     sparseMatrixStats,
     irlba,
     uwot
