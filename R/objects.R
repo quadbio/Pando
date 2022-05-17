@@ -90,6 +90,7 @@ Regions <- setClass(
 #' @slot network A \code{\link{Network}} object containing the inferred regulatory
 #' network and information about the model fit.
 #' @slot params A list storing parameters for GRN inference.
+#' @slot active_network A string indicating the active network.
 #'
 #' @name RegulatoryNetwork-class
 #' @rdname RegulatoryNetwork-class
@@ -99,7 +100,8 @@ RegulatoryNetwork <- setClass(
     slots = list(
         regions = 'Regions',
         networks = 'list',
-        params = 'list'
+        params = 'list',
+        active_network = 'character'
     )
 )
 
