@@ -170,7 +170,8 @@ plot_module_metrics.SeuratPlus <- function(
             axis.title.x = element_blank()
         ) +
         geom_boxplot(width=0.2, outlier.shape=NA, size=0.2) +
-        labs(y='# peaks')
+        labs(y='# peaks') +
+        ggtitle('# regions\nper TF')
 
 
     plot_df <- modules %>%
@@ -186,7 +187,8 @@ plot_module_metrics.SeuratPlus <- function(
             axis.title.x = element_blank()
         ) +
         geom_boxplot(width=0.2, outlier.shape=NA, size=0.2) +
-        labs(y='# TFs')
+        labs(y='# TFs') +
+        ggtitle('# TFs per\ntarget gene')
 
 
     plot_df <- modules %>%
@@ -205,9 +207,10 @@ plot_module_metrics.SeuratPlus <- function(
             axis.title.x = element_blank()
         ) +
         geom_boxplot(width=0.2, outlier.shape=NA, size=0.2) +
-        labs(y=expression('# genes'))
+        labs(y=expression('# genes')) +
+        ggtitle('# target genes\nper TF')
 
-    p_out <- p1 | p2 | p3 & no_margin()
+    p_out <- p3 | p1 | p2 & no_margin()
     return(p_out)
 }
 
