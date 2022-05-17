@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
       </span>
     </div>
 
@@ -133,13 +133,15 @@
   p_thresh <span class='op'>=</span> <span class='fl'>0.05</span>,
   rsq_thresh <span class='op'>=</span> <span class='fl'>0.1</span>,
   nvar_thresh <span class='op'>=</span> <span class='fl'>10</span>,
-  min_genes_per_module <span class='op'>=</span> <span class='fl'>5</span>
+  min_genes_per_module <span class='op'>=</span> <span class='fl'>5</span>,
+  xgb_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"tf"</span>, <span class='st'>"target"</span><span class='op'>)</span>,
+  xgb_top <span class='op'>=</span> <span class='fl'>50</span>
 <span class='op'>)</span>
 
 <span class='co'># S3 method for SeuratPlus</span>
 <span class='fu'>find_modules</span><span class='op'>(</span>
   <span class='va'>object</span>,
-  network <span class='op'>=</span> <span class='st'>"glm_network"</span>,
+  network <span class='op'>=</span> <span class='fu'><a href='DefaultNetwork.html'>DefaultNetwork</a></span><span class='op'>(</span><span class='va'>object</span><span class='op'>)</span>,
   p_thresh <span class='op'>=</span> <span class='fl'>0.05</span>,
   rsq_thresh <span class='op'>=</span> <span class='fl'>0.1</span>,
   nvar_thresh <span class='op'>=</span> <span class='fl'>10</span>,
@@ -149,6 +151,10 @@
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>object</th>
+      <td><p>An object.</p></td>
+    </tr>
     <tr>
       <th>p_thresh</th>
       <td><p>Float indicating the significance threshold on the adjusted p-value.</p></td>
@@ -165,12 +171,27 @@
       <th>min_genes_per_module</th>
       <td><p>Integer indicating the minimum number of genes in a module.</p></td>
     </tr>
+    <tr>
+      <th>xgb_method</th>
+      <td><p>Method to get modules from xgb models</p><ul>
+<li><p><code>'tf'</code> - Choose top targets for each TF.</p></li>
+<li><p><code>'target'</code> - Choose top TFs for each target gene.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>xgb_top</th>
+      <td><p>Interger indicating how many top targets/TFs to return.</p></td>
+    </tr>
+    <tr>
+      <th>network</th>
+      <td><p>Name of the network to use.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A Network object.</p>
-<p>A Network object.</p>
+<p>A SeuratPlus object.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
       </span>
     </div>
 
@@ -125,14 +125,23 @@
     <p>Fit (regularized) generalized linear model</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_model</span><span class='op'>(</span><span class='va'>formula</span>, <span class='va'>data</span>, method <span class='op'>=</span> <span class='st'>"glm"</span>, family <span class='op'>=</span> <span class='va'>gaussian</span>, alpha <span class='op'>=</span> <span class='fl'>1</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fit_model</span><span class='op'>(</span>
+  <span class='va'>formula</span>,
+  <span class='va'>data</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"glm"</span>, <span class='st'>"glmnet"</span>, <span class='st'>"cv.glmnet"</span>, <span class='st'>"brms"</span>, <span class='st'>"xgb"</span>, <span class='st'>"bagging_ridge"</span>,
+    <span class='st'>"bayesian_ridge"</span><span class='op'>)</span>,
+  family <span class='op'>=</span> <span class='va'>gaussian</span>,
+  alpha <span class='op'>=</span> <span class='fl'>1</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>An object of class <code>formula</code> with a symbolic description</p></td>
+      <td><p>An object of class <code>formula</code> with a symbolic description
+of the model to be fitted.</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -140,8 +149,14 @@
     </tr>
     <tr>
       <th>method</th>
-      <td><p>A character string indicating the method to fit the model.
-Possible values are <code>'glm'</code>, <code>'glmnet'</code> and <code>'cv.glmnet'</code></p></td>
+      <td><p>A character string indicating the method to fit the model.</p><ul>
+<li><p><code>'glm'</code> - Generalized Liner Model with <code>stats</code>.</p></li>
+<li><p><code>'glmnet'</code>, <code>'cv.glmnet'</code> - Regularized Generalized Liner Model with <code><a href='https://glmnet.stanford.edu/reference/glmnet.html'>glmnet</a></code>.</p></li>
+<li><p><code>'brms'</code> - Bayesian Regression Models using <code>brms</code>.</p></li>
+<li><p><code>'xgb'</code> - Gradient Boosting Regression using <code><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></code>.</p></li>
+<li><p><code>'bagging_ridge'</code> - Bagging Ridge Regression using scikit-learn via <a href='https://rdrr.io/pkg/reticulate/man/reticulate.html'>reticulate</a>.</p></li>
+<li><p><code>'bayesian_ridge'</code> - Bayesian Ridge Regression using scikit-learn via <a href='https://rdrr.io/pkg/reticulate/man/reticulate.html'>reticulate</a>.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>family</th>

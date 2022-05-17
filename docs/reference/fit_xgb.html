@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
       </span>
     </div>
 
@@ -130,6 +130,7 @@
   <span class='va'>data</span>,
   params <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>max_depth <span class='op'>=</span> <span class='fl'>3</span>, eta <span class='op'>=</span> <span class='fl'>0.01</span>, objective <span class='op'>=</span> <span class='st'>"reg:squarederror"</span><span class='op'>)</span>,
   nrounds <span class='op'>=</span> <span class='fl'>1000</span>,
+  nthread <span class='op'>=</span> <span class='op'>-</span><span class='fl'>1</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -138,11 +139,20 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>An object of class <code>formula</code> with a symbolic description</p></td>
+      <td><p>An object of class <code>formula</code> with a symbolic description
+of the model to be fitted.</p></td>
     </tr>
     <tr>
       <th>data</th>
       <td><p>A <code>data.frame</code> containing the variables in the model.</p></td>
+    </tr>
+    <tr>
+      <th>params</th>
+      <td><p>A list with model parameters. For details, see <code>xgboost</code></p></td>
+    </tr>
+    <tr>
+      <th>nrounds</th>
+      <td><p>Max number of boosting iterations.</p></td>
     </tr>
     <tr>
       <th>...</th>

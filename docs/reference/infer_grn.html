@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
       </span>
     </div>
 
@@ -140,11 +140,15 @@
   parallel <span class='op'>=</span> <span class='cn'>FALSE</span>,
   tf_cor <span class='op'>=</span> <span class='fl'>0.1</span>,
   peak_cor <span class='op'>=</span> <span class='fl'>0</span>,
-  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"glm"</span>, <span class='st'>"glmnet"</span>, <span class='st'>"cv.glmnet"</span>, <span class='st'>"brms"</span>, <span class='st'>"xgb"</span><span class='op'>)</span>,
+  aggregate_rna_col <span class='op'>=</span> <span class='cn'>NULL</span>,
+  aggregate_peaks_col <span class='op'>=</span> <span class='cn'>NULL</span>,
+  method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"glm"</span>, <span class='st'>"glmnet"</span>, <span class='st'>"cv.glmnet"</span>, <span class='st'>"brms"</span>, <span class='st'>"xgb"</span>, <span class='st'>"bagging_ridge"</span>,
+    <span class='st'>"bayesian_ridge"</span><span class='op'>)</span>,
   alpha <span class='op'>=</span> <span class='fl'>0.5</span>,
   family <span class='op'>=</span> <span class='st'>"gaussian"</span>,
   interaction_term <span class='op'>=</span> <span class='st'>":"</span>,
   adjust_method <span class='op'>=</span> <span class='st'>"fdr"</span>,
+  scale <span class='op'>=</span> <span class='cn'>FALSE</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
@@ -164,7 +168,7 @@ Takes all VariableFeatures in the object per default.</p></td>
     <tr>
       <th>peak_to_gene_method</th>
       <td><p>Character specifying the method to
-link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.</p></td>
+link peak overlapping motif regions to nearby genes. One of 'Signac' or 'GREAT'.</p></td>
     </tr>
     <tr>
       <th>upstream</th>
@@ -177,7 +181,7 @@ link peak overlapping motif regions to nearby genes. One of 'Signac or 'GREAT'.<
     <tr>
       <th>extend</th>
       <td><p>Integer defining the distance from the upstream and downstream of the basal regulatory region.
-Only used of `peak_to_gene_method = 'GREAT'`.</p></td>
+Only used of <code>peak_to_gene_method = 'GREAT'</code>.</p></td>
     </tr>
     <tr>
       <th>only_tss</th>
@@ -185,7 +189,7 @@ Only used of `peak_to_gene_method = 'GREAT'`.</p></td>
     </tr>
     <tr>
       <th>parallel</th>
-      <td><p>Logical. Whether to parellelize the computation with <code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach</a></code>.</p></td>
+      <td><p>Logical. Whether to parallelize the computation with <code><a href='https://rdrr.io/pkg/foreach/man/foreach.html'>foreach</a></code>.</p></td>
     </tr>
     <tr>
       <th>tf_cor</th>
@@ -197,8 +201,14 @@ Only used of `peak_to_gene_method = 'GREAT'`.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>A character string indicating the method to fit the model.
-Possible values are <code>'glm'</code>, <code>'glmnet'</code>, <code>'cv.glmnet'</code>, <code>'brms'</code> and <code>'xgb'</code>.</p></td>
+      <td><p>A character string indicating the method to fit the model.</p><ul>
+<li><p><code>'glm'</code> - Generalized Liner Model with <code>stats</code>.</p></li>
+<li><p><code>'glmnet'</code>, <code>'cv.glmnet'</code> - Regularized Generalized Liner Model with <code><a href='https://glmnet.stanford.edu/reference/glmnet.html'>glmnet</a></code>.</p></li>
+<li><p><code>'brms'</code> - Bayesian Regression Models using <code>brms</code>.</p></li>
+<li><p><code>'xgb'</code> - Gradient Boosting Regression using <code><a href='https://rdrr.io/pkg/xgboost/man/xgb.train.html'>xgboost</a></code>.</p></li>
+<li><p><code>'bagging_ridge'</code> - Bagging Ridge Regression using scikit-learn via <a href='https://rdrr.io/pkg/reticulate/man/reticulate.html'>reticulate</a>.</p></li>
+<li><p><code>'bayesian_ridge'</code> - Bayesian Ridge Regression using scikit-learn via <a href='https://rdrr.io/pkg/reticulate/man/reticulate.html'>reticulate</a>.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>alpha</th>
@@ -211,19 +221,24 @@ See <code>stats</code> for mode details.</p></td>
     </tr>
     <tr>
       <th>interaction_term</th>
-      <td><p>The interaction term to use in the model between TF and binding site.
-* <code>'+'</code> for additive interaction.
-* <code>':'</code> for 'multiplicative' interaction.
-* <code>'\*'</code> for crossing interaction, i.e. additive AND 'multiplicative'.
-For more info, see <code>stats</code></p></td>
+      <td><p>The interaction term to use in the model between TF and binding site.</p><ul>
+<li><p><code>'+'</code> for additive interaction.</p></li>
+<li><p><code>':'</code> for 'multiplicative' interaction.</p></li>
+<li><p><code>'*'</code> for crossing interaction, i.e. additive AND 'multiplicative'.
+For more info, see <code>stats</code></p></li>
+</ul></td>
     </tr>
     <tr>
       <th>adjust_method</th>
-      <td><p>Method fro adjusting p-values.</p></td>
+      <td><p>Method for adjusting p-values.</p></td>
+    </tr>
+    <tr>
+      <th>scale</th>
+      <td><p>Logical. Whether to z-transform the expression and accessibility matrices.</p></td>
     </tr>
     <tr>
       <th>verbose</th>
-      <td><p>Logical. Display messages</p></td>
+      <td><p>Logical. Display messages. Set verbose to '2' to print errors for all model fits.</p></td>
     </tr>
     </table>
 

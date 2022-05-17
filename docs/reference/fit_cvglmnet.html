@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
       </span>
     </div>
 
@@ -125,14 +125,15 @@
     <p>Cross-validation for regularized generalized linear models</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_cvglmnet</span><span class='op'>(</span><span class='va'>formula</span>, <span class='va'>data</span>, family <span class='op'>=</span> <span class='va'>gaussian</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span>, nfolds <span class='op'>=</span> <span class='fl'>5</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fit_cvglmnet</span><span class='op'>(</span><span class='va'>formula</span>, <span class='va'>data</span>, family <span class='op'>=</span> <span class='va'>gaussian</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>formula</th>
-      <td><p>An object of class <code>formula</code> with a symbolic description</p></td>
+      <td><p>An object of class <code>formula</code> with a symbolic description
+of the model to be fitted.</p></td>
     </tr>
     <tr>
       <th>data</th>
@@ -148,16 +149,8 @@ See <code>stats</code> for mode details.</p></td>
       <td><p>The elasticnet mixing parameter. See <code><a href='https://glmnet.stanford.edu/reference/glmnet.html'>glmnet</a></code> for details.</p></td>
     </tr>
     <tr>
-      <th>nfolds</th>
-      <td><p>The number of folds for CV.</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>Other parameters for the model fitting function.</p></td>
-    </tr>
-    <tr>
-      <th>nlambda</th>
-      <td><p>The number of <code>lambda</code> values.</p></td>
     </tr>
     </table>
 
