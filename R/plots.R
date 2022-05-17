@@ -433,7 +433,7 @@ plot_network_graph.SeuratPlus <- function(
             scale_fill_gradientn(colors=node_color)
     } else {
         p <- p + geom_node_point(
-            color='darkgrey', shape=21, fill='lightgrey', size=node_size, stroke=0.5
+            color='darkgrey', shape=21, fill='lightgrey', size=node_size[1], stroke=0.5
         )
     }
 
