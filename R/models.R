@@ -238,7 +238,7 @@ fit_xgb <- function(
     gof <- tibble(
         rsq = r2(response, y_pred)
     )
-    coefs <- as_tibble(as.matrix(xgboost::xgb.importance(model=fit)))
+    coefs <- as_tibble(as.data.frame(xgboost::xgb.importance(model=fit)))
     colnames(coefs) <- c('term', 'gain', 'cover', 'frequency')
     return(list(gof=gof, coefs=coefs))
 }
