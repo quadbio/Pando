@@ -260,6 +260,7 @@ get_network_graph.SeuratPlus <- function(
         rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
         features <- intersect(features, colnames(rna_expr))
 
+        log_message('Computing gene-gene correlation', verbose=verbose)
         rna_expr <- rna_expr[, features]
         gene_cor <- sparse_cor(rna_expr)
         gene_cor_df <- gene_cor %>%
@@ -280,6 +281,7 @@ get_network_graph.SeuratPlus <- function(
             pivot_wider(names_from=tf, values_from=estimate, values_fill=0) %>%
             column_to_rownames('target') %>% as.matrix() %>% Matrix::Matrix(sparse=T)
 
+        log_message('Computing weighted regulatory factor', verbose=verbose)
         # Layout with UMAP on adjacency matrix
         reg_factor_mat <- abs(reg_mat) + 1
         coex_mat <- gene_cor[rownames(reg_factor_mat), colnames(reg_factor_mat)] * sqrt(reg_factor_mat)
@@ -294,6 +296,7 @@ get_network_graph.SeuratPlus <- function(
             features <- net_features
         }
 
+        log_message('Computing gene-gene correlation', verbose=verbose)
         rna_expr <- rna_expr[, features]
         coex_mat <- sparse_cor(rna_expr)
         gene_cor_df <- coex_mat %>%
@@ -331,6 +334,7 @@ get_network_graph.SeuratPlus <- function(
             select(tf, target, everything()) %>%
             group_by(target)
 
+        log_message('Getting network graph', verbose=verbose)
         gene_graph <- as_tbl_graph(gene_net) %>%
             activate(edges) %>%
             mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
@@ -342,9 +346,11 @@ get_network_graph.SeuratPlus <- function(
         return(object)
     }
 
+    log_message('Computing UMAP embedding', verbose=verbose)
     set.seed(random_seed)
     coex_umap <- get_umap(coex_mat, ...)
 
+    log_message('Getting network graph', verbose=verbose)
     gene_graph <- as_tbl_graph(gene_net) %>%
         activate(edges) %>%
         mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
