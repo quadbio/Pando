@@ -383,7 +383,7 @@ get_network_graph.SeuratPlus <- function(
 #' @param edge_color Edge color.
 #' @param node_color Node color or color gradient.
 #' @param node_size Edge size range.
-#' @param text_size Text width.
+#' @param text_size Font size for labels.
 #' @param color_nodes Logical, Whether to color nodes by centrality.
 #' @param label_nodes Logical, Whether to label nodes with gene name.
 #' @param color_edges Logical, Whether to color edges by direction.
@@ -447,6 +447,118 @@ plot_network_graph.SeuratPlus <- function(
 }
 
 
+#' Get sub-network centered around one TF.
+#'
+#' @import tidygraph
+#' @import ggraph
+#'
+#' @param object An object.
+#' @param tf The transcription factor to center around.
+#' @param network Name of the network to use.
+#' @param graph Name of the graph.
+#' @param features Features to use. If \code{NULL} uses all features in the graph.
+#' @param order Integer indicating the maximal order of the graph.
+#' @param keep_all_edges Logical, whether to maintain all edges to each leaf
+#' or prune to the strongest overall connection.
+#' @param parallel Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.
+#'
+#' @return A SeuratPlus object.
+#'
+#' @rdname get_tf_network
+#' @export
+#' @method get_tf_network SeuratPlus
+get_tf_network.SeuratPlus <- function(
+    object,
+    tf,
+    network = DefaultNetwork(object),
+    graph = 'module_graph',
+    features = NULL,
+    order = 3,
+    keep_all_edges = FALSE,
+    parallel = FALSE
+){
+    gene_graph <- NetworkGraph(object, network=network, graph=graph)
+    gene_graph_nodes <- gene_graph %N>% as_tibble()
+
+    if (is.null(features)){
+        features <- NetworkFeatures(object, network=network)
+    }
+
+    features <- intersect(features, gene_graph_nodes$name)
+
+    spaths <- igraph::all_shortest_paths(gene_graph, tf, features, mode='out')$res
+    spath_list <- map_par(spaths, function(p){
+        edg <- names(p)
+        edg_graph <- gene_graph %>%
+            filter(name%in%edg) %>%
+            convert(to_shortest_path, from=which(.N()$name==edg[1]), to=which(.N()$name==edg[length(edg)])) %E>%
+            mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
+            as_tibble()
+
+        edg_dir <- edg_graph %>% pull(estimate) %>% sign() %>% prod()
+        edg_est <- edg_graph %>% pull(estimate) %>% mean()
+        path_df <- tibble(
+            start_node = edg[1],
+            end_node = edg[length(edg)],
+            dir = edg_dir,
+            path = paste(edg, collapse=';'),
+            path_regions = paste(edg_graph$regions, collapse=';'),
+            order = length(edg)-1,
+            mean_estimate = edg_est
+        )
+
+        if ('padj' %in% colnames(edg_graph)){
+            path_df$mean_log_padj <- edg_graph %>% pull(padj) %>% {-log10(.)} %>% mean()
+        }
+
+        return(
+            list(
+                path = path_df,
+                graph = mutate(
+                    edg_graph,
+                    path=paste(edg, collapse=';'),
+                    end_node=edg[length(edg)],
+                    comb_dir=edg_dir
+                )
+            )
+        )
+    }, parallel=parallel)
+
+    spath_dir <- map_dfr(spath_list, function(x) x$path) %>%
+        mutate(
+            path_genes=str_split(path, ';'),
+            path_regions=str_split(path_regions, ';')
+        )
+    spath_graph <- map_dfr(spath_list, function(x) x$graph)
+
+    grn_pruned <- spath_dir %>%
+        select(start_node, end_node, everything()) %>%
+        group_by(end_node) %>% filter(order<=order)
+
+    if (!keep_all_edges){
+        if ('padj' %in% colnames(edg_graph)){
+            grn_pruned <- filter(grn_pruned, order==1 | mean_padj==max(mean_padj))
+        } else {
+            grn_pruned <- filter(grn_pruned, order==1 | mean_estimate==max(mean_estimate))
+        }
+    }
+
+    spath_graph_pruned <- spath_graph %>%
+        filter(path%in%grn_pruned$path) %>%
+        select(from_node, to_node, end_node, comb_dir) %>% distinct()
+
+    grn_graph_pruned <- gene_graph %E>%
+        mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
+        as_tibble() %>% distinct() %>%
+        inner_join(spath_graph_pruned) %>%
+        select(from_node, to_node, everything(), -from, -to) %>%
+        arrange(comb_dir) %>% as_tbl_graph()
+
+    object@grn@networks[[network]]@graphs$tf_graphs[[tf]] <- grn_graph_pruned
+    return(object)
+}
+
+
 #' Plot sub-network centered around one TF.
 #'
 #' @import tidygraph
@@ -457,16 +569,17 @@ plot_network_graph.SeuratPlus <- function(
 #' @param network Name of the network to use.
 #' @param graph Name of the graph.
 #' @param circular Logical. Layout tree in circular layout.
-#' @param order Integer indicating the maximal order of the graph.
-#' @param features Features to use. If \code{NULL} uses all features in the graph.
 #' @param edge_width Edge width.
 #' @param edge_color Edge color.
 #' @param node_color Node color or color gradient.
 #' @param node_size Edge size range.
-#' @param text_size Text width.
-#' @param color_nodes Logical, Whether to color nodes by centrality.
-#' @param label_tfs Logical, Whether to label TFs with gene name.
-#' @param color_edges Logical, Whether to color edges by direction.
+#' @param text_size Font size for labels.
+#' @param color_nodes Logical, whether to color nodes by centrality.
+#' @param label_nodes String, indicating what to label.
+#' * \code{'tfs'} - Label all TFs.
+#' * \code{'all'} - Label all genes.
+#' * \code{'none'} - Label nothing (except the root TF).
+#' @param color_edges Logical, whether to color edges by direction.
 #'
 #' @return A SeuratPlus object.
 #'
@@ -479,48 +592,21 @@ plot_tf_network.SeuratPlus <- function(
     network = DefaultNetwork(object),
     graph = 'module_graph',
     circular = TRUE,
-    order = 3,
     edge_width = 0.2,
     edge_color = c('-1'='darkgrey', '1'='orange'),
     node_color = pals::magma(100),
     node_size = c(1,5),
     text_size = 10,
     color_nodes = TRUE,
-    label_tfs = TRUE,
+    label_nodes = c('tfs', 'all', 'none'),
     color_edges = TRUE
 ){
-    gene_graph <- NetworkGraph(object, network=network, graph=graph)
+    label_nodes <- match.arg(label_nodes)
 
-    if (is.null(features)){
-        features <- NetworkFeatures(object, network=network)
-    }
+    gene_graph <- NetworkGraph(object, network=network, graph='tf_graphs')
+    gene_graph <- gene_graph[[tf]]
 
-    spaths <- all_shortest_paths(gene_graph, tf, features, mode='out')$res
-    spath_list <- map(spaths, function(p){
-        edg <- names(p)
-        edg_graph <- gene_graph %>%
-            filter(name%in%edg) %>%
-            convert(to_shortest_path, from=which(.N()$name==edg[1]), to=which(.N()$name==edg[length(edg)])) %E>%
-            mutate(from_node=.N()$name[from], to_node=.N()$name[to]) %>%
-            as_tibble()
-        edg_dir <- edg_graph %>% pull(estimate) %>% sign() %>% prod()
-        edg_p <- edg_graph %>% pull(log_padj) %>% mean()
-        return(
-            list(
-                path = tibble(
-                    start_node = edg[1],
-                    end_node = edg[length(edg)],
-                    dir = edg_dir,
-                    path = paste(edg, collapse=';'),
-                    order = length(edg)-1,
-                    mean_padj = edg_p
-                ),
-                graph = mutate(edg_graph, path=paste(edg, collapse=';'), end_node=edg[length(edg)], comb_dir=edg_dir)
-            )
-        )
-    })
-
-    p <- ggraph(gene_graph, layout='tree')
+    p <- ggraph(gene_graph, layout='tree', circular=circular)
 
     if (color_edges){
         p <- p + geom_edge_diagonal(aes(color=factor(dir)), width=edge_width) +
@@ -530,16 +616,30 @@ plot_tf_network.SeuratPlus <- function(
     }
 
     if (color_nodes){
-        p <- p + geom_node_point(aes(fill=centrality, size=centrality), color='darkgrey', shape=21) +
+        p <- p + geom_node_point(color='darkgrey', shape=21) +
             scale_fill_gradientn(colors=node_color)
     } else {
-        p <- p + geom_node_point(aes(size=centrality), color='darkgrey', shape=21, fill=node_color[1])
+        p <- p + geom_node_point(color='darkgrey', shape=21, fill=node_color[1])
     }
 
-    if (label_nodes){
-        p <- p + geom_node_text(
+    if (label_nodes=='tfs'){
+        p <- p + geom_node_label(
             aes(label=name),
-            repel=T, size=text_size/ggplot2::.pt, max.overlaps=99999
+            size=text_size/ggplot2::.pt,
+            label.padding=unit(0.1, 'line')
+        )
+    } else if (label_nodes=='all'){
+        net_tfs <- colnames(NetworkTFs(object))
+        p <- p + geom_node_label(
+            aes(label=name, filter=name%in%net_tfs),
+            size=text_size/ggplot2::.pt,
+            label.padding=unit(0.1, 'line')
+        )
+    } else {
+        p <- p + geom_node_label(
+            aes(label=name, filter=name==tf),
+            size=text_size/ggplot2::.pt,
+            label.padding=unit(0.1, 'line')
         )
     }
     p <- p + scale_size_continuous(range=node_size) +
