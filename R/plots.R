@@ -365,7 +365,7 @@ get_network_graph.SeuratPlus <- function(
         mutate(centrality=centrality_pagerank()) %>%
         inner_join(coex_umap, by=c('name'='gene'))
 
-    object@grn@networks[[network]]@graphs[[graph]] <- gene_graph
+    object@grn@networks[[network]]@graphs[[graph_name]] <- gene_graph
     return(object)
 }
 
