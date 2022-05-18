@@ -79,6 +79,10 @@ plot_gof.SeuratPlus <- function(
 
     module_params <- NetworkModules(object, network=network)@params
 
+    if (length(modules@params)==0){
+        stop('No modules found, please run `find_modules()` first.')
+    }
+
     gof <- gof(object, network=network) %>%
         filter(rsq<=1, rsq>=0) %>%
         mutate(nice=rsq>module_params$rsq_thresh&nvariables>module_params$nvar_thresh)
