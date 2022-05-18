@@ -79,7 +79,7 @@ plot_gof.SeuratPlus <- function(
 
     module_params <- NetworkModules(object, network=network)@params
 
-    if (length(modules@params)==0){
+    if (length(module_params)==0){
         stop('No modules found, please run `find_modules()` first.')
     }
 
@@ -147,7 +147,7 @@ plot_module_metrics.SeuratPlus <- function(
 ){
     modules <- NetworkModules(object, network=network)@meta
 
-    if (length(modules@params)==0){
+    if (nrow(modules)==0){
         stop('No modules found, please run `find_modules()` first.')
     }
 

@@ -45,6 +45,9 @@ test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb',
 
 annot <- Annotation(test_srt)
 
+plot_module_metrics(test_srt)
+plot_gof(test_srt)
+
 annot <- annot[annot$gene_name%in%c('NEUROD6', 'MSX2', 'WLS', 'HES1')] %>%
     CollapseToLongestTranscript() %>%
     Extend(upstream = 200000, downstream = 200000)
