@@ -146,6 +146,11 @@ plot_module_metrics.SeuratPlus <- function(
     network = DefaultNetwork(object)
 ){
     modules <- NetworkModules(object, network=network)@meta
+
+    if (length(modules@params)==0){
+        stop('No modules found, please run `find_modules()` first.')
+    }
+
     plot_df <- modules %>%
         distinct(target, n_regions)
 
