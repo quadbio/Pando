@@ -126,7 +126,7 @@ subgraph <- NetworkGraph(muo_data, graph='sub_graph')
 subgraph
 ```
 
-This `tbl_graph` object works with most [igraph](https://igraph.org/), [`ggraph`](https://ggraph.data-imaginist.com/index.html) and [`ggraph`](https://tidygraph.data-imaginist.com/index.html) functions for easy graph manipulation and you can use it to make more customized plots:
+This `tbl_graph` object works with most [igraph](https://igraph.org/) and [`ggraph`](https://tidygraph.data-imaginist.com/index.html) functions for easy graph manipulation and you can use it to make more customized plots:
 
 ```{r, eval=T, echo=T}
 library(ggraph)

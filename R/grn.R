@@ -362,7 +362,9 @@ fit_grn_models.SeuratPlus <- function(
     coefs <- map_dfr(model_fits, function(x) x$coefs, .id='target')
     coefs <- format_coefs(coefs, term=interaction_term, adjust_method=adjust_method)
     corrs <- map_dfr(model_fits, function(x) x$corr, .id='target')
-    coefs <- suppressMessages(left_join(coefs, corrs))
+    if (nrow(coefs)>0){
+        coefs <- suppressMessages(left_join(coefs, corrs))
+    }
     gof <- map_dfr(model_fits, function(x) x$gof, .id='target')
 
     params <- list()
