@@ -12,6 +12,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 - Interaction terms
 - motifs
 - aggregation
+- Filtering the graph
 
 ```{r, results='hide'}
 library(tidyverse)

@@ -9,18 +9,35 @@ output: html_document
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-- GREAT/Signac
-- Hi-C incorporation
 
-```{r, results='hide'}
-library(tidyverse)
-library(Pando)
-```
+A crucial step in the Pando workflow is the association of genes with putative regulatory regions inside the function `infer_grn()`. Per default, this is done by proximity alone like in the `Signac` function `LinkPeaks()`. However, there are other ways to do this. [GREAT](http://great.stanford.edu/public/html/) also utilizes proximity, but also takes regulatory domains of neighboring genes into account. This way of gene-peak association is also implemented in Pando and accessible by setting `peak_to_gene_method='GREAT'`. 
+
+
 ```{r, eval=F, echo=T}
-muo_data <- read_rds('muo_data.rds')
-muo_data
+muo_data <- infer_grn(
+    muo_data,
+    peak_to_gene_method = 'GREAT'
+) 
 ```
+\
+
+An even more interesting and likely better strategy would be to determine these regulatory domains experimentally. Hi-C data can be utilized to identify topologically associating domains (TADs) which constrain regulatory interactions. This can also reveal some more distal enhancer-promoter interactions that might otherwise be missed. In Pando such information can be incorporated by using the `peak_to_gene_domains` argument of `infer_grn()`. It takes a `GenomicRanges` object with regulatory regions and a `gene_name` column indicating the corresponding gene. Here's an example of how this could look like:
+
 ```{r, eval=T, echo=F, results='hide'}
-muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test.rds')
-muo_data
+library(readr)
+gene_domains <- read_rds('../../data/example_tads.rds')
 ```
+```{r, eval=T, echo=T}
+gene_domains
+```
+\
+
+This can be quite flexibly utilized, since you can manually adapt the regulatory regions for each gene and also provide multiple regions per gene, e.g. if you have information about individual enhancer-promoter contacts. Providing this object to `infer_grn()` will now only associate peaks within the provided regions with the gene
+
+```{r, eval=F, echo=T}
+muo_data <- infer_grn(
+    muo_data,
+    peak_to_gene_domains = gene_domains
+) 
+```
+

@@ -25,7 +25,7 @@ muo_data
 muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test_pre.rds')
 muo_data
 ```
-
+\
 So let's see if we got everything we need. We have an RNA assay with gene expression...
 
 ```{r, eval=T, echo=T}
@@ -53,7 +53,7 @@ muo_data <- initiate_grn(
     regions = phastConsElements20Mammals.UCSC.hg38 
 )
 ```
-
+\
 We have now added a `RegulatoryNetwork` object to the Seurat object. Also, you might notice that the new object is now called `SeuratPlus`. 
 
 ```{r, eval=T, echo=T}
@@ -63,7 +63,7 @@ muo_data
 ```{r, eval=T, echo=T}
 GetGRN(muo_data)
 ```
-
+\
 We can also inspect the candidate regulatory regions that we have selected:
 
 ```{r, eval=T, echo=T}
@@ -97,7 +97,7 @@ motif2tf_use <- motif2tf %>%
 motifs_use <- motifs[unique(motif2tf_use$motif)]
 motif2tf_use
 ```
-
+\
 Using these TF motifs, we can now scan the candidate regions:
 
 
@@ -110,7 +110,7 @@ muo_data <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 ```
-
+\
 Our `Regions` object has now gotten a new slot containing the `Motif` object. This object stores a sparse peak x motif matrix with the matches and some other information.
 
 ```{r, eval=T, echo=T}
@@ -141,7 +141,7 @@ muo_data <- infer_grn(
 )
 ```
 
-The function `infer_grn()` has many more parameters to choose different models or tweek the association between peaks and genes, but we'll go into this in another vignette.
+`infer_grn()` has many more parameters to choose different models or tweek the association between peaks and genes, but we'll go into this in another vignette.
 
 The inferred `Network` object can be accessed with `GetNetwork()`
 
@@ -171,7 +171,7 @@ muo_data <- find_modules(
     rsq_thresh = 0.05
 )
 ```
-
+\
 The `Modules` object can be accessed with `NetworkModules()`. The `meta` slot contains meta data about the module network and lists with feature sets for each TF can be accessed in the `features` slot.
 
 
@@ -179,7 +179,7 @@ The `Modules` object can be accessed with `NetworkModules()`. The `meta` slot co
 modules <- NetworkModules(muo_data) 
 modules@meta
 ```
-
+\
 The goodness-of-fit metrics can be plotted with 
 
 ```{r, eval=T, echo=T}

@@ -27,7 +27,7 @@ muo_data <- initiate_grn(
     regions = union(phastConsElements20Mammals.UCSC.hg38, SCREEN.ccRE.UCSC.hg38)
 )
 ```
-
+\
 These are fairly lenient selection criteria that still enrich for active regulatory regions. However, they are specific to the human genome. When working with other genomes like we have done [here](https://www.biorxiv.org/content/10.1101/2022.03.21.485045v1.full), one might need some other approaches. For this we have found it very useful to first find peaks that are correlated with the expression of nearby genes using the `Seurat` function `LinkPeaks()`. Using only these genes is quite strict, as only a small fraction of genes will be linked, but we found that this does result in quite robust GRNs.
 
 
@@ -39,7 +39,7 @@ muo_data <- initiate_grn(
     regions = StringToGRanges(Links(muo_data[['peaks']])$peak)
 )
 ```
-
+\
 Generally, candidate region selection is a good way to incorporate other biological information or genomic measurements. One could, for instance, also use chromatin marks like H3K27ac to detect active promoters and enhancers. 
 
 

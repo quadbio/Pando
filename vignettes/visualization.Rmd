@@ -67,7 +67,7 @@ muo_data <- get_network_graph(
     umap_method = 'none'
 )
 ```
-
+\
 Again, we can plot it using `plot_network_graph()`, but this time we are specifying different graph layouts. All layouts that can be used through [ggraph](https://ggraph.data-imaginist.com/index.html), can also be used here.
 
 ```{r, eval=T, echo=T}
@@ -77,7 +77,7 @@ p3 <- plot_network_graph(muo_data, graph='full_graph', layout='eigen', text_size
 p4 <- plot_network_graph(muo_data, graph='full_graph', layout='matrix', text_size=5)
 (p1 | p2) / (p3 | p4)
 ```
-
+\
 For larger GRNs, we have found that these methods tend to be not overly informative, but for smaller graphs, they can certainly work well. To plot a smaller subgraph of the GRN, we can select a set of genes with the `features` argument of `get_network_graph`:
 
 ```{r, eval=T, echo=T}
@@ -125,7 +125,7 @@ Finally, if you are familiar with `ggplot` and [`ggraph`](https://ggraph.data-im
 subgraph <- NetworkGraph(muo_data, graph='sub_graph')
 subgraph
 ```
-
+\
 This `tbl_graph` object works with most [igraph](https://igraph.org/) and [`ggraph`](https://tidygraph.data-imaginist.com/index.html) functions for easy graph manipulation and you can use it to make more customized plots:
 
 ```{r, eval=T, echo=T}

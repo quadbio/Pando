@@ -42,6 +42,17 @@ test_srt <- find_motifs(
 
 test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb',
     peak_to_gene_method = 'GREAT', parallel=F)
+
+annot <- Annotation(test_srt)
+
+annot <- annot[annot$gene_name%in%c('NEUROD6', 'MSX2', 'WLS', 'HES1')] %>%
+    CollapseToLongestTranscript() %>%
+    Extend(upstream = 200000, downstream = 200000)
+annot$region_type <- 'TAD'
+annot %>% write_rds('../data/example_tads.rds')
+
+test_srt <- infer_grn(test_srt, genes=genes_use, peak_to_gene_domains=Annotation(test_srt))
+
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 
 test_srt <- get_network_graph(test_srt, n_neighbors=2, umap_method = 'coef')
