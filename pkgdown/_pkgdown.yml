@@ -19,8 +19,8 @@ navbar:
         href: articles/models.html
       - text: Gene-peak association
         href: articles/association.html
-      - text: Advanced usage
-        href: articles/advanced.html
+      # - text: Advanced usage
+      #   href: articles/advanced.html
   right:
     homepage:
       icon: "fas fa-university fa-lg"
