@@ -447,6 +447,7 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 #' * \code{'tf'} - Choose top targets for each TF.
 #' * \code{'target'} - Choose top TFs for each target gene.
 #'@param xgb_top Interger indicating how many top targets/TFs to return.
+#'@param verbose Print messages.
 #'
 #' @return A Network object.
 #'
@@ -460,7 +461,8 @@ find_modules.Network <- function(
     nvar_thresh = 10,
     min_genes_per_module = 5,
     xgb_method = c('tf', 'target'),
-    xgb_top = 50
+    xgb_top = 50,
+    verbose = TRUE
 ){
     fit_method <- NetworkParams(object)$method
     xgb_method <- match.arg(xgb_method)
@@ -560,6 +562,8 @@ find_modules.Network <- function(
         'regions_pos' = regions_pos,
         'regions_neg' = regions_neg
     )
+
+    log_message(paste0('Found ', length(unique(modules$tf)),' TF modules'), verbose=verbose)
 
     module_meta <- select(modules, tf, target, everything())
     object@modules@meta <- module_meta
