@@ -15,7 +15,8 @@ find_modules(object, ...)
   nvar_thresh = 10,
   min_genes_per_module = 5,
   xgb_method = c("tf", "target"),
-  xgb_top = 50
+  xgb_top = 50,
+  verbose = TRUE
 )
 
 \method{find_modules}{SeuratPlus}(
@@ -45,6 +46,8 @@ find_modules(object, ...)
 }}
 
 \item{xgb_top}{Interger indicating how many top targets/TFs to return.}
+
+\item{verbose}{Print messages.}
 
 \item{network}{Name of the network to use.}
 }

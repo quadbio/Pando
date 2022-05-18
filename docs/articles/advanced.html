@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Region selection • Pando</title>
+<title>Advanced usage • Pando</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Region selection">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Advanced usage">
 <meta property="og:description" content="Pando">
 <meta property="og:image" content="/logo.png">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -98,48 +98,33 @@
 
       
 
-      </header><script src="regions_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="advanced_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Region selection</h1>
+      <h1 data-toc-skip>Advanced usage</h1>
                         <h4 class="author">Jonas Simon Fleck</h4>
             
-            <h4 class="date">5/17/2022</h4>
+            <h4 class="date">5/18/2022</h4>
       
       
-      <div class="hidden name"><code>regions.Rmd</code></div>
+      <div class="hidden name"><code>advanced.Rmd</code></div>
 
     </div>
 
     
     
-<p>The underlying idea of Pando is modeling gene expression by the interaction between TFs and regulatory regions. However, scATAC-seq datasets usually have many detected peaks (&gt;100,000) of which likely only a subset is of regulatory importance. When applying Pando to out own work, we therefore found it useful to pre-select regions based on some biological priors. Two such priors we used in our manuscript are sequence conservation and <a href="https://screen.encodeproject.org/">SCREEN candidate cREs</a>. For this, Pando provides <code>phastConsElements20Mammals.UCSC.hg38</code> and <code>SCREEN.ccRE.UCSC.hg38</code> <code>GenomicRanges</code> objects. Depending on your requirements, you can form the union or intersection of multiple <code>GenomicRanges</code> objects and proved them to <code><a href="../reference/initiate_grn.html">initiate_grn()</a></code> to constrain candidate region selection.</p>
+<ul>
+<li>Interaction terms</li>
+<li>motifs</li>
+<li>aggregation</li>
+<li>Filtering the graph</li>
+</ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Pando</span><span class="op">)</span>
-
-<span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu">read_rds</span><span class="op">(</span><span class="st">'muo_data.rds'</span><span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'phastConsElements20Mammals.UCSC.hg38'</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'SCREEN.ccRE.UCSC.hg38'</span><span class="op">)</span>
-
-<span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span>
-    <span class="va">muo_data</span>,
-    rna_assay <span class="op">=</span> <span class="st">'RNA'</span>,
-    peak_assay <span class="op">=</span> <span class="st">'peaks'</span>,
-    regions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html">union</a></span><span class="op">(</span><span class="va">phastConsElements20Mammals.UCSC.hg38</span>, <span class="va">SCREEN.ccRE.UCSC.hg38</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<p><br>
-These are fairly lenient selection criteria that still enrich for active regulatory regions. However, they are specific to the human genome. When working with other genomes like we have done <a href="https://www.biorxiv.org/content/10.1101/2022.03.21.485045v1.full">here</a>, one might need some other approaches. For this we have found it very useful to first find peaks that are correlated with the expression of nearby genes using the <code>Seurat</code> function <code>LinkPeaks()</code>. Using only these genes is quite strict, as only a small fraction of genes will be linked, but we found that this does result in quite robust GRNs.</p>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Pando</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span>
-    <span class="va">muo_data</span>,
-    rna_assay <span class="op">=</span> <span class="st">'RNA'</span>,
-    peak_assay <span class="op">=</span> <span class="st">'peaks'</span>,
-    regions <span class="op">=</span> <span class="fu">StringToGRanges</span><span class="op">(</span><span class="fu">Links</span><span class="op">(</span><span class="va">muo_data</span><span class="op">[[</span><span class="st">'peaks'</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">$</span><span class="va">peak</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<p><br>
-Generally, candidate region selection is a good way to incorporate other biological information or genomic measurements. One could, for instance, also use chromatin marks like H3K27ac to detect active promoters and enhancers.</p>
+<code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu">read_rds</span><span class="op">(</span><span class="st">'muo_data.rds'</span><span class="op">)</span>
+<span class="va">muo_data</span></code></pre></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
