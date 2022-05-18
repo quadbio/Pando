@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -68,9 +68,6 @@
     </li>
     <li>
       <a href="../articles/association.html">Gene-peak association</a>
-    </li>
-    <li>
-      <a href="../articles/advanced.html">Advanced usage</a>
     </li>
   </ul>
 </li>
@@ -163,16 +160,16 @@ The coefficients of the models are tested using a t-test and modules are extract
 <pre><code>## # A tibble: 54 x 6
 ##    tf     target region                term                      estimate   corr
 ##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;                        &lt;dbl&gt;  &lt;dbl&gt;
-##  1 POU3F1 SFRP2  chr4-153764659-15376… chr4_153764659_153764803…   0       0.156
-##  2 NR2E1  SFRP2  chr4-153765329-15376… chr4_153765329_153765353…   0       0.191
-##  3 PAX6   SFRP2  chr4-153782079-15378… chr4_153782079_153782141…   0       0.334
-##  4 FOS    SFRP2  chr4-153782176-15378… chr4_153782176_153782415…   0      -0.168
-##  5 JUNB   SFRP2  chr4-153782176-15378… chr4_153782176_153782415…   0      -0.105
-##  6 MSX1   SFRP2  chr4-153787173-15378… chr4_153787173_153787202…   0      -0.168
-##  7 MSX2   SFRP2  chr4-153787173-15378… chr4_153787173_153787202…  -0.0183 -0.190
-##  8 NR2E1  SFRP2  chr4-153794115-15379… chr4_153794115_153794213…   0.0550  0.191
-##  9 NR2E1  SFRP2  chr4-153794305-15379… chr4_153794305_153794350…   0.0490  0.191
-## 10 HES5   OTX2   chr14-56730526-56730… chr14_56730526_56730914:…   0       0.100
+##  1 POU3F1 SFRP2  chr4-153764659-15376… chr4_153764659_153764803…  0        0.156
+##  2 NR2E1  SFRP2  chr4-153765329-15376… chr4_153765329_153765353…  0        0.191
+##  3 PAX6   SFRP2  chr4-153782079-15378… chr4_153782079_153782141…  0        0.334
+##  4 FOS    SFRP2  chr4-153782176-15378… chr4_153782176_153782415…  0       -0.168
+##  5 JUNB   SFRP2  chr4-153782176-15378… chr4_153782176_153782415…  0       -0.105
+##  6 MSX1   SFRP2  chr4-153787173-15378… chr4_153787173_153787202…  0       -0.168
+##  7 MSX2   SFRP2  chr4-153787173-15378… chr4_153787173_153787202… -0.00856 -0.190
+##  8 NR2E1  SFRP2  chr4-153794115-15379… chr4_153794115_153794213…  0.0456   0.191
+##  9 NR2E1  SFRP2  chr4-153794305-15379… chr4_153794305_153794350…  0.0411   0.191
+## 10 HES5   OTX2   chr14-56730526-56730… chr14_56730526_56730914:…  0        0.100
 ## # … with 44 more rows</code></pre>
 <p><br>
 You might notice that this time there are no p-values here, but a lot of the coefficients (<code>estimate</code>) are 0. In this case, modules will be extracted not by p-value, but by selecting non-zero coefficients. The <code>alpha</code> argument can be used to adjust the elasticnet mixing parameter. 1 amounts to a lasso penalty and 0 to the ridge penalty. Lasso models are more sparse and will push more coefficients to zero.</p>
@@ -189,20 +186,7 @@ You might notice that this time there are no p-values here, but a lot of the coe
     genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'OTX2'</span>, <span class="st">'SFRP2'</span><span class="op">)</span>
 <span class="op">)</span> 
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 54 x 9
-##    tf     target region    term      estimate     pval neglog10p     padj   corr
-##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
-##  1 POU3F1 SFRP2  chr4-153… chr4_153…  0.0477  3.83e-26    25.4   1.01e-25  0.156
-##  2 NR2E1  SFRP2  chr4-153… chr4_153…  0.0462  8.33e-28    27.1   4.90e-27  0.191
-##  3 PAX6   SFRP2  chr4-153… chr4_153…  0.0717  2.48e-28    27.6   2.28e-27  0.334
-##  4 FOS    SFRP2  chr4-153… chr4_153… -0.0410  7.62e-27    26.1   2.52e-26 -0.168
-##  5 JUNB   SFRP2  chr4-153… chr4_153…  0.00196 7.00e- 1     0.155 7.00e- 1 -0.105
-##  6 MSX1   SFRP2  chr4-153… chr4_153… -0.0382  1.09e-26    26.0   3.21e-26 -0.168
-##  7 MSX2   SFRP2  chr4-153… chr4_153… -0.0612  2.40e-27    26.6   9.79e-27 -0.190
-##  8 NR2E1  SFRP2  chr4-153… NR2E1:ch…  0.116   3.39e-26    25.5   9.46e-26  0.191
-##  9 NR2E1  SFRP2  chr4-153… NR2E1:ch…  0.119   1.13e-27    26.9   5.43e-27  0.191
-## 10 HES5   OTX2   chr14-56… chr14_56…  0.0607  2.02e- 6     5.69  2.61e- 6  0.100
-## # … with 44 more rows</code></pre>
+<pre><code>## # A tibble: 0 x 0</code></pre>
 <p><br>
 As with the regular <code>glm</code>, modules will be extracted based on p-value.</p>
 </div>
@@ -218,20 +202,7 @@ As with the regular <code>glm</code>, modules will be extracted based on p-value
     genes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'OTX2'</span>, <span class="st">'SFRP2'</span><span class="op">)</span>
 <span class="op">)</span> 
 <span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
-<pre><code>## # A tibble: 42 x 8
-##    tf     target region         term               gain   cover frequency   corr
-##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;          &lt;chr&gt;             &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-##  1 NR2E1  SFRP2  chr4-15379411… NR2E1:chr4_153… 3.77e-1 1.79e-1   0.145    0.191
-##  2 MSX1   SFRP2  chr4-15378717… chr4_153787173… 2.05e-1 1.98e-1   0.213   -0.168
-##  3 MSX2   SFRP2  chr4-15378717… chr4_153787173… 1.97e-1 1.81e-1   0.188   -0.190
-##  4 POU3F1 SFRP2  chr4-15376465… chr4_153764659… 1.03e-1 1.85e-1   0.210    0.156
-##  5 PAX6   SFRP2  chr4-15378207… chr4_153782079… 5.22e-2 9.87e-2   0.117    0.334
-##  6 NR2E1  SFRP2  chr4-15376532… chr4_153765329… 4.38e-2 9.28e-2   0.0805   0.191
-##  7 FOS    SFRP2  chr4-15378217… chr4_153782176… 2.12e-2 6.59e-2   0.0442  -0.168
-##  8 JUNB   SFRP2  chr4-15378217… chr4_153782176… 5.14e-4 1.93e-5   0.00129 -0.105
-##  9 EMX2   OTX2   chr14-5680575… EMX2:chr14_568… 1.32e-1 6.64e-2   0.0715   0.241
-## 10 GLI3   OTX2   chr14-5680843… chr14_56808439… 9.45e-2 1.18e-1   0.0994   0.209
-## # … with 32 more rows</code></pre>
+<pre><code>## # A tibble: 0 x 0</code></pre>
 <p><br>
 Here we get neither a ‘normal’ coefficient, nor a p-value, but instead 3 different importance values: <code>gain</code>, <code>cover</code>, and <code>frequency</code>. These indicate the importance of the variable to the regressor. To extract modules one can select the top n target genes for each TF based on the <code>gain</code> value. Alternatively, one can select the top n TFs for each target gene.</p>
 </div>

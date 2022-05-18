@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -110,9 +110,6 @@
     </li>
     <li>
       <a href="../articles/association.html">Gene-peak association</a>
-    </li>
-    <li>
-      <a href="../articles/advanced.html">Advanced usage</a>
     </li>
   </ul>
 </li>
@@ -162,7 +159,8 @@
   nvar_thresh <span class='op'>=</span> <span class='fl'>10</span>,
   min_genes_per_module <span class='op'>=</span> <span class='fl'>5</span>,
   xgb_method <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"tf"</span>, <span class='st'>"target"</span><span class='op'>)</span>,
-  xgb_top <span class='op'>=</span> <span class='fl'>50</span>
+  xgb_top <span class='op'>=</span> <span class='fl'>50</span>,
+  verbose <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span>
 
 <span class='co'># S3 method for SeuratPlus</span>
@@ -208,6 +206,10 @@
     <tr>
       <th>xgb_top</th>
       <td><p>Interger indicating how many top targets/TFs to return.</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Print messages.</p></td>
     </tr>
     <tr>
       <th>network</th>

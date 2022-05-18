@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -110,9 +110,6 @@
     </li>
     <li>
       <a href="../articles/association.html">Gene-peak association</a>
-    </li>
-    <li>
-      <a href="../articles/advanced.html">Advanced usage</a>
     </li>
   </ul>
 </li>
@@ -164,6 +161,7 @@
   downstream <span class='op'>=</span> <span class='fl'>0</span>,
   extend <span class='op'>=</span> <span class='fl'>1e+06</span>,
   only_tss <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  peak_to_gene_domains <span class='op'>=</span> <span class='cn'>NULL</span>,
   parallel <span class='op'>=</span> <span class='cn'>FALSE</span>,
   tf_cor <span class='op'>=</span> <span class='fl'>0.1</span>,
   peak_cor <span class='op'>=</span> <span class='fl'>0</span>,
@@ -211,6 +209,11 @@ Only used of <code>peak_to_gene_method = 'GREAT'</code>.</p></td>
     <tr>
       <th>only_tss</th>
       <td><p>Logical. Measure distance from the TSS (<code>TRUE</code>) or from the entire gene body (<code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>peak_to_gene_domains</th>
+      <td><p><code>GenomicRanges</code> object with regulatory regions for each gene.
+If provided, all other peaks-to-gene methods are overwritten and these regions are used instead.</p></td>
     </tr>
     <tr>
       <th>parallel</th>
