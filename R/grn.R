@@ -116,6 +116,8 @@ infer_grn.SeuratPlus <- function(
 #' @param extend Integer defining the distance from the upstream and downstream of the basal regulatory region.
 #' Only used of `peak_to_gene_method = 'GREAT'`.
 #' @param only_tss Logical. Measure distance from the TSS (\code{TRUE}) or from the entire gene body (\code{FALSE}).
+#' @param peak_to_gene_domains `GenomicRanges` object with regulatory regions for each gene.
+#' If provided, all other peaks-to-gene methods are overwritten and these regions are used instead.
 #' @param parallel Logical. Whether to parellelize the computation with \code{\link[foreach]{foreach}}.
 #' @param tf_cor Threshold for TF - target gene correlation.
 #' @param peak_cor Threshold for binding peak - target gene correlation.
@@ -149,6 +151,7 @@ fit_grn_models.SeuratPlus <- function(
     downstream = 0,
     extend = 1000000,
     only_tss = FALSE,
+    peak_to_gene_domains = NULL,
     parallel = FALSE,
     tf_cor = 0.1,
     peak_cor = 0.,
