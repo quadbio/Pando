@@ -56,8 +56,7 @@ NetworkModules(test_srt)
 
 ## More
 
-More info about Pando can be found on our [website](https://quadbiolab.github.io/Pando/). Pando is still in it's early stages and we are actively developing it. More features and vignettes are coming soon, stay tuned! 
-
+More info about Pando can be found on our [website](https://quadbiolab.github.io/Pando/). There you can find an API reference and a number of tutorial vignettes that give an introduction on how to use Pando most effectively.  
 
 
 
