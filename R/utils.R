@@ -380,25 +380,3 @@ sparse_cor <- function(
     return(corr_mat)
 }
 
-
-#' Create folds for cross validation
-#'
-#' @param data A \code{data.frame} containing the variables in the model.
-#' @param folds Number of cross-validation folds.
-#' @param strata A character vector with strata for stratified CV.
-#'
-#' @return A list with fold indices
-#'
-#' @export
-cv_folds <- function(data, folds=5, strata=NULL){
-    if (is.null(strata)){
-        return(caret::createFolds(seq(nrow(data)), k=folds))
-    } else {
-        if (nrow(data) != length(strata)){
-            stop('Length of strata must be the same as the number of samples.')
-        }
-        return(caret::createFolds(factor(strata), k=folds))
-    }
-}
-
-

@@ -52,6 +52,7 @@ reference:
       - starts_with('gof')
       - starts_with('print')
       - ends_with('-class')
+      - '`GetAssaySummary`'
   - title: Model fitting
     desc: Functions to fit models
     contents:
@@ -60,6 +61,7 @@ reference:
     desc: Utility functions
     contents:
       - '`aggregate_matrix`'
+      - '`aggregate_assay`'
       - '`map_par`'
       - '`sparse_cor`'
       - '`find_peaks_near_genes`'
