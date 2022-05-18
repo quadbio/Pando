@@ -221,20 +221,33 @@ fit_grn_models.SeuratPlus <- function(
 
     # Get regions
     regions <- NetworkRegions(object)
-    log_message('Selecting candidate regulatory regions near genes', verbose=verbose)
     peak_data <- peak_data[, regions@peaks]
     colnames(peak_data) <- rownames(regions@motifs@data)
     peaks2motif <- regions@motifs@data
 
     # Find candidate regions near gene bodies
-    peaks_near_gene <- find_peaks_near_genes(
-        peaks = regions@ranges,
-        method = peak_to_gene_method,
-        genes = gene_annot,
-        upstream = upstream,
-        downstream = downstream,
-        only_tss = only_tss
-    )
+    if (is.null(peak_to_gene_domains)){
+        log_message('Selecting candidate regulatory regions near genes', verbose=verbose)
+        peaks_near_gene <- find_peaks_near_genes(
+            peaks = regions@ranges,
+            method = peak_to_gene_method,
+            genes = gene_annot,
+            upstream = upstream,
+            downstream = downstream,
+            only_tss = only_tss
+        )
+    } else {
+        log_message('Selecting candidate regulatory regions in provided domains', verbose=verbose)
+        peaks_near_gene <- find_peaks_near_genes(
+            peaks = regions@ranges,
+            method = 'Signac',
+            genes = peak_to_gene_domains,
+            upstream = 0,
+            downstream = 0,
+            only_tss = FALSE
+        )
+    }
+
     peaks2gene <- aggregate_matrix(t(peaks_near_gene), groups=colnames(peaks_near_gene), fun='sum')
 
     # Select peaks passing criteria
