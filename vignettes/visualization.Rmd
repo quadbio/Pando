@@ -14,12 +14,15 @@ Here we want to show you some ways to visualize the GRN and to plot some metrics
 ```{r, results='hide'}
 library(tidyverse)
 library(patchwork)
-library(ggh4x)
 library(Pando)
 ```
 
-```{r, eval=T, echo=T}
-muo_data <- read_rds('~/projects/Pando/data/nepi_test.rds')
+```{r, eval=F, echo=T}
+muo_data <- read_rds('muo_data.rds')
+muo_data@grn
+```
+```{r, eval=T, echo=F, results='hide'}
+muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test.rds')
 muo_data@grn
 ```
 

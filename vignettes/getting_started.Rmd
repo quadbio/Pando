@@ -17,8 +17,12 @@ Ok, so let's get started. First we need a Seurat object that has both RNA and AT
 library(tidyverse)
 library(Pando)
 ```
-```{r, eval=T, echo=T}
-muo_data <- read_rds('~/projects/Pando/data/nepi_test_pre.rds')
+```{r, eval=F, echo=T}
+muo_data <- read_rds('muo_data.rds')
+muo_data
+```
+```{r, eval=T, echo=F, results='hide'}
+muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test_pre.rds')
 muo_data
 ```
 
@@ -82,7 +86,7 @@ patterning_genes <- read_tsv('patterning_genes.tsv')
 ```{r, eval=T, echo=F, results='hide'}
 data('motifs')
 data('motif2tf')
-patterning_genes <- read_tsv('~/projects/Pando/data/patterning_genes.tsv')
+patterning_genes <- read_tsv('~/Dropbox/projects/Pando/data/patterning_genes.tsv')
 ```
 ```{r, eval=T, echo=T}
 pattern_tfs <- patterning_genes %>% 
@@ -107,7 +111,7 @@ muo_data <- find_motifs(
 )
 ```
 
-Our `Regions` object has not gotten a new slot containing the `Motif` object. This object stores a sparse peak x motif matrix with the matches and some other information.
+Our `Regions` object has now gotten a new slot containing the `Motif` object. This object stores a sparse peak x motif matrix with the matches and some other information.
 
 ```{r, eval=T, echo=T}
 regions <- NetworkRegions(muo_data)
@@ -124,11 +128,11 @@ PAX6 ~ HES4*chr1-911275-911316 + OTX2*chr1-921178-921198 + MSX2*chr1-921178-9211
 
 In this example, PAX6 expression is modeled by adding up the TF-peak interactions of HES4, OTX2 and MSX2.
 
-The function `infer_grn()` takes care of fitting these models for all genes and identifies significant connections between TF-region pairs and target gene expression. With the `genes` argument, we can select a subset of genes that we want to use for GRN inference. Here we stick with the theme above and use pattering-related genes. This is of course optional, but for runtime reasons we recommend to constrain the set of genes somehow, e.g. by using `VariableFeatures()`. Also, we use the method used by [GREAT](http://great.stanford.edu/public/html/) to associate genes with peaks and parallelize the computation using 16 cores:
+The function `infer_grn()` takes care of fitting these models for all genes and identifies significant connections between TF-region pairs and target gene expression. With the `genes` argument, we can select a subset of genes that we want to use for GRN inference. Here we stick with the theme above and use pattering-related genes. This is of course optional, but for runtime reasons we recommend to constrain the set of genes somehow, e.g. by using `VariableFeatures()`. Also, we use the method used by [GREAT](http://great.stanford.edu/public/html/) to associate genes with peaks and parallelize the computation using 4 cores:
 
 ```{r, eval=T, echo=T}
 library(doParallel)
-registerDoParallel(16)
+registerDoParallel(4)
 muo_data <- infer_grn(
     muo_data,
     peak_to_gene_method = 'GREAT',

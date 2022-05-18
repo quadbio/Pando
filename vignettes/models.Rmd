@@ -1,0 +1,110 @@
+---
+title: "Models"
+author: "Jonas Simon Fleck"
+date: "5/17/2022"
+output: html_document
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+Pando provides various different regression models and modelling options that can be used for GRN inference. This vignette gives an overview of the available options. First, let's load the object.
+
+```{r, eval=F, echo=T, results='hide'}
+library(Pando)
+library(tidyverse)
+library(doParallel)
+registerDoParallel(4)
+muo_data <- read_rds('muo_data.rds')
+```
+```{r, eval=T, echo=F, results='hide'}
+library(Pando)
+library(tidyverse)
+library(doParallel)
+registerDoParallel(4)
+muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test.rds')
+```
+
+### Generalized linear model
+
+The default option when running `infer_grn()` is a generalized linear model (GLM) with gaussian noise. Using the `family` argument, one can choose other noise models, e.g to fit directly on counts instead of on log-normalized data.
+
+```{r, eval=T, echo=T}
+muo_data <- infer_grn(
+    muo_data,
+    parallel = T,
+    genes = c('OTX2', 'SFRP2')
+) 
+coef(muo_data)
+```
+The coefficients of the models are tested using a t-test and modules are extracted by applying a significance threshold on the p-value. 
+
+
+### Regularized linear model
+
+In regularized linear model, the coefficients can be penalized, so that they are pushed towards 0. In this way, only 'strong' connections are maintained. Here we use the `glmnet` implementation
+
+```{r, eval=T, echo=T}
+muo_data <- infer_grn(
+    muo_data,
+    method = 'cv.glmnet',
+    parallel = T,
+    genes = c('OTX2', 'SFRP2')
+) 
+coef(muo_data)
+```
+
+You might notice that this time there are no p-values here, but a lot of the coefficients (`estimate`) are 0. In this case, modules will be extracted not by p-value, but by selecting non-zero coefficients. The `alpha` argument can be used to adjust the elasticnet mixing parameter. 1 amounts to a lasso penalty and 0 to the ridge penalty. Lasso models are more sparse and will push more coefficients to zero.
+
+
+### Bagging ridge & Bayesian ridge
+
+[CellOracle](https://github.com/morris-lab/CellOracle), another method for GRN inference, uses Bagging ridge and Bayesian ridge regression models from sklearn (python). We have used `reticulate` to interact with python and implement these model also here.
+
+```{r, eval=T, echo=T}
+muo_data <- infer_grn(
+    muo_data,
+    method = 'bagging_ridge',
+    parallel = T,
+    genes = c('OTX2', 'SFRP2')
+) 
+coef(muo_data)
+```
+
+As with the regular `glm`, modules will be extracted based on p-value.
+
+
+### XGBoost
+
+[XGBoost](https://xgboost.readthedocs.io/en/stable/) is yet another popular method that is used by [SCENIC](https://scenic.aertslab.org/). It is not based on linear regression but uses gradient-boosted Random Forest regression to model non-linear relationships.
+
+
+```{r, eval=T, echo=T}
+muo_data <- infer_grn(
+    muo_data,
+    method = 'xgb',
+    parallel = T,
+    genes = c('OTX2', 'SFRP2')
+) 
+coef(muo_data)
+```
+
+Here we get neither a 'normal' coefficient, nor a p-value, but instead 3 different importance values: `gain`, `cover`, and `frequency`. These indicate the importance of the variable to the regressor. To extract modules one can select the top n target genes for each TF based on the `gain` value. Alternatively, one can select the top n TFs for each target gene.
+
+
+### Brms
+
+Finally, we implemented to option to use Bayesian regression models with brms and Stan. 
+
+```{r, eval=F, echo=T}
+muo_data <- infer_grn(
+    muo_data,
+    method = 'brms',
+    parallel = T,
+    genes = c('OTX2', 'SFRP2')
+) 
+```
+
+However, these are usually very slow to run and are only feasible on very small GRNs.
+

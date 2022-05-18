@@ -10,7 +10,7 @@ get_network_graph(object, ...)
 \method{get_network_graph}{SeuratPlus}(
   object,
   network = DefaultNetwork(object),
-  graph = "module_graph",
+  graph_name = "module_graph",
   rna_assay = "RNA",
   rna_slot = "data",
   umap_method = c("weighted", "corr", "coef", "none"),
@@ -27,7 +27,7 @@ get_network_graph(object, ...)
 
 \item{network}{Name of the network to use.}
 
-\item{graph}{Name of the graph.}
+\item{graph_name}{Name of the graph.}
 
 \item{rna_assay}{Name of the RNA assay.}
 

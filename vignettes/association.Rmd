@@ -1,0 +1,26 @@
+---
+title: "Gene-peak association"
+author: "Jonas Simon Fleck"
+date: "5/18/2022"
+output: html_document
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+- GREAT/Signac
+- Hi-C incorporation
+
+```{r, results='hide'}
+library(tidyverse)
+library(Pando)
+```
+```{r, eval=F, echo=T}
+muo_data <- read_rds('muo_data.rds')
+muo_data
+```
+```{r, eval=T, echo=F, results='hide'}
+muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test.rds')
+muo_data
+```

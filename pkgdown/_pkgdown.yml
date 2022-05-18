@@ -13,6 +13,14 @@ navbar:
         href: articles/getting_started.html
       - text: Visualization
         href: articles/visualization.html
+      - text: Selection of candidate regions
+        href: articles/regions.html
+      - text: Models for GRN inference
+        href: articles/models.html
+      - text: Gene-peak association
+        href: articles/association.html
+      - text: Advanced usage
+        href: articles/advanced.html
   right:
     homepage:
       icon: "fas fa-university fa-lg"
@@ -28,9 +36,10 @@ reference:
       - '`find_motifs`'
       - '`infer_grn`'
       - '`find_modules`'
-   - title: Plotting
+  - title: Visualization
     desc: Functions to visualize the GRN
     contents:
+      - starts_with('get_')
       - starts_with('plot_')
   - title: Object interaction
     desc: Functions to interact with Seurat and Network objects

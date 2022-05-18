@@ -1,0 +1,45 @@
+---
+title: "Region selection"
+author: "Jonas Simon Fleck"
+date: "5/17/2022"
+output: html_document
+---
+
+```{r, echo = FALSE, message=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+The underlying idea of Pando is modeling gene expression by the interaction between TFs and regulatory regions. However, scATAC-seq datasets usually have many detected peaks (>100,000) of which likely only a subset is of regulatory importance. When applying Pando to out own work, we therefore found it useful to pre-select regions based on some biological priors. Two such priors we used in our manuscript are sequence conservation and [SCREEN candidate cREs](https://screen.encodeproject.org/). For this, Pando provides `phastConsElements20Mammals.UCSC.hg38` and `SCREEN.ccRE.UCSC.hg38` `GenomicRanges` objects. Depending on your requirements, you can form the union or intersection of multiple `GenomicRanges` objects and proved them to `initiate_grn()` to constrain candidate region selection.
+
+```{r, eval=F, echo=T}
+library(tidyverse)
+library(Pando)
+
+muo_data <- read_rds('muo_data.rds')
+
+data('phastConsElements20Mammals.UCSC.hg38')
+data('SCREEN.ccRE.UCSC.hg38')
+
+muo_data <- initiate_grn(
+    muo_data,
+    rna_assay = 'RNA',
+    peak_assay = 'peaks',
+    regions = union(phastConsElements20Mammals.UCSC.hg38, SCREEN.ccRE.UCSC.hg38)
+)
+```
+
+These are fairly lenient selection criteria that still enrich for active regulatory regions. However, they are specific to the human genome. When working with other genomes like we have done [here](https://www.biorxiv.org/content/10.1101/2022.03.21.485045v1.full), one might need some other approaches. For this we have found it very useful to first find peaks that are correlated with the expression of nearby genes using the `Seurat` function `LinkPeaks()`. Using only these genes is quite strict, as only a small fraction of genes will be linked, but we found that this does result in quite robust GRNs.
+
+
+```{r, eval=F, echo=T}
+muo_data <- initiate_grn(
+    muo_data,
+    rna_assay = 'RNA',
+    peak_assay = 'peaks',
+    regions = StringToGRanges(Links(muo_data[['peaks']])$peak)
+)
+```
+
+Generally, candidate region selection is a good way to incorporate other biological information or genomic measurements. One could, for instance, also use chromatin marks like H3K27ac to detect active promoters and enhancers. 
+
+
