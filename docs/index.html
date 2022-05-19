@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@
     method <span class="op">=</span> <span class="st">'glm'</span>
 <span class="op">)</span></code></pre></div>
 <p>Here, we first select regions near genes, either by simply considering a distance upstream and/or downstream of the gene (<code>peak_to_gene_method='Signac'</code>) or by also considering overlapping regulatory regions as is done by <a href="http://great.stanford.edu/public/html/">GREAT</a> (<code>peak_to_gene_method='GREAT'</code>).</p>
-<p>You can also choose between a number of different models using the <code>method</code> argument, such as GLMs (<code>'glm'</code>) regularized GLMs <a href="https://glmnet.stanford.edu/articles/glmnet.html">(<code>'glmnet'</code>, <code>'cv.glmnet'</code>)</a> or Bayesian regression models <a href="https://paul-buerkner.github.io/brms/">(<code>'brms'</code>)</a>. We are also working on integrating gradient boosting regression with <a href="https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html">XGBoost</a> as it is used by <a href="https://github.com/aertslab/GRNBoost">GRNBoost</a>/<a href="https://scenic.aertslab.org/">SCENIC</a>.</p>
+<p>You can also choose between a number of different models using the <code>method</code> argument, such as GLMs (<code>'glm'</code>) regularized GLMs <a href="https://glmnet.stanford.edu/articles/glmnet.html">(<code>'glmnet'</code>, <code>'cv.glmnet'</code>)</a> or Bayesian regression models <a href="https://paul-buerkner.github.io/brms/">(<code>'brms'</code>)</a>. We are also integrated gradient boosting regression with <a href="https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html">XGBoost</a> as it is used by <a href="https://github.com/aertslab/GRNBoost">GRNBoost</a>/<a href="https://scenic.aertslab.org/">SCENIC</a> as well as bagging and bayesian ridge models with <a href="https://scikit-learn.org/stable/">scikit-learn</a> as they are used by <a href="https://github.com/morris-lab/CellOracle">CellOracle</a>.</p>
 <p>Once the models are fit, model coefficients can be inspected with</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
@@ -165,8 +165,9 @@
 <code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_modules.html">find_modules</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
 <p>To access the extracted modules, you can use the function <code><a href="reference/NetworkModules.html">NetworkModules()</a></code>:</p>
 <pre><code>modules &lt;- NetworkModules(seurat_object)
-modules@meta
-modules@features</code></pre>
+modules@meta</code></pre>
+<p>The <code>meta</code> slot holds a dataframe with module inforamtion.</p>
+<p>If you are curious to find out more, check out our vignettes :).</p>
 </div>
 </div>
 </div>

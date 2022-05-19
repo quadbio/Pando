@@ -60,7 +60,7 @@ seurat_object <- infer_grn(
 
 Here, we first select regions near genes, either by simply considering a distance upstream and/or downstream of the gene (`peak_to_gene_method='Signac'`) or by also considering overlapping regulatory regions as is done by [GREAT](http://great.stanford.edu/public/html/) (`peak_to_gene_method='GREAT'`). 
 
-You can also choose between a number of different models using the `method` argument, such as GLMs (`'glm'`) regularized GLMs [(`'glmnet'`, `'cv.glmnet'`)](https://glmnet.stanford.edu/articles/glmnet.html) or Bayesian regression models [(`'brms'`)](https://paul-buerkner.github.io/brms/). We are also working on integrating gradient boosting regression with [XGBoost](https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html) as it is used by [GRNBoost](https://github.com/aertslab/GRNBoost)/[SCENIC](https://scenic.aertslab.org/).
+You can also choose between a number of different models using the `method` argument, such as GLMs (`'glm'`) regularized GLMs [(`'glmnet'`, `'cv.glmnet'`)](https://glmnet.stanford.edu/articles/glmnet.html) or Bayesian regression models [(`'brms'`)](https://paul-buerkner.github.io/brms/). We are also integrated gradient boosting regression with [XGBoost](https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html) as it is used by [GRNBoost](https://github.com/aertslab/GRNBoost)/[SCENIC](https://scenic.aertslab.org/) as well as bagging and bayesian ridge models with [scikit-learn](https://scikit-learn.org/stable/) as they are used by [CellOracle](https://github.com/morris-lab/CellOracle).
 
 Once the models are fit, model coefficients can be inspected with
 
@@ -81,11 +81,11 @@ To access the extracted modules, you can use the function `NetworkModules()`:
 ```
 modules <- NetworkModules(seurat_object)
 modules@meta
-modules@features
 ```
 
+The `meta` slot holds a dataframe with module inforamtion. 
 
-
+If you are curious to find out more, check out our vignettes.
 
 
 
