@@ -61,7 +61,7 @@ You might notice that this time there are no p-values here, but a lot of the coe
 
 ### Bagging ridge & Bayesian ridge
 
-[CellOracle](https://github.com/morris-lab/CellOracle), another method for GRN inference, uses Bagging ridge and Bayesian ridge regression models from sklearn (python). We have used `reticulate` to interact with python and implement these model also here.
+[CellOracle](https://github.com/morris-lab/CellOracle), another method for GRN inference, uses Bagging ridge and Bayesian ridge regression models from sklearn (python). We have used `reticulate` to interact with python and implement these model also here. You do have to install [scikit-learn](https://scikit-learn.org/stable/) in python for it, though.
 
 ```{r, eval=T, echo=T}
 muo_data <- infer_grn(
