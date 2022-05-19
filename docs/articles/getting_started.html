@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -118,15 +118,20 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu">read_rds</span><span class="op">(</span><span class="st">'muo_data.rds'</span><span class="op">)</span>
 <span class="va">muo_data</span></code></pre></div>
+<pre><code>## An object of class Seurat 
+## 173554 features across 4000 samples within 2 assays 
+## Active assay: peaks (141639 features, 141639 variable features)
+##  1 other assay present: RNA
+##  3 dimensional reductions calculated: pca, umap, lsi</code></pre>
 <p><br>
 So let’s see if we got everything we need. We have an RNA assay with gene expression…</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span><span class="op">[[</span><span class="st">'RNA'</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code>## Assay data with 31915 features for 4000 cells
 ## Top 10 variable features:
 ##  TAGLN, POU5F1, SST, THSD7B, AC106864.1, PAX2, MT1G, KCNIP4, FGF8, MIXL1</code></pre>
 <p>…and also a <code>ChomatinAssay</code> with the ATAC data. Also we can see that we have a gene annotation already in the object. This will be important for Pando later.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span><span class="op">[[</span><span class="st">'peaks'</span><span class="op">]</span><span class="op">]</span></code></pre></div>
 <pre><code>## ChromatinAssay data with 141639 features for 4000 cells
 ## Variable features: 141639 
@@ -138,7 +143,7 @@ So let’s see if we got everything we need. We have an RNA assay with gene expr
 <h2 class="hasAnchor">
 <a href="#initiating-the-grn" class="anchor"></a>Initiating the GRN</h2>
 <p>The first step in the Pando workflow is to initiate the GRN with <code><a href="../reference/initiate_grn.html">initiate_grn()</a></code>. This function also takes care of pre-selecting candidate regulatory regions to consider for GRN inference. This is optional, but in our experience constraining the set of peaks to more confident regions cuts down on runtime and makes the resulting GRN more robust. Similar to what we’ve done in <a href="https://www.biorxiv.org/content/10.1101/2021.08.24.457460v1">our preprint</a> we will here select conserved regions in mammals. The necessary data is already included in Pando:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'phastConsElements20Mammals.UCSC.hg38'</span><span class="op">)</span>
 <span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span>
     <span class="va">muo_data</span>,
@@ -148,14 +153,14 @@ So let’s see if we got everything we need. We have an RNA assay with gene expr
 <span class="op">)</span></code></pre></div>
 <p><br>
 We have now added a <code>RegulatoryNetwork</code> object to the Seurat object. Also, you might notice that the new object is now called <code>SeuratPlus</code>.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span></code></pre></div>
 <pre><code>## An object of class SeuratPlus 
 ## 173554 features across 4000 samples within 2 assays 
 ## Active assay: peaks (141639 features, 141639 variable features)
 ##  1 other assay present: RNA
 ##  3 dimensional reductions calculated: pca, umap, lsi</code></pre>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/GetGRN.html">GetGRN</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <pre><code>## A RegulatoryNetwork object 
 ## Candidate regions have not been scanned for motifs
@@ -163,7 +168,7 @@ We have now added a <code>RegulatoryNetwork</code> object to the Seurat object. 
 ## No network has been inferred</code></pre>
 <p><br>
 We can also inspect the candidate regulatory regions that we have selected:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NetworkRegions.html">NetworkRegions</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span>
 <span class="va">regions</span><span class="op">@</span><span class="va">ranges</span></code></pre></div>
 <pre><code>## GRanges object with 282874 ranges and 0 metadata columns:
@@ -188,11 +193,11 @@ We can also inspect the candidate regulatory regions that we have selected:</p>
 <a href="#scanning-for-motifs" class="anchor"></a>Scanning for motifs</h2>
 <p>The next step is to scan the candidate regions for TF binding motifs, in order to have some idea where TFs might <em>potentially</em> bind. In Pando, this is done with the function <code><a href="../reference/find_motifs.html">find_motifs()</a></code>. In addition to the <code>SeuratPlus</code> object the function needs the genome and motif info in form of a <code>PFMatrixList</code>. Pando already provides a curated motif collection, but you can of course supply your own. If you choose to do so, you also need to proved a dataframe mapping motif IDs (1st column) to TF names (2nd column) with the <code>motif_tfs</code> argument. Also, if you want to infer the GRN only for a subset of TFs, you can constrain it with this function.</p>
 <p>Here, we use the motifs provided by Pando, but constrain them to only contain genes involved in patterning:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'motifs'</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'motif2tf'</span><span class="op">)</span>
 <span class="va">patterning_genes</span> <span class="op">&lt;-</span> <span class="fu">read_tsv</span><span class="op">(</span><span class="st">'patterning_genes.tsv'</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">pattern_tfs</span> <span class="op">&lt;-</span> <span class="va">patterning_genes</span> <span class="op">%&gt;%</span> 
     <span class="fu"><a href="https://rdrr.io/r/stats/filter.html">filter</a></span><span class="op">(</span><span class="va">type</span><span class="op">==</span><span class="st">'Transcription factor'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
     <span class="fu">pull</span><span class="op">(</span><span class="va">symbol</span><span class="op">)</span>
@@ -216,7 +221,7 @@ We can also inspect the candidate regulatory regions that we have selected:</p>
 ## # … with 206 more rows</code></pre>
 <p><br>
 Using these TF motifs, we can now scan the candidate regions:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span>
 <span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_motifs.html">find_motifs</a></span><span class="op">(</span>
     <span class="va">muo_data</span>, 
@@ -226,7 +231,7 @@ Using these TF motifs, we can now scan the candidate regions:</p>
 <span class="op">)</span></code></pre></div>
 <p><br>
 Our <code>Regions</code> object has now gotten a new slot containing the <code>Motif</code> object. This object stores a sparse peak x motif matrix with the matches and some other information.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NetworkRegions.html">NetworkRegions</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span>
 <span class="va">regions</span><span class="op">@</span><span class="va">motifs</span><span class="op">@</span><span class="va">data</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></code></pre></div>
 <pre><code>## 5 x 5 sparse Matrix of class "dgCMatrix"
@@ -241,11 +246,11 @@ Our <code>Regions</code> object has now gotten a new slot containing the <code>M
 <h2 class="hasAnchor">
 <a href="#inferring-the-grn" class="anchor"></a>Inferring the GRN</h2>
 <p>Now we should have everything ready to infer the GRN. GRN inference in Pando is very much inspired by other methods such as <a href="https://scenic.aertslab.org/">SCENIC</a>. These methods assume that the expression of a gene can be modeled by a function of the expression of the TFs that regulate it. Pando extends this notion to harness multiome measurements by considering co-accessibility in addition to co-expression. The underlying idea is that in order for a TF to regulate a gene, the TF needs to be expressed <strong>and</strong> the binding peak needs to be accessible. For this, Pando fits one regression model per gene, and models it’s expression based on TF expression and accessibility of the binding peaks. These TF-peak interactions are additively combined. If you are familiar with the R formula syntax, you might recognize something like this:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">PAX6</span> <span class="op">~</span> <span class="va">HES4</span><span class="op">*</span><span class="va">chr1</span><span class="op">-</span><span class="fl">911275</span><span class="op">-</span><span class="fl">911316</span> <span class="op">+</span> <span class="va">OTX2</span><span class="op">*</span><span class="va">chr1</span><span class="op">-</span><span class="fl">921178</span><span class="op">-</span><span class="fl">921198</span> <span class="op">+</span> <span class="va">MSX2</span><span class="op">*</span><span class="va">chr1</span><span class="op">-</span><span class="fl">921178</span><span class="op">-</span><span class="fl">921198</span> <span class="op">+</span> <span class="va">...</span></code></pre></div>
 <p>In this example, PAX6 expression is modeled by adding up the TF-peak interactions of HES4, OTX2 and MSX2.</p>
 <p>The function <code><a href="../reference/infer_grn.html">infer_grn()</a></code> takes care of fitting these models for all genes and identifies significant connections between TF-region pairs and target gene expression. With the <code>genes</code> argument, we can select a subset of genes that we want to use for GRN inference. Here we stick with the theme above and use pattering-related genes. This is of course optional, but for runtime reasons we recommend to constrain the set of genes somehow, e.g. by using <code>VariableFeatures()</code>. Also, we use the method used by <a href="http://great.stanford.edu/public/html/">GREAT</a> to associate genes with peaks and parallelize the computation using 4 cores:</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">doParallel</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/pkg/doParallel/man/registerDoParallel.html">registerDoParallel</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span>
 <span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/infer_grn.html">infer_grn</a></span><span class="op">(</span>
@@ -256,12 +261,12 @@ Our <code>Regions</code> object has now gotten a new slot containing the <code>M
 <span class="op">)</span></code></pre></div>
 <p><code><a href="../reference/infer_grn.html">infer_grn()</a></code> has many more parameters to choose different models or tweek the association between peaks and genes, but we’ll go into this in another vignette.</p>
 <p>The inferred <code>Network</code> object can be accessed with <code><a href="../reference/GetNetwork.html">GetNetwork()</a></code></p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/GetNetwork.html">GetNetwork</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <pre><code>## A Network object
 ## with 57 TFs and 122 target genes</code></pre>
 <p>and the parameters of the models can be inspected with <code><a href="https://rdrr.io/r/stats/coef.html">coef()</a></code>. This returns a dataframe coefficients (<code>estimate</code>) and p-values (<code>pval</code>) for each TF/region-target gene pair:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 3,804 x 10
 ##    tf     target region  term   estimate std_err statistic    pval   padj   corr
@@ -282,7 +287,7 @@ Our <code>Regions</code> object has now gotten a new slot containing the <code>M
 <h2 class="hasAnchor">
 <a href="#module-discovery" class="anchor"></a>Module discovery</h2>
 <p>Using the inferred parameters, we can now use <code><a href="../reference/find_modules.html">find_modules()</a></code> to construct TF modules, i.e. the set of genes that is regulated by each transcription factor. How exactly this is done depends on the model choice in <code><a href="../reference/infer_grn.html">infer_grn()</a></code>, but generally Pando chooses the most confident connections for each TF. The function allows setting different selection criteria like a p-value threshold or an <span class="math inline">\(R^2\)</span> threshold to filter models by goodness-of-fit. For the purpose of this tutorial we will choose rather lenient thresholds:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/find_modules.html">find_modules</a></span><span class="op">(</span>
     <span class="va">muo_data</span>, 
     p_thresh <span class="op">=</span> <span class="fl">0.1</span>,
@@ -292,7 +297,7 @@ Our <code>Regions</code> object has now gotten a new slot containing the <code>M
 <span class="op">)</span></code></pre></div>
 <p><br>
 The <code>Modules</code> object can be accessed with <code><a href="../reference/NetworkModules.html">NetworkModules()</a></code>. The <code>meta</code> slot contains meta data about the module network and lists with feature sets for each TF can be accessed in the <code>features</code> slot.</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">modules</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NetworkModules.html">NetworkModules</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span> 
 <span class="va">modules</span><span class="op">@</span><span class="va">meta</span></code></pre></div>
 <pre><code>## # A tibble: 330 x 9
@@ -312,11 +317,11 @@ The <code>Modules</code> object can be accessed with <code><a href="../reference
 ## # … with 320 more rows</code></pre>
 <p><br>
 The goodness-of-fit metrics can be plotted with</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_gof.html">plot_gof</a></span><span class="op">(</span><span class="va">muo_data</span>, point_size<span class="op">=</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p><img src="getting_started_files/figure-html/unnamed-chunk-22-1.png" width="700"></p>
 <p>and the size of the modules can be plotted with</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_module_metrics.html">plot_module_metrics</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <p><img src="getting_started_files/figure-html/unnamed-chunk-23-1.png" width="700"></p>
 </div>
@@ -324,14 +329,14 @@ The goodness-of-fit metrics can be plotted with</p>
 <h2 class="hasAnchor">
 <a href="#visualizing-the-grn" class="anchor"></a>Visualizing the GRN</h2>
 <p>Finally, we can vizualize the GRN. For this, we first need to create the graph to be visualized and optionally a UMAP embedding for the nodes with the function <code><a href="../reference/get_network_graph.html">get_network_graph()</a></code>.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network_graph.html">get_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <p>Then we can plot the graph with <code><a href="../reference/plot_network_graph.html">plot_network_graph()</a></code>:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <p><img src="getting_started_files/figure-html/unnamed-chunk-25-1.png" width="700"></p>
 <p>The default here is to use a UMAP embedding, but you can choose any layout option provided by <a href="https://igraph.org/"><code>igraph</code></a>/<a href="https://ggraph.data-imaginist.com/index.html"><code>ggraph</code></a>, for instance the force-directed Fruchterman–Reingold layout:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, layout<span class="op">=</span><span class="st">'fr'</span><span class="op">)</span></code></pre></div>
 <p><img src="getting_started_files/figure-html/unnamed-chunk-26-1.png" width="700"></p>
 </div>

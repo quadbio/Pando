@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -118,16 +118,18 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu">read_rds</span><span class="op">(</span><span class="st">'muo_data.rds'</span><span class="op">)</span>
 <span class="va">muo_data</span><span class="op">@</span><span class="va">grn</span></code></pre></div>
+<pre><code>## A RegulatoryNetwork object based on 83 transcription factors
+## 1 inferred network: glm_network</code></pre>
 <div id="qc-and-module-metrics" class="section level2">
 <h2 class="hasAnchor">
 <a href="#qc-and-module-metrics" class="anchor"></a>QC and module metrics</h2>
 <p>As we’ve showed you in the “Getting started with Pando” vignette, module discovery step involves applying some filtering criteria on the goodnes-fo-fit of the fitted models. We can plot this with <code><a href="../reference/plot_gof.html">plot_gof()</a></code></p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_gof.html">plot_gof</a></span><span class="op">(</span><span class="va">muo_data</span>, point_size<span class="op">=</span><span class="fl">3</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 <p>This shows us the explained variance (<span class="math inline">\(R^2\)</span>) of the model, as well as the number of variables in each model. We can observe that with more variables, the models will have a better fit. The dashed lines show the applied thresholds for in <code><a href="../reference/find_modules.html">find_modules()</a></code>.</p>
 <p>We can also plot the size of the modules with respect to the number of target genes as well as the number of peaks and regulating TFs per target gene with <code><a href="../reference/plot_module_metrics.html">plot_module_metrics()</a></code>:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_module_metrics.html">plot_module_metrics</a></span><span class="op">(</span><span class="va">muo_data</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-6-1.png" width="700"></p>
 </div>
@@ -135,15 +137,15 @@
 <h2 class="hasAnchor">
 <a href="#graph-visualization" class="anchor"></a>Graph visualization</h2>
 <p>To plot the full GRN as a graph, we found it quite useful to use a UMAP embedding of the nodes. This can be computed with <code><a href="../reference/get_network_graph.html">get_network_graph()</a></code>. With the <code>graph_name</code> argument, we can give a name to the graph under which we can access it later.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network_graph.html">get_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph_name<span class="op">=</span><span class="st">'umap_graph'</span><span class="op">)</span></code></pre></div>
 <p>To plot it, we use <code><a href="../reference/plot_network_graph.html">plot_network_graph()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph<span class="op">=</span><span class="st">'umap_graph'</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <p>Here, the nodes are colored and sized based on their centrality in the graph and the edges are colored by the direction of the regulation (inhibitory: grey; activating: orange)</p>
 <p>Alternatively, we could also not run UMAP, but simply turn all modules into a graph and visualize it with different graph layouts. For this, we first compute another graph, this time without UMAP:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network_graph.html">get_network_graph</a></span><span class="op">(</span>
     <span class="va">muo_data</span>, 
     graph_name <span class="op">=</span> <span class="st">'full_graph'</span>, 
@@ -151,7 +153,7 @@
 <span class="op">)</span></code></pre></div>
 <p><br>
 Again, we can plot it using <code><a href="../reference/plot_network_graph.html">plot_network_graph()</a></code>, but this time we are specifying different graph layouts. All layouts that can be used through <a href="https://ggraph.data-imaginist.com/index.html">ggraph</a>, can also be used here.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph<span class="op">=</span><span class="st">'full_graph'</span>, layout<span class="op">=</span><span class="st">'fr'</span>, text_size<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
 <span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph<span class="op">=</span><span class="st">'full_graph'</span>, layout<span class="op">=</span><span class="st">'drl'</span>, text_size<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
 <span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph<span class="op">=</span><span class="st">'full_graph'</span>, layout<span class="op">=</span><span class="st">'eigen'</span>, text_size<span class="op">=</span><span class="fl">5</span><span class="op">)</span>
@@ -159,7 +161,7 @@ Again, we can plot it using <code><a href="../reference/plot_network_graph.html"
 <span class="op">(</span><span class="va">p1</span> <span class="op">|</span> <span class="va">p2</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">p3</span> <span class="op">|</span> <span class="va">p4</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-10-1.png" width="700"><br>
 For larger GRNs, we have found that these methods tend to be not overly informative, but for smaller graphs, they can certainly work well. To plot a smaller subgraph of the GRN, we can select a set of genes with the <code>features</code> argument of <code>get_network_graph</code>:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_network_graph.html">get_network_graph</a></span><span class="op">(</span>
     <span class="va">muo_data</span>, 
     graph_name <span class="op">=</span> <span class="st">'sub_graph'</span>, 
@@ -170,16 +172,16 @@ For larger GRNs, we have found that these methods tend to be not overly informat
 <span class="fu"><a href="../reference/plot_network_graph.html">plot_network_graph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph<span class="op">=</span><span class="st">'sub_graph'</span>, layout<span class="op">=</span><span class="st">'fr'</span>, color_nodes<span class="op">=</span><span class="cn">F</span>, node_size<span class="op">=</span><span class="fl">5</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <p>Sometimes it’s also quite useful to plot a subgraph of the GRN centered around one TF, to reveal a hierarchy of regulation. This can be done with the <code><a href="../reference/get_tf_network.html">get_tf_network()</a></code> and <code><a href="../reference/plot_tf_network.html">plot_tf_network()</a></code> functions. The</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_tf_network.html">get_tf_network</a></span><span class="op">(</span><span class="va">muo_data</span>, tf<span class="op">=</span><span class="st">'PAX6'</span>, graph<span class="op">=</span><span class="st">'full_graph'</span><span class="op">)</span>
 <span class="fu"><a href="../reference/plot_tf_network.html">plot_tf_network</a></span><span class="op">(</span><span class="va">muo_data</span>, tf<span class="op">=</span><span class="st">'PAX6'</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
 <p>Instead of this circular layout one can also use a more classical tree layout:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/plot_tf_network.html">plot_tf_network</a></span><span class="op">(</span><span class="va">muo_data</span>, tf<span class="op">=</span><span class="st">'PAX6'</span>, circular<span class="op">=</span><span class="cn">F</span><span class="op">)</span></code></pre></div>
 <p><img src="visualization_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <p>In the two graphs above, the edges have been pruned to retain only the stronges connection to each terminal node. One can also turn off this behavior with the <code>keep_all_edges</code> argument to plot the full graph. Also, there are more arguments that allow changing some aestetics of the plot:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_tf_network.html">get_tf_network</a></span><span class="op">(</span><span class="va">muo_data</span>, tf<span class="op">=</span><span class="st">'OTX2'</span>, graph<span class="op">=</span><span class="st">'full_graph'</span>, keep_all_edges <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 <span class="fu"><a href="../reference/plot_tf_network.html">plot_tf_network</a></span><span class="op">(</span>
     <span class="va">muo_data</span>, 
@@ -194,7 +196,7 @@ For larger GRNs, we have found that these methods tend to be not overly informat
 <h2 class="hasAnchor">
 <a href="#custom-plotting" class="anchor"></a>Custom plotting</h2>
 <p>Finally, if you are familiar with <code>ggplot</code> and <a href="https://ggraph.data-imaginist.com/index.html"><code>ggraph</code></a>, then you can of course do some more fancy custom plots. For this, you can access the created graph objects with <code><a href="../reference/NetworkGraph.html">NetworkGraph()</a></code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">subgraph</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/NetworkGraph.html">NetworkGraph</a></span><span class="op">(</span><span class="va">muo_data</span>, graph<span class="op">=</span><span class="st">'sub_graph'</span><span class="op">)</span>
 <span class="va">subgraph</span></code></pre></div>
 <pre><code>## # A tbl_graph: 10 nodes and 16 edges
@@ -220,8 +222,8 @@ For larger GRNs, we have found that these methods tend to be not overly informat
 ## 3     2     5   0.120          9      12     6 chr14-… 0.00395 0.0254 EMX2     
 ## # … with 13 more rows, and 2 more variables: to_node &lt;chr&gt;, dir &lt;dbl&gt;</code></pre>
 <p><br>
-This <code>tbl_graph</code> object works with most <a href="https://igraph.org/">igraph</a> and <a href="https://tidygraph.data-imaginist.com/index.html"><code>ggraph</code></a> functions for easy graph manipulation and you can use it to make more customized plots:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+This <code>tbl_graph</code> object works with most <a href="https://igraph.org/">igraph</a> and <a href="https://tidygraph.data-imaginist.com/index.html"><code>tidygraph</code></a> functions for easy graph manipulation and you can use it to make more customized plots with <code>ggraph</code>:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggraph.data-imaginist.com">ggraph</a></span><span class="op">)</span>
 <span class="fu"><a href="https://ggraph.data-imaginist.com/reference/ggraph.html">ggraph</a></span><span class="op">(</span><span class="va">subgraph</span>, layout<span class="op">=</span><span class="st">'drl'</span><span class="op">)</span> <span class="op">+</span>
     <span class="fu"><a href="https://ggraph.data-imaginist.com/reference/geom_edge_hive.html">geom_edge_hive</a></span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>color<span class="op">=</span><span class="va">estimate</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">2</span>, fill<span class="op">=</span><span class="st">'grey'</span><span class="op">)</span> <span class="op">+</span>

@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
       </span>
     </div>
 
@@ -136,7 +136,7 @@
 ##   -------
 ##   seqinfo: 25 sequences from an unspecified genome; no seqlengths</code></pre>
 <p><br></p>
-<p>This can be quite flexibly utilized, since you can manually adapt the regulatory regions for each gene and also provide multiple regions per gene, e.g. if you have information about individual enhancer-promoter contacts. Providing this object to <code><a href="../reference/infer_grn.html">infer_grn()</a></code> will now only associate peaks within the provided regions with the gene</p>
+<p>This can be quite flexibly utilized, since you can manually adapt the regulatory regions for each gene and also provide multiple regions per gene, e.g. if you have information about individual enhancer-promoter contacts. Providing this object to <code><a href="../reference/infer_grn.html">infer_grn()</a></code> will now only associate peaks within the provided regions with the gene.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">muo_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/infer_grn.html">infer_grn</a></span><span class="op">(</span>
     <span class="va">muo_data</span>,
