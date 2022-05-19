@@ -44,7 +44,7 @@ The coefficients of the models are tested using a t-test and modules are extract
 
 ### Regularized linear model
 
-In regularized linear model, the coefficients can be penalized, so that they are pushed towards 0. In this way, only 'strong' connections are maintained. Here we use the `glmnet` implementation
+In regularized linear models, the coefficients can be penalized so that they are pushed towards 0. In this way, only 'strong' connections are maintained. Here we use the `glmnet` implementation
 
 ```{r, eval=T, echo=T}
 muo_data <- infer_grn(
@@ -61,7 +61,7 @@ You might notice that this time there are no p-values here, but a lot of the coe
 
 ### Bagging ridge & Bayesian ridge
 
-[CellOracle](https://github.com/morris-lab/CellOracle), another method for GRN inference, uses Bagging ridge and Bayesian ridge regression models from sklearn (python). We have used `reticulate` to interact with python and implement these model also here. You do have to install [scikit-learn](https://scikit-learn.org/stable/) in python for it, though.
+[CellOracle](https://github.com/morris-lab/CellOracle), another method for GRN inference, uses Bagging ridge and Bayesian ridge regression models from sklearn (python). We have used `reticulate` to interact with python and implement these models also here. You do have to install [scikit-learn](https://scikit-learn.org/stable/) in python for it, though.
 
 ```{r, eval=T, echo=T}
 muo_data <- infer_grn(
@@ -91,7 +91,7 @@ muo_data <- infer_grn(
 coef(muo_data)
 ```
 \
-Here we get neither a 'normal' coefficient, nor a p-value, but instead 3 different importance values: `gain`, `cover`, and `frequency`. These indicate the importance of the variable to the regressor. To extract modules one can select the top n target genes for each TF based on the `gain` value. Alternatively, one can select the top n TFs for each target gene.
+Here we get neither a 'normal' coefficient, nor a p-value, but instead 3 different importance values: `gain`, `cover`, and `frequency`. These indicate the importance of the variable to the regressor. To extract modules one can select the top target genes for each TF based on the `gain` value. Alternatively, one can select the top TFs for each target gene.
 
 
 ### Brms
@@ -107,5 +107,5 @@ muo_data <- infer_grn(
 ) 
 ```
 
-However, these are usually very slow to run and are only feasible on very small GRNs.
+However, these usually have very long runtimes and are only feasible on very small GRNs.
 

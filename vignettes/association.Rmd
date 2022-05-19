@@ -32,7 +32,7 @@ gene_domains
 ```
 \
 
-This can be quite flexibly utilized, since you can manually adapt the regulatory regions for each gene and also provide multiple regions per gene, e.g. if you have information about individual enhancer-promoter contacts. Providing this object to `infer_grn()` will now only associate peaks within the provided regions with the gene
+This can be quite flexibly utilized, since you can manually adapt the regulatory regions for each gene and also provide multiple regions per gene, e.g. if you have information about individual enhancer-promoter contacts. Providing this object to `infer_grn()` will now only associate peaks within the provided regions with the gene.
 
 ```{r, eval=F, echo=T}
 muo_data <- infer_grn(

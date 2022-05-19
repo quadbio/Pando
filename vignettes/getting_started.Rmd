@@ -21,7 +21,7 @@ library(Pando)
 muo_data <- read_rds('muo_data.rds')
 muo_data
 ```
-```{r, eval=T, echo=F, results='hide'}
+```{r, eval=T, echo=F}
 muo_data <- read_rds('~/Dropbox/projects/Pando/data/nepi_test_pre.rds')
 muo_data
 ```
