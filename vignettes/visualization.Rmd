@@ -28,7 +28,7 @@ muo_data@grn
 
 ## QC and module metrics
 
-As we've showed you in the "Getting started with Pando" vignette, module discovery step involves applying some filtering criteria on the goodnes-fo-fit of the fitted models. We can plot this with `plot_gof()`
+As we've shown you in the "Getting started with Pando" vignette, the module discovery step involves applying some filtering criteria on the goodness-of-fit of the fitted models. We can plot this with `plot_gof()`
 
 ```{r, eval=T, echo=T}
 plot_gof(muo_data, point_size=3)

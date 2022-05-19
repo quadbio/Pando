@@ -12,24 +12,24 @@ devtools::install_github('quadbiolab/Pando')
 
 ## About Pando
 
-The fate and state of a cell is regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of gene regulatory networks (GRNs). 
+The fate and state of a cell are regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of gene regulatory networks (GRNs). 
 
 The unifying idea behind many modern GRN inference methods is to model the expression of each gene as a function of TF abundances. The weights or coefficients of this model can then be interpreted as a measure of the regulatory interaction between TF and target gene. Additional (epi-) genomic information (such as predicted TF binding sites) is often used to constrain or refine the model.
 
-Pando tries to generalize this concept to make use of the multi-modal nature of modern single-cell technologies by incorporating TF binding information directly into the model. By utilizing jointly measured or integrated scRNA-seq and scATAC-seq data, Pando models the expression of genes based the interaction of TF expression with the accessibility of their putative binding site. By offering a number different pre-processing and modelling choices, Pando strives to be a modular and flexible framework for single-cell GRN inference.
+Pando tries to generalize this concept to make use of the multi-modal nature of modern single-cell technologies by incorporating TF binding information directly into the model. By utilizing jointly measured or integrated scRNA-seq and scATAC-seq data, Pando models the expression of genes based on the interaction of TF expression with the accessibility of their putative binding site. By offering a number of different pre-processing and modeling choices, Pando strives to be a modular and flexible framework for single-cell GRN inference.
 
 
 
 ## Usage overview
 
 ### Initiating the GRN
-Pando interacts directly with [Seurat objects](https://satijalab.org/seurat/) and integrates well with [Seurat](https://satijalab.org/seurat/) and [Signac](https://satijalab.org/signac/) workflows. To use Pando, you'll need a Seurat object with two assays, one with scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let's call it `seurat_object`) ready, you can start off by inizializing the GRN using the function `initiate_grn()`:
+Pando interacts directly with [Seurat objects](https://satijalab.org/seurat/) and integrates well with [Seurat](https://satijalab.org/seurat/) and [Signac](https://satijalab.org/signac/) workflows. To use Pando, you'll need a Seurat object with two assays, one with scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let's call it `seurat_object`) ready, you can start off by initializing the GRN using the function `initiate_grn()`:
 
 ```r
 seurat_object <- initiate_grn(seurat_object)
 ```
 
-This will create a `RegulatoryNetwork` object inside the Seurat object and select candidate regulatory regions. Per default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a `GenomicRanges` object in the `regions` argument. Pando ships with a set of conserved regions (`phastConsElements20Mammals.UCSC.hg38`) as well as predicted regulatory elements from [ENCODE](https://screen.encodeproject.org/) (`SCREEN.ccRE.UCSC.hg38`) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using [Cicero](https://cole-trapnell-lab.github.io/cicero-release/).
+This will create a `RegulatoryNetwork` object inside the Seurat object and select candidate regulatory regions. By default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a `GenomicRanges` object in the `regions` argument. Pando ships with a set of conserved regions (`phastConsElements20Mammals.UCSC.hg38`) as well as predicted regulatory elements from [ENCODE](https://screen.encodeproject.org/) (`SCREEN.ccRE.UCSC.hg38`) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using [Cicero](https://cole-trapnell-lab.github.io/cicero-release/).
 
 ### Finding TF binding sites
 Once the `RegulatoryNetwork` object is initiated with candidate regions, we can scan for TF binding motifs in these regions by using the function `find_motifs()`
@@ -45,7 +45,7 @@ seurat_object <- find_motifs(
 )
 ```
 
-This uses [motifmatchr](https://github.com/GreenleafLab/motifmatchr) to pair up TFs with their putative binding sites. Pando provides a custom motif database (`motifs`) compiled from [JASPAR](http://jaspar.genereg.net/) and [CIS-BP](http://cisbp.ccbr.utoronto.ca/), but in principal any `PFMatrixList` object can be provided here. A data frame with motif-to-TF assignments can be provided in the `motif_tfs` argument.
+This uses [motifmatchr](https://github.com/GreenleafLab/motifmatchr) to pair up TFs with their putative binding sites. Pando provides a custom motif database (`motifs`) compiled from [JASPAR](http://jaspar.genereg.net/) and [CIS-BP](http://cisbp.ccbr.utoronto.ca/), but in principle any `PFMatrixList` object can be provided here. A data frame with motif-to-TF assignments can be provided in the `motif_tfs` argument.
 
 ### Inferring the GRN
 Now everything should be ready to infer the GRN by fitting regression models for the expression of each gene. In Pando, this can be done by using the function `infer_grn()`:

@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-Pando provides various different regression models and modelling options that can be used for GRN inference. This vignette gives an overview of the available options. First, let's load the object.
+Pando provides various regression models and modeling options that can be used for GRN inference. This vignette gives an overview of the available options. First, let's load the object.
 
 ```{r, eval=F, echo=T, results='hide'}
 library(Pando)

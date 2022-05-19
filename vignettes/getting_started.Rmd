@@ -120,7 +120,7 @@ regions@motifs@data[1:5,1:5]
 
 ## Inferring the GRN
 
-Now we should have everything ready to infer the GRN. GRN inference in Pando is very much inspired by other methods such as [SCENIC](https://scenic.aertslab.org/). These methods assume that the expression of a gene can be modeled by a function of the expression of the TFs that regulate it. Pando extends this notion to harness multiome measurements by considering co-accessibility in addition to co-expression. The underlying idea is that in order for a TF to regulate a gene, the TF needs to be expressed **and** the binding peak needs to be accessible. For this, Pando fits one regression model per gene, and models it's expression based on TF expression and accessibility of the binding peaks. These TF-peak interactions are additively combined. If you are familiar with the R formula syntax, you might recognize something like this:
+Now we should have everything ready to infer the GRN. GRN inference in Pando is very much inspired by other methods such as [SCENIC](https://scenic.aertslab.org/). These methods assume that the expression of a gene can be modeled by a function of the expression of the TFs that regulate it. Pando extends this notion to harness multiome measurements by considering co-accessibility in addition to co-expression. The underlying idea is that in order for a TF to regulate a gene, the TF needs to be expressed **and** the binding peak needs to be accessible. For this, Pando fits one regression model per gene, and models its expression based on TF expression and accessibility of the binding peaks. These TF-peak interactions are additively combined. If you are familiar with the R formula syntax, you might recognize something like this:
 
 ```{r, eval=F, echo=T}
 PAX6 ~ HES4*chr1-911275-911316 + OTX2*chr1-921178-921198 + MSX2*chr1-921178-921198 + ...
@@ -141,7 +141,7 @@ muo_data <- infer_grn(
 )
 ```
 
-`infer_grn()` has many more parameters to choose different models or tweek the association between peaks and genes, but we'll go into this in another vignette.
+`infer_grn()` has many more parameters to choose different models or tweak the association between peaks and genes, but we'll go into this in another vignette.
 
 The inferred `Network` object can be accessed with `GetNetwork()`
 
@@ -159,7 +159,7 @@ coef(muo_data)
 
 ## Module discovery
 
-Using the inferred parameters, we can now use `find_modules()` to construct TF modules, i.e. the set of genes that is regulated by each transcription factor. How exactly this is done depends on the model choice in `infer_grn()`, but generally Pando chooses the most confident connections for each TF. The function allows setting different selection criteria like a p-value threshold or an $R^2$ threshold to filter models by goodness-of-fit. For the purpose of this tutorial we will choose rather lenient thresholds:
+Using the inferred parameters, we can now use `find_modules()` to construct TF modules, i.e. the set of genes that are regulated by each transcription factor. How exactly this is done depends on the model choice in `infer_grn()`, but generally Pando chooses the most confident connections for each TF. The function allows setting different selection criteria like a p-value threshold or an $R^2$ threshold to filter models by goodness-of-fit. For the purpose of this tutorial we will choose rather lenient thresholds:
 
 
 ```{r, eval=T, echo=T}
