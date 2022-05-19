@@ -110,7 +110,7 @@
 
     
     
-<p>Pando provides various different regression models and modelling options that can be used for GRN inference. This vignette gives an overview of the available options. First, let’s load the object.</p>
+<p>Pando provides various regression models and modeling options that can be used for GRN inference. This vignette gives an overview of the available options. First, let’s load the object.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">Pando</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
@@ -160,16 +160,16 @@ The coefficients of the models are tested using a t-test and modules are extract
 <pre><code>## # A tibble: 54 x 6
 ##    tf     target region                term                      estimate   corr
 ##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;                 &lt;chr&gt;                        &lt;dbl&gt;  &lt;dbl&gt;
-##  1 POU3F1 SFRP2  chr4-153764659-15376… chr4_153764659_153764803…   0       0.156
-##  2 NR2E1  SFRP2  chr4-153765329-15376… chr4_153765329_153765353…   0       0.191
-##  3 PAX6   SFRP2  chr4-153782079-15378… chr4_153782079_153782141…   0       0.334
-##  4 FOS    SFRP2  chr4-153782176-15378… chr4_153782176_153782415…   0      -0.168
-##  5 JUNB   SFRP2  chr4-153782176-15378… chr4_153782176_153782415…   0      -0.105
-##  6 MSX1   SFRP2  chr4-153787173-15378… chr4_153787173_153787202…   0      -0.168
-##  7 MSX2   SFRP2  chr4-153787173-15378… chr4_153787173_153787202…  -0.0136 -0.190
-##  8 NR2E1  SFRP2  chr4-153794115-15379… chr4_153794115_153794213…   0.0504  0.191
-##  9 NR2E1  SFRP2  chr4-153794305-15379… chr4_153794305_153794350…   0.0454  0.191
-## 10 HES5   OTX2   chr14-56730526-56730… chr14_56730526_56730914:…   0       0.100
+##  1 POU3F1 SFRP2  chr4-153764659-15376… chr4_153764659_153764803…  0        0.156
+##  2 NR2E1  SFRP2  chr4-153765329-15376… chr4_153765329_153765353…  0        0.191
+##  3 PAX6   SFRP2  chr4-153782079-15378… chr4_153782079_153782141…  0        0.334
+##  4 FOS    SFRP2  chr4-153782176-15378… chr4_153782176_153782415…  0       -0.168
+##  5 JUNB   SFRP2  chr4-153782176-15378… chr4_153782176_153782415…  0       -0.105
+##  6 MSX1   SFRP2  chr4-153787173-15378… chr4_153787173_153787202…  0       -0.168
+##  7 MSX2   SFRP2  chr4-153787173-15378… chr4_153787173_153787202… -0.00309 -0.190
+##  8 NR2E1  SFRP2  chr4-153794115-15379… chr4_153794115_153794213…  0.0400   0.191
+##  9 NR2E1  SFRP2  chr4-153794305-15379… chr4_153794305_153794350…  0.0368   0.191
+## 10 HES5   OTX2   chr14-56730526-56730… chr14_56730526_56730914:…  0        0.100
 ## # … with 44 more rows</code></pre>
 <p><br>
 You might notice that this time there are no p-values here, but a lot of the coefficients (<code>estimate</code>) are 0. In this case, modules will be extracted not by p-value, but by selecting non-zero coefficients. The <code>alpha</code> argument can be used to adjust the elasticnet mixing parameter. 1 amounts to a lasso penalty and 0 to the ridge penalty. Lasso models are more sparse and will push more coefficients to zero.</p>
@@ -189,16 +189,16 @@ You might notice that this time there are no p-values here, but a lot of the coe
 <pre><code>## # A tibble: 54 x 9
 ##    tf     target region    term      estimate     pval neglog10p     padj   corr
 ##    &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
-##  1 POU3F1 SFRP2  chr4-153… chr4_153…  0.0548  7.72e-28    27.1   4.25e-27  0.156
-##  2 NR2E1  SFRP2  chr4-153… chr4_153…  0.0447  1.11e-26    26.0   3.47e-26  0.191
-##  3 PAX6   SFRP2  chr4-153… chr4_153…  0.0755  1.15e-27    26.9   5.07e-27  0.334
-##  4 FOS    SFRP2  chr4-153… chr4_153… -0.0430  3.79e-27    26.4   1.43e-26 -0.168
-##  5 JUNB   SFRP2  chr4-153… chr4_153…  0.00507 3.03e- 1     0.519 3.03e- 1 -0.105
-##  6 MSX1   SFRP2  chr4-153… chr4_153… -0.0378  8.02e-28    27.1   4.25e-27 -0.168
-##  7 MSX2   SFRP2  chr4-153… chr4_153… -0.0639  4.65e-24    23.3   1.07e-23 -0.190
-##  8 NR2E1  SFRP2  chr4-153… NR2E1:ch…  0.115   3.62e-28    27.4   3.84e-27  0.191
-##  9 NR2E1  SFRP2  chr4-153… NR2E1:ch…  0.112   5.29e-28    27.3   4.25e-27  0.191
-## 10 HES5   OTX2   chr14-56… chr14_56…  0.0482  5.70e- 4     3.24  7.02e- 4  0.100
+##  1 POU3F1 SFRP2  chr4-153… chr4_153…  0.0521  3.50e-27     26.5  1.24e-26  0.156
+##  2 NR2E1  SFRP2  chr4-153… chr4_153…  0.0452  1.09e-25     25.0  2.63e-25  0.191
+##  3 PAX6   SFRP2  chr4-153… chr4_153…  0.0737  1.15e-27     26.9  4.68e-27  0.334
+##  4 FOS    SFRP2  chr4-153… chr4_153… -0.0450  1.77e-28     27.8  1.34e-27 -0.168
+##  5 JUNB   SFRP2  chr4-153… chr4_153…  0.00724 2.66e- 2      1.57 2.88e- 2 -0.105
+##  6 MSX1   SFRP2  chr4-153… chr4_153… -0.0353  3.50e-27     26.5  1.24e-26 -0.168
+##  7 MSX2   SFRP2  chr4-153… chr4_153… -0.0634  7.72e-28     27.1  3.41e-27 -0.190
+##  8 NR2E1  SFRP2  chr4-153… NR2E1:ch…  0.112   2.32e-26     25.6  6.48e-26  0.191
+##  9 NR2E1  SFRP2  chr4-153… NR2E1:ch…  0.118   2.48e-28     27.6  1.64e-27  0.191
+## 10 HES5   OTX2   chr14-56… chr14_56…  0.0594  8.67e- 8      7.06 1.12e- 7  0.100
 ## # … with 44 more rows</code></pre>
 <p><br>
 As with the regular <code>glm</code>, modules will be extracted based on p-value.</p>
