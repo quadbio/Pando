@@ -85,7 +85,7 @@ modules@meta
 
 The `meta` slot holds a dataframe with module inforamtion. 
 
-If you are curious to find out more, check out our vignettes.
+If you are curious to find out more, check out our vignettes!
 
 
 
