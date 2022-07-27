@@ -35,7 +35,7 @@ test_srt <- initiate_grn(
 
 test_srt <- find_motifs(
     test_srt,
-    motif_tfs = motif2tf_use,
+    motif_tfs = motif2tf,
     pfm = motifs[unique(motif2tf_use$mot)],
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
@@ -63,7 +63,6 @@ plot_network_graph(test_srt, layout='fr')
 
 test_srt <- get_tf_network(test_srt, tf='NFIB')
 plot_tf_network(test_srt, tf='NFIB', circular=F, label_nodes = 'tfs', edge_width = 3)
-
 
 NetworkGraph(test_srt)
 
