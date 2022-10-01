@@ -252,7 +252,7 @@ fit_grn_models.SeuratPlus <- function(
 
     # Select peaks passing criteria
     peaks_at_gene <- as.logical(colMaxs(peaks2gene))
-    peaks_with_motif <- as.logical(rowMaxs(peaks2motif))
+    peaks_with_motif <- as.logical(rowMaxs(peaks2motif*1))
 
     # Subset data to good peaks
     peaks_use <- peaks_at_gene & peaks_with_motif
@@ -283,7 +283,7 @@ fit_grn_models.SeuratPlus <- function(
         # Select peaks correlating with target gene expression
         g_x <- gene_data[gene_groups, g, drop=FALSE]
         peak_x <- peak_data[peak_groups, gene_peaks, drop=FALSE]
-        peak_g_cor <- sparse_cor(peak_x, g_x)
+        peak_g_cor <- as(sparse_cor(peak_x, g_x), 'generalMatrix')
         peak_g_cor[is.na(peak_g_cor)] <- 0
         peaks_use <- rownames(peak_g_cor)[abs(peak_g_cor[, 1]) > peak_cor]
         if (length(peaks_use)==0){
