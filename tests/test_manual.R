@@ -75,15 +75,5 @@ as(c('a', 'b', 'b'), 'data.frame')
 
 
 
-test_mat <- matrix(c(1,2,3,4,5,5,5,5,5), nrow=3)
-
-Matrix.utils::aggregate.Matrix(test_mat, groupings = c('a', 'b', 'b'))
-fast_aggregate(test_mat, groupings = c('a', 'b', 'b'))
-
-
-
-
-
-
 
 
