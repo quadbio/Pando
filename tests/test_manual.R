@@ -58,7 +58,7 @@ test_srt <- infer_grn(test_srt, genes=genes_use, peak_to_gene_domains=Annotation
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 
-test_srt <- get_network_graph(test_srt, n_neighbors=2, umap_method = 'coef')
+test_srt <- get_network_graph(test_srt, n_neighbors=2, umap_method = 'weighted')
 plot_network_graph(test_srt, layout='fr')
 
 test_srt <- get_tf_network(test_srt, tf='NFIB')
@@ -70,7 +70,6 @@ plot_gof(test_srt, point_size=2)
 plot_module_metrics(test_srt)
 
 
-as(c('a', 'b', 'b'), 'data.frame')
 
 
 

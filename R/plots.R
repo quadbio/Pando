@@ -348,7 +348,7 @@ get_network_graph.SeuratPlus <- function(
 
     log_message('Computing UMAP embedding', verbose=verbose)
     set.seed(random_seed)
-    coex_umap <- get_umap(coex_mat, ...)
+    coex_umap <- get_umap(as.matrix(coex_mat), ...)
 
     log_message('Getting network graph', verbose=verbose)
     gene_graph <- as_tbl_graph(gene_net) %>%
