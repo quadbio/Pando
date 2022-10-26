@@ -179,6 +179,7 @@ summary_fun <- list(
 
 #' Copy of the aggregate.Matrix function from the Matrix.utils package,
 #' since this is off CRAN and does not seem to be maintained anymore
+#' @keyword internal
 #'
 fast_aggregate <- function(
     x,
@@ -194,10 +195,10 @@ fast_aggregate <- function(
         x <- x!=0
     }
     groupings2 <- groupings
-    if (!is(groupings2,'data.frame')){
-        groupings2 <- as(groupings2, 'data.frame')
+    if (!is(groupings2, 'data.frame')){
+        groupings2 <- as.data.frame(groupings2)
     }
-    groupings2 <- data.frame(lapply(groupings2,as.factor))
+    groupings2 <- data.frame(lapply(groupings2, as.factor))
     groupings2 <- data.frame(interaction(groupings2, sep='_'))
     colnames(groupings2) <- 'A'
     if (is.null(form)){
@@ -216,6 +217,7 @@ fast_aggregate <- function(
 
 #' Copy of the dMcast function from the Matrix.utils package,
 #' since this is off CRAN and does not seem to be maintained anymore
+#' @keyword internal
 #'
 dMcast <- function(
     data,

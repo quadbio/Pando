@@ -1,5 +1,5 @@
 pandoc: 2.11.4
-pkgdown: 1.6.1
+pkgdown: 2.0.6
 pkgdown_sha: ~
 articles:
   advanced: advanced.html
@@ -8,5 +8,5 @@ articles:
   models: models.html
   regions: regions.html
   visualization: visualization.html
-last_built: 2022-05-19T18:57Z
+last_built: 2022-10-26T17:39Z
 

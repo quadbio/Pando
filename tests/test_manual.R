@@ -71,8 +71,8 @@ plot_module_metrics(test_srt)
 
 
 
+test_mat <- matrix(c(1,2,3,4,5,5,5,5,3), nrow=3)
 
-
-
+fast_aggregate(test_mat, groupings = c('a', 'b', 'b'))
 
 

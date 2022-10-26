@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">Pando</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -48,7 +50,7 @@
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Vignettes
      
     <span class="caret"></span>
@@ -74,13 +76,13 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://bsse.ethz.ch/qdb">
+  <a href="https://bsse.ethz.ch/qdb" class="external-link">
     <span class="fas fa-university fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://github.com/quadbiolab/Pando">
+  <a href="https://github.com/quadbiolab/Pando" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -97,75 +99,74 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="pando-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#pando-" class="anchor"></a>Pando <img src="reference/figures/logo.png" align="right" width="180">
+<div class="section level1">
+<div class="page-header"><h1 id="pando-">Pando <img src="reference/figures/logo.png" align="right" width="180"><a class="anchor" aria-label="anchor" href="#pando-"></a>
 </h1></div>
 <p>Pando leverages multi-modal singel-cell measurements to infer gene regulatory networks (GRNs) using a flexible modelling framework. By modeling the relationship between TF-binding site pairs with the expression of target genes, Pando simultaneously infers gene modules and sets of regulatory regions for each transcription factor.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">'quadbiolab/Pando'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">'quadbiolab/Pando'</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="about-pando" class="section level2">
-<h2 class="hasAnchor">
-<a href="#about-pando" class="anchor"></a>About Pando</h2>
+<div class="section level2">
+<h2 id="about-pando">About Pando<a class="anchor" aria-label="anchor" href="#about-pando"></a>
+</h2>
 <p>The fate and state of a cell are regulated through complex circuits of transcription factors (TFs) converging at regulatory elements to enable precise control of gene expression. Modern single-cell genomic approaches allow the simultaneous profiling of gene expression and chromatin accessibility in individual cells, which opens up new opportunities for the inference of gene regulatory networks (GRNs).</p>
 <p>The unifying idea behind many modern GRN inference methods is to model the expression of each gene as a function of TF abundances. The weights or coefficients of this model can then be interpreted as a measure of the regulatory interaction between TF and target gene. Additional (epi-) genomic information (such as predicted TF binding sites) is often used to constrain or refine the model.</p>
 <p>Pando tries to generalize this concept to make use of the multi-modal nature of modern single-cell technologies by incorporating TF binding information directly into the model. By utilizing jointly measured or integrated scRNA-seq and scATAC-seq data, Pando models the expression of genes based on the interaction of TF expression with the accessibility of their putative binding site. By offering a number of different pre-processing and modeling choices, Pando strives to be a modular and flexible framework for single-cell GRN inference.</p>
 </div>
-<div id="usage-overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#usage-overview" class="anchor"></a>Usage overview</h2>
-<div id="initiating-the-grn" class="section level3">
-<h3 class="hasAnchor">
-<a href="#initiating-the-grn" class="anchor"></a>Initiating the GRN</h3>
-<p>Pando interacts directly with <a href="https://satijalab.org/seurat/">Seurat objects</a> and integrates well with <a href="https://satijalab.org/seurat/">Seurat</a> and <a href="https://satijalab.org/signac/">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one with scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by initializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>:</p>
+<div class="section level2">
+<h2 id="usage-overview">Usage overview<a class="anchor" aria-label="anchor" href="#usage-overview"></a>
+</h2>
+<div class="section level3">
+<h3 id="initiating-the-grn">Initiating the GRN<a class="anchor" aria-label="anchor" href="#initiating-the-grn"></a>
+</h3>
+<p>Pando interacts directly with <a href="https://satijalab.org/seurat/" class="external-link">Seurat objects</a> and integrates well with <a href="https://satijalab.org/seurat/" class="external-link">Seurat</a> and <a href="https://satijalab.org/signac/" class="external-link">Signac</a> workflows. To use Pando, you’ll need a Seurat object with two assays, one with scRNA-seq transcript counts and one with scATAC-seq peak accessibility. With this object (let’s call it <code>seurat_object</code>) ready, you can start off by initializing the GRN using the function <code><a href="reference/initiate_grn.html">initiate_grn()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
-<p>This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. By default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument. Pando ships with a set of conserved regions (<code>phastConsElements20Mammals.UCSC.hg38</code>) as well as predicted regulatory elements from <a href="https://screen.encodeproject.org/">ENCODE</a> (<code>SCREEN.ccRE.UCSC.hg38</code>) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using <a href="https://cole-trapnell-lab.github.io/cicero-release/">Cicero</a>.</p>
+<code class="sourceCode R"><span><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/initiate_grn.html">initiate_grn</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></span></code></pre></div>
+<p>This will create a <code>RegulatoryNetwork</code> object inside the Seurat object and select candidate regulatory regions. By default, Pando will consider all peaks as putative regulatory regions, but the set of candidate regions can be constrained by providing a <code>GenomicRanges</code> object in the <code>regions</code> argument. Pando ships with a set of conserved regions (<code>phastConsElements20Mammals.UCSC.hg38</code>) as well as predicted regulatory elements from <a href="https://screen.encodeproject.org/" class="external-link">ENCODE</a> (<code>SCREEN.ccRE.UCSC.hg38</code>) for the human genome (hg38), which could be used here. However, one could also select candidate regions in other ways, for instance by using <a href="https://cole-trapnell-lab.github.io/cicero-release/" class="external-link">Cicero</a>.</p>
 </div>
-<div id="finding-tf-binding-sites" class="section level3">
-<h3 class="hasAnchor">
-<a href="#finding-tf-binding-sites" class="anchor"></a>Finding TF binding sites</h3>
+<div class="section level3">
+<h3 id="finding-tf-binding-sites">Finding TF binding sites<a class="anchor" aria-label="anchor" href="#finding-tf-binding-sites"></a>
+</h3>
 <p>Once the <code>RegulatoryNetwork</code> object is initiated with candidate regions, we can scan for TF binding motifs in these regions by using the function <code><a href="reference/find_motifs.html">find_motifs()</a></code></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span>
-
-<span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_motifs.html">find_motifs</a></span><span class="op">(</span>
-    <span class="va">seurat_object</span>,
-    pfm <span class="op">=</span> <span class="va">motifs</span>,
-    genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span>
-<span class="op">)</span></code></pre></div>
-<p>This uses <a href="https://github.com/GreenleafLab/motifmatchr">motifmatchr</a> to pair up TFs with their putative binding sites. Pando provides a custom motif database (<code>motifs</code>) compiled from <a href="http://jaspar.genereg.net/">JASPAR</a> and <a href="http://cisbp.ccbr.utoronto.ca/">CIS-BP</a>, but in principle any <code>PFMatrixList</code> object can be provided here. A data frame with motif-to-TF assignments can be provided in the <code>motif_tfs</code> argument.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BSgenome.Hsapiens.UCSC.hg38</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_motifs.html">find_motifs</a></span><span class="op">(</span></span>
+<span>    <span class="va">seurat_object</span>,</span>
+<span>    pfm <span class="op">=</span> <span class="va">motifs</span>,</span>
+<span>    genome <span class="op">=</span> <span class="va">BSgenome.Hsapiens.UCSC.hg38</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>This uses <a href="https://github.com/GreenleafLab/motifmatchr" class="external-link">motifmatchr</a> to pair up TFs with their putative binding sites. Pando provides a custom motif database (<code>motifs</code>) compiled from <a href="http://jaspar.genereg.net/" class="external-link">JASPAR</a> and <a href="http://cisbp.ccbr.utoronto.ca/" class="external-link">CIS-BP</a>, but in principle any <code>PFMatrixList</code> object can be provided here. A data frame with motif-to-TF assignments can be provided in the <code>motif_tfs</code> argument.</p>
 </div>
-<div id="inferring-the-grn" class="section level3">
-<h3 class="hasAnchor">
-<a href="#inferring-the-grn" class="anchor"></a>Inferring the GRN</h3>
+<div class="section level3">
+<h3 id="inferring-the-grn">Inferring the GRN<a class="anchor" aria-label="anchor" href="#inferring-the-grn"></a>
+</h3>
 <p>Now everything should be ready to infer the GRN by fitting regression models for the expression of each gene. In Pando, this can be done by using the function <code><a href="reference/infer_grn.html">infer_grn()</a></code>:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/infer_grn.html">infer_grn</a></span><span class="op">(</span>
-    <span class="va">seurat_object</span>,
-    peak_to_gene_method <span class="op">=</span> <span class="st">'Signac'</span>,
-    method <span class="op">=</span> <span class="st">'glm'</span>
-<span class="op">)</span></code></pre></div>
-<p>Here, we first select regions near genes, either by simply considering a distance upstream and/or downstream of the gene (<code>peak_to_gene_method='Signac'</code>) or by also considering overlapping regulatory regions as is done by <a href="http://great.stanford.edu/public/html/">GREAT</a> (<code>peak_to_gene_method='GREAT'</code>).</p>
-<p>You can also choose between a number of different models using the <code>method</code> argument, such as GLMs (<code>'glm'</code>) regularized GLMs <a href="https://glmnet.stanford.edu/articles/glmnet.html">(<code>'glmnet'</code>, <code>'cv.glmnet'</code>)</a> or Bayesian regression models <a href="https://paul-buerkner.github.io/brms/">(<code>'brms'</code>)</a>. We are also integrated gradient boosting regression with <a href="https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html">XGBoost</a> as it is used by <a href="https://github.com/aertslab/GRNBoost">GRNBoost</a>/<a href="https://scenic.aertslab.org/">SCENIC</a> as well as bagging and bayesian ridge models with <a href="https://scikit-learn.org/stable/">scikit-learn</a> as they are used by <a href="https://github.com/morris-lab/CellOracle">CellOracle</a>.</p>
+<code class="sourceCode R"><span><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/infer_grn.html">infer_grn</a></span><span class="op">(</span></span>
+<span>    <span class="va">seurat_object</span>,</span>
+<span>    peak_to_gene_method <span class="op">=</span> <span class="st">'Signac'</span>,</span>
+<span>    method <span class="op">=</span> <span class="st">'glm'</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Here, we first select regions near genes, either by simply considering a distance upstream and/or downstream of the gene (<code>peak_to_gene_method='Signac'</code>) or by also considering overlapping regulatory regions as is done by <a href="http://great.stanford.edu/public/html/" class="external-link">GREAT</a> (<code>peak_to_gene_method='GREAT'</code>).</p>
+<p>You can also choose between a number of different models using the <code>method</code> argument, such as GLMs (<code>'glm'</code>) regularized GLMs <a href="https://glmnet.stanford.edu/articles/glmnet.html" class="external-link">(<code>'glmnet'</code>, <code>'cv.glmnet'</code>)</a> or Bayesian regression models <a href="https://paul-buerkner.github.io/brms/" class="external-link">(<code>'brms'</code>)</a>. We are also integrated gradient boosting regression with <a href="https://xgboost.readthedocs.io/en/latest/R-package/xgboostPresentation.html" class="external-link">XGBoost</a> as it is used by <a href="https://github.com/aertslab/GRNBoost" class="external-link">GRNBoost</a>/<a href="https://scenic.aertslab.org/" class="external-link">SCENIC</a> as well as bagging and bayesian ridge models with <a href="https://scikit-learn.org/stable/" class="external-link">scikit-learn</a> as they are used by <a href="https://github.com/morris-lab/CellOracle" class="external-link">CellOracle</a>.</p>
 <p>Once the models are fit, model coefficients can be inspected with</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="module-extraction" class="section level3">
-<h3 class="hasAnchor">
-<a href="#module-extraction" class="anchor"></a>Module extraction</h3>
+<div class="section level3">
+<h3 id="module-extraction">Module extraction<a class="anchor" aria-label="anchor" href="#module-extraction"></a>
+</h3>
 <p>Based on the model coefficients, we can construct a network between TFs and target genes. This can be further summarized to construct gene and regulatory modules with the set of target genes and regulatory regions for each TF. In Pando we do this with</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_modules.html">find_modules</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">seurat_object</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/find_modules.html">find_modules</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></span></code></pre></div>
 <p>To access the extracted modules, you can use the function <code><a href="reference/NetworkModules.html">NetworkModules()</a></code>:</p>
-<pre><code>modules &lt;- NetworkModules(seurat_object)
-modules@meta</code></pre>
+<pre><code><span><span class="va">modules</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/NetworkModules.html">NetworkModules</a></span><span class="op">(</span><span class="va">seurat_object</span><span class="op">)</span></span>
+<span><span class="va">modules</span><span class="op">@</span><span class="va">meta</span></span></code></pre>
 <p>The <code>meta</code> slot holds a dataframe with module inforamtion.</p>
 <p>If you are curious to find out more, check out our vignettes!</p>
 </div>
@@ -175,35 +176,48 @@ modules@meta</code></pre>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/quadbiolab/Pando">https://​github.com/​quadbiolab/​Pando</a>
-</li>
+<li><a href="https://github.com/quadbiolab/Pando" class="external-link">Browse source code</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="https://opensource.org/licenses/mit-license.php">MIT</a></li>
+<li><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing Pando</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Jonas Simon Fleck <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-4686-7254" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Jonas Simon Fleck <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-4686-7254" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Jonas Simon Fleck.</p>
+  <p></p>
+<p>Developed by Jonas Simon Fleck.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>
@@ -211,6 +225,8 @@ modules@meta</code></pre>
 
   
 
+
+  
 
   </body>
 </html>
