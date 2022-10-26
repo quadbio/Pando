@@ -164,7 +164,7 @@ plot_module_metrics.SeuratPlus <- function(
         ) +
         geom_boxplot(width=0.2, outlier.shape=NA, size=0.2) +
         labs(y='# peaks') +
-        ggtitle('# regions\nper TF')
+        ggtitle('# regions\nper target gene')
 
 
     plot_df <- modules %>%
@@ -348,7 +348,7 @@ get_network_graph.SeuratPlus <- function(
 
     log_message('Computing UMAP embedding', verbose=verbose)
     set.seed(random_seed)
-    coex_umap <- get_umap(coex_mat, ...)
+    coex_umap <- get_umap(as.matrix(coex_mat), ...)
 
     log_message('Getting network graph', verbose=verbose)
     gene_graph <- as_tbl_graph(gene_net) %>%

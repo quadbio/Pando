@@ -4,17 +4,17 @@ on:
   push:
     branches:
       - devel
-      - master
+      - main
   pull_request:
     branches:
       - devel
-      - master
+      - main
 jobs:
   build:
     runs-on: macOS-latest
     strategy:
       matrix:
-        r-version: [4.0, 4.1]
+        r-version: [4.0, 4.1, 4.2]
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:

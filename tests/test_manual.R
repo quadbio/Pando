@@ -35,13 +35,13 @@ test_srt <- initiate_grn(
 
 test_srt <- find_motifs(
     test_srt,
-    motif_tfs = motif2tf_use,
+    motif_tfs = motif2tf,
     pfm = motifs[unique(motif2tf_use$mot)],
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 
 test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb',
-    peak_to_gene_method = 'GREAT', parallel=F)
+    peak_to_gene_method = 'GREAT', parallel=F, verbose = 2)
 
 annot <- Annotation(test_srt)
 
@@ -58,17 +58,17 @@ test_srt <- infer_grn(test_srt, genes=genes_use, peak_to_gene_domains=Annotation
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
 
-test_srt <- get_network_graph(test_srt, n_neighbors=2, umap_method = 'coef')
+test_srt <- get_network_graph(test_srt, n_neighbors=2, umap_method = 'weighted')
 plot_network_graph(test_srt, layout='fr')
 
 test_srt <- get_tf_network(test_srt, tf='NFIB')
 plot_tf_network(test_srt, tf='NFIB', circular=F, label_nodes = 'tfs', edge_width = 3)
 
-
 NetworkGraph(test_srt)
 
 plot_gof(test_srt, point_size=2)
 plot_module_metrics(test_srt)
+
 
 
 
