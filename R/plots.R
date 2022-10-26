@@ -164,7 +164,7 @@ plot_module_metrics.SeuratPlus <- function(
         ) +
         geom_boxplot(width=0.2, outlier.shape=NA, size=0.2) +
         labs(y='# peaks') +
-        ggtitle('# regions\nper TF')
+        ggtitle('# regions\nper target gene')
 
 
     plot_df <- modules %>%
