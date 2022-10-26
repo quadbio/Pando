@@ -1,4 +1,4 @@
-![Build](https://github.com/quadbiolab/Pando/workflows/build/badge.svg)
+![Build](https://github.com/quadbiolab/Pando/workflows/build/badge.svg?branch=main)
 
 # Pando <img src="man/figures/logo.png" align="right" width="180"/>
 
