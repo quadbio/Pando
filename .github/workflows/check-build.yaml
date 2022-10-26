@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - devel
-      - master
+      - main
   pull_request:
     branches:
       - devel
-      - master
+      - main
 jobs:
   build:
     runs-on: macOS-latest
