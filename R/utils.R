@@ -269,7 +269,7 @@ dMcast <- function(
     })
     # Allows NAs to pass
     attr(data,'na.action') <- na.pass
-    result <- sparse.model.matrix(newformula, data,drop.unused.levels = FALSE, row.names=FALSE)
+    result <- Matrix::sparse.model.matrix(newformula, data,drop.unused.levels = FALSE, row.names=FALSE)
     brokenNames <- grep('paste(', colnames(result), fixed = TRUE)
     colnames(result)[brokenNames] <- lapply(colnames(result)[brokenNames], function (x) {
         x <- gsub('paste(', replacement='', x=x, fixed = TRUE)
@@ -282,7 +282,7 @@ dMcast <- function(
     if(isTRUE(response>0))
     {
         responses=all.vars(terms(as.formula(paste(response,'~0'))))
-        result <- aggregate.Matrix(result, data[, responses,drop=FALSE], fun=fun.aggregate)
+        result <- fast_aggregate(result, data[, responses,drop=FALSE], fun=fun.aggregate)
     }
     return(result)
 }
