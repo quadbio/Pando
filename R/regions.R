@@ -38,7 +38,11 @@ initiate_grn.Seurat <- function(
     # Find candidate ranges by intersecting the supplied regions with peaks
     # Per default take all peaks as candidate regions
     if (!is.null(regions)){
-        cand_ranges <- IRanges::intersect(regions, peak_ranges)
+        cand_olaps <- IRanges::findOverlaps(regions, peak_ranges)
+        cand_ranges <- IRanges::pintersect(
+            peak_ranges[subjectHits(cand_olaps)],
+            regions[queryHits(cand_olaps)]
+        )
     } else {
         cand_ranges <- peak_ranges
     }
