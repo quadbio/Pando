@@ -306,7 +306,7 @@ fit_grn_models.SeuratPlus <- function(
         # Check correlation of peaks with target gene
         gene_tfs <- purrr::reduce(gene_peak_tfs, union)
         tf_x <- gene_data[gene_groups, gene_tfs, drop=FALSE]
-        tf_g_cor <- sparse_cor(tf_x, g_x)
+        tf_g_cor <- as(sparse_cor(tf_x, g_x), 'generalMatrix')
         tf_g_cor[is.na(tf_g_cor)] <- 0
         tfs_use <- rownames(tf_g_cor)[abs(tf_g_cor[, 1]) > tf_cor]
         if (length(tfs_use)==0){
