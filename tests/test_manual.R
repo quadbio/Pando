@@ -95,8 +95,33 @@ atac = CreateChromatinAssay(
 )
 pbmc[['peaks']] = atac
 
-s = initiate_grn(pbmc)
-s = find_motifs(s, pfm=motifs, genome=BSgenome.Hsapiens.UCSC.hg38)
+pbmc_grn = initiate_grn(pbmc)
+pbmc_grn = find_motifs(pbmc_grn, pfm=motifs, genome=BSgenome.Hsapiens.UCSC.hg38)
+
+pbmc_grn %>% write_rds('../data/pbmc/pbmc_with_motifs_pando.rds')
+
+pbmc_grn <- FindVariableFeatures(pbmc_grn, nfeatures=100)
+
+registerDoParallel(8)
+pbmc_grn = inferd_grn(pbmc_grn, genes=VariableFeatures(pbmc_grn), parallel=F, verbose = 2)
+pbmc_grn = find_modules(pbmc_grn)
+
+plot_module_metrics(pbmc_grn)
+
+pbmc_grn <- get_network_graph(pbmc_grn, n_neighbors=2, umap_method='corr')
+plot_network_graph(pbmc_grn)
+
+NetworkGraph(pbmc_grn)
+
+plot_network_graph(pbmc_grn, layout='fr')
+
+
+
+
+
+
+
+
 
 
 
