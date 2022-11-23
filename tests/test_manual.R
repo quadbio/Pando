@@ -115,7 +115,7 @@ NetworkGraph(pbmc_grn)
 
 plot_network_graph(pbmc_grn, layout='fr')
 
-
+pbmc_grn %>% write_rds('../data/pbmc/pbmc_with_grn_pando.rds')
 
 
 
