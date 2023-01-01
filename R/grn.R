@@ -261,8 +261,9 @@ fit_grn_models.SeuratPlus <- function(
     peak_data <- peak_data[, peaks_use, drop=FALSE]
 
     log_message('Preparing model input', verbose=verbose)
-    tfs_use <- colnames(motif2tf)
-    motif2tf <- motif2tf[, tfs_use, drop=FALSE]
+    tfs_use <- names(motif2tf)
+    tfs_use <- na.omit(tfs_use)
+    motif2tf <- motif2tf[tfs_use, drop=FALSE]
 
     log_message('Fitting models for ', length(features), ' target genes' , verbose=verbose)
     # Loop through features and fit models/run CV for each
