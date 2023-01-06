@@ -222,7 +222,9 @@ fit_xgb <- function(
     nthread = -1,
     ...
 ){
-
+    if (!require(xgboost, quietly = T)){
+        stop('The xgboost package is required to use xgb.')
+    }
     model_mat <- stats::model.matrix(formula, data=data)
     response <- data[[formula[[2]]]]
     fit <- xgboost::xgboost(

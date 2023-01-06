@@ -29,8 +29,6 @@ Imports:
     motifmatchr,
     glmnetUtils,
     bayestestR,
-    xgboost,
-    brms,
     ggpointdensity,
     ggraph,
     tidygraph,
@@ -44,6 +42,8 @@ Imports:
 Suggests: 
     rmarkdown,
     testthat,
-    reticulate
+    reticulate,
+    xgboost,
+    brms
 Remotes: 
     github::immunogenomics/presto
