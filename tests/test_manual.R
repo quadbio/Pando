@@ -10,6 +10,7 @@ library(bayestestR)
 library(Pando)
 
 rename <- dplyr::rename
+filter <- dplyr::filter
 
 data(motifs)
 data(phastConsElements20Mammals.UCSC.hg38)
