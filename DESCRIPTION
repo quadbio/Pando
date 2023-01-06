@@ -1,5 +1,5 @@
 Package: Pando
-Version: 1.0.2
+Version: 1.0.3
 Type: Package
 Title: Inferring regulomes from multi-modal single-cell genomics data
 Authors@R: person(given = "Jonas Simon",
