@@ -179,6 +179,9 @@ fit_brms <- function(
     prior = brms::prior(normal(0,1)),
     ...
 ){
+    if (!require(brms, quietly = T)){
+        stop('The brms package is required to use brms bayesian regression models.')
+    }
     fit <- suppressMessages(brms::brm(
         formula,
         data = data,
@@ -223,7 +226,7 @@ fit_xgb <- function(
     ...
 ){
     if (!require(xgboost, quietly = T)){
-        stop('The xgboost package is required to use xgb.')
+        stop('The xgboost package is required to use xgb models.')
     }
     model_mat <- stats::model.matrix(formula, data=data)
     response <- data[[formula[[2]]]]
@@ -275,7 +278,7 @@ fit_bagging_ridge <- function(
 ){
     p_method <- match.arg(p_method)
     if (!require(reticulate, quietly = T)){
-        stop('The reticulate package is required to use bagging ridge.')
+        stop('The reticulate package is required to use bagging ridge models.')
     }
     np <- reticulate::import('numpy')
     pd <- reticulate::import('pandas')
@@ -350,7 +353,7 @@ fit_bayesian_ridge <- function(
     ...
 ){
     if (!require(reticulate, quietly = T)){
-        stop('The reticulate package is required to use bayesian ridge.')
+        stop('The reticulate package is required to use bayesian ridge models.')
     }
     np <- reticulate::import('numpy')
     pd <- reticulate::import('pandas')
