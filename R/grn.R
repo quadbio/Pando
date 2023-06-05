@@ -524,7 +524,7 @@ find_modules.Network <- function(
 
     if (fit_method %in% c('cv.glmnet', 'glmnet', 'xgb')){
         modules <- modules %>%
-            summarize(
+            reframe(
                 estimate=sum(estimate),
                 n_regions=peak_per_gene,
                 n_genes=gene_per_tf,
@@ -533,7 +533,7 @@ find_modules.Network <- function(
             )
     } else {
         modules <- modules %>%
-            summarize(
+            reframe(
                 estimate=sum(estimate),
                 n_regions=peak_per_gene,
                 n_genes=gene_per_tf,

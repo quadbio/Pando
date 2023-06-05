@@ -38,7 +38,8 @@ Imports:
     foreach,
     sparseMatrixStats,
     irlba,
-    uwot
+    uwot,
+    grr
 Suggests: 
     rmarkdown,
     testthat,
