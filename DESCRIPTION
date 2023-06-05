@@ -20,11 +20,10 @@ Depends:
     R (>= 4.0.0)
 Imports: 
     tidyverse (>= 2.0.0),
-    Seurat (>= 4.0.0; < 4.9.9),
+    Seurat (>= 4.0.0),
     Signac,
     Matrix (>= 1.5-0),
     MatrixGenerics (== 1.12.0),
-    MatrixStats (== 1.0.0),
     ggplot2,
     IRanges (== 2.34.0),
     GenomicRanges,
