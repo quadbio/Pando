@@ -1,8 +1,7 @@
-#' @import dplyr
 #' @importFrom Signac StringToGRanges
 #' @importFrom Seurat GetAssay VariableFeatures
-#' @importFrom S4Vectors subjectHits
-#' @importFrom IRanges findOverlaps
+#' @importFrom S4Vectors subjectHits queryHits
+#' @importFrom IRanges findOverlaps pintersect
 NULL
 
 
@@ -38,8 +37,8 @@ initiate_grn.Seurat <- function(
     # Find candidate ranges by intersecting the supplied regions with peaks
     # Per default take all peaks as candidate regions
     if (!is.null(regions)){
-        cand_olaps <- IRanges::findOverlaps(regions, peak_ranges)
-        cand_ranges <- IRanges::pintersect(
+        cand_olaps <- findOverlaps(regions, peak_ranges)
+        cand_ranges <- pintersect(
             peak_ranges[subjectHits(cand_olaps)],
             regions[queryHits(cand_olaps)]
         )
@@ -92,7 +91,7 @@ initiate_grn.Seurat <- function(
 
 #' Scan for motifs in candidate regions.
 #'
-#' @import dplyr
+#' @importFrom dplyr distinct mutate select
 #'
 #' @param pfm A \code{PFMatrixList} object with position weight matrices.
 #' @param genome A \code{BSgenome} object with the genome of interest.
@@ -126,7 +125,7 @@ find_motifs.SeuratPlus <- function(
     motif2tf <- motif2tf %>% select('motif'=1,'tf'=2) %>%
         distinct() %>% mutate(val=1) %>%
         tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
-        column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
+        tibble::column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
     tfs_use <- intersect(rownames(GetAssay(object, params$rna_assay)), colnames(motif2tf))
     if (length(tfs_use)==0){
         stop('None of the provided TFs were found in the dataset. Consider providing a custom motif-to-TF map as `motif_tfs`')

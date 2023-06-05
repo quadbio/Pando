@@ -114,7 +114,6 @@ NetworkModules <- function(object, ...){
 
 #' @rdname DefaultNetwork
 #' @export DefaultNetwork
-#' @keyword internal
 DefaultNetwork <- function(object, ...){
     UseMethod(generic = 'DefaultNetwork', object = object)
 }
