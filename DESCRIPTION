@@ -19,12 +19,14 @@ biocViews:
 Depends:
     R (>= 4.0.0)
 Imports: 
-    tidyverse,
-    Seurat,
+    tidyverse (>= 2.0.0),
+    Seurat (>= 4.0.0; < 4.9.9),
     Signac,
-    Matrix,
+    Matrix (>= 1.5-0),
+    MatrixGenerics (== 1.12.0),
+    MatrixStats (== 1.0.0),
     ggplot2,
-    IRanges,
+    IRanges (== 2.34.0),
     GenomicRanges,
     motifmatchr,
     glmnetUtils,
@@ -36,7 +38,7 @@ Imports:
     patchwork,
     TFBSTools,
     foreach,
-    sparseMatrixStats,
+    sparseMatrixStats (== 1.12.0),
     irlba,
     uwot,
     grr
