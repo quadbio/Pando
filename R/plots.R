@@ -487,6 +487,11 @@ get_tf_network.SeuratPlus <- function(
 
     log_message('Getting shortest paths from TF', verbose=verbose)
     spaths <- igraph::all_shortest_paths(gene_graph, tf, features, mode='out')$res
+
+    if (length(spaths) < 3){
+        stop("Selected TF has fewer than 3 targets.")
+    }
+
     spath_list <- map_par(spaths, function(p){
         edg <- names(p)
         edg_graph <- gene_graph %>%

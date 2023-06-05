@@ -5,7 +5,6 @@ library(doParallel)
 library(devtools)
 library(Signac)
 library(Seurat)
-library(brms)
 library(bayestestR)
 library(Pando)
 
@@ -44,29 +43,20 @@ test_srt <- find_motifs(
     genome = BSgenome.Hsapiens.UCSC.hg38
 )
 
-test_srt <- infer_grn(test_srt, genes=genes_use, method='xgb',
+test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F, verbose = 2)
 
+test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=0, p_thresh=1)
 annot <- Annotation(test_srt)
 
 plot_module_metrics(test_srt)
 plot_gof(test_srt)
 
-annot <- annot[annot$gene_name%in%c('NEUROD6', 'MSX2', 'WLS', 'HES1')] %>%
-    CollapseToLongestTranscript() %>%
-    Extend(upstream = 200000, downstream = 200000)
-annot$region_type <- 'TAD'
-annot %>% write_rds('../data/example_tads.rds')
-
-test_srt <- infer_grn(test_srt, genes=genes_use, peak_to_gene_domains=Annotation(test_srt))
-
-test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=2)
-
 test_srt <- get_network_graph(test_srt, n_neighbors=2, umap_method = 'weighted')
 plot_network_graph(test_srt, layout='fr')
 
-test_srt <- get_tf_network(test_srt, tf='NFIB')
-plot_tf_network(test_srt, tf='NFIB', circular=F, label_nodes = 'tfs', edge_width = 3)
+test_srt <- get_tf_network(test_srt, tf='JUNB')
+plot_tf_network(test_srt, tf='JUNB', circular=F, label_nodes = 'tfs', edge_width = 3)
 
 NetworkGraph(test_srt)
 
