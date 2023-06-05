@@ -56,7 +56,9 @@ initiate_grn.Seurat <- function(
             seqnames = exon_ranges@seqnames,
             ranges = exon_ranges@ranges
         )
-        cand_ranges <- IRanges::setdiff(cand_ranges, exon_ranges, ignore.strand=TRUE)
+        cand_ranges <- GenomicRanges::subtract(
+            cand_ranges, exon_ranges, ignore.strand=TRUE
+        ) %>% unlist()
     }
 
     # Match candidate ranges to peaks

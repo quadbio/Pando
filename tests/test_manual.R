@@ -33,7 +33,7 @@ test_srt <- read_rds('../data/test_seurat.rds')
 test_srt <- initiate_grn(
     test_srt,
     regions = phastConsElements20Mammals.UCSC.hg38,
-    exclude_exons = F
+    exclude_exons = T
 )
 
 test_srt <- find_motifs(
