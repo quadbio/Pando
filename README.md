@@ -58,6 +58,11 @@ NetworkModules(test_srt)
 
 More info about Pando can be found on our [website](https://quadbio.github.io/Pando/). There you can find an API reference and a number of tutorial vignettes that give an introduction on how to use Pando most effectively.  
 
+## Citation
+
+If you find Pando helpful for your research, please consider citing 
+Fleck, J.S., Jansen, S.M.J., Wollny, D. et al. Inferring and perturbing cell fate regulomes in human brain organoids. Nature 621, 365–372 (2023). https://doi.org/10.1038/s41586-022-05279-8
+
 
 
 
