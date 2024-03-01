@@ -3,12 +3,17 @@
 \name{GetAssaySummary}
 \alias{GetAssaySummary}
 \alias{GetAssaySummary.Seurat}
+\alias{GetAssaySummary.GRNData}
 \title{Get summary of seurat assay}
 \usage{
 GetAssaySummary(object, ...)
 
 \method{GetAssaySummary}{Seurat}(object, group_name, assay = NULL, verbose = TRUE)
+
+\method{GetAssaySummary}{GRNData}(object, group_name, assay = NULL, verbose = TRUE)
 }
 \description{
 Get summary of seurat assay
+
+Get summary of seurat assay from GRNData
 }

@@ -174,7 +174,7 @@ fit_grn_models.GRNData <- function(
     if (is.null(motif2tf)){
         stop('Motif matches have not been found. Please run `find_motifs()` first.')
     }
-    gene_annot <- Signac::Annotation(object[[params$peak_assay]])
+    gene_annot <- Signac::Annotation(GetAssay(object, params$peak_assay))
     if (is.null(gene_annot)){
         stop('Please provide a gene annotation for the ChromatinAssay.')
     }
@@ -188,7 +188,9 @@ fit_grn_models.GRNData <- function(
 
     # Get assay data or summary
     if (is.null(aggregate_rna_col)){
-        gene_data <- Matrix::t(Seurat::GetAssayData(object, assay=params$rna_assay))
+        gene_data <- Matrix::t(LayerData(
+            object, assay=params$rna_assay, layer='data'
+        ))
         gene_groups <- TRUE
     } else {
         gene_data <- GetAssaySummary(
@@ -201,7 +203,9 @@ fit_grn_models.GRNData <- function(
     }
 
     if (is.null(aggregate_peaks_col)){
-        peak_data <- Matrix::t(Seurat::GetAssayData(object, assay=params$peak_assay))
+        peak_data <- Matrix::t(LayerData(
+            object, assay=params$peak_assay, layer='data'
+        ))
         peak_groups <- TRUE
     } else {
         peak_data <- GetAssaySummary(
@@ -210,7 +214,7 @@ fit_grn_models.GRNData <- function(
             group_name = aggregate_peaks_col,
             verbose = FALSE
         )
-        peak_groups <- object@meta.data[[aggregate_peaks_col]]
+        peak_groups <- object@data@meta.data[[aggregate_peaks_col]]
     }
 
     # Select genes to use by intersecting annotated genes with all

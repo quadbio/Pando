@@ -385,16 +385,24 @@ GetAssaySummary.GRNData <- function(object, group_name, assay=NULL, verbose=TRUE
 #' @method GetAssay GRNData
 #' @export
 GetAssay.GRNData <- function(object, assay=NULL){
-    return(GetAssay(object@data, assay=NULL))
+    return(Seurat::GetAssay(object@data, assay=assay))
 }
 
 
-#' Get layer data from
+#' Get layer data from GRNData
 #' @rdname LayerData
 #' @method LayerData GRNData
 #' @export
 LayerData.GRNData <- function(object, ...){
-    return(LayerData(object@data, ...))
+    return(SeuratObject::LayerData(object@data, ...))
+}
+
+#' Get variable features from GRNData
+#' @rdname VariableFeatures
+#' @method VariableFeatures GRNData
+#' @export
+VariableFeatures.GRNData <- function(object, ...){
+    return(Seurat::VariableFeatures(object@data, ...))
 }
 
 

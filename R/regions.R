@@ -32,7 +32,9 @@ initiate_grn.Seurat <- function(
     if (is.null(gene_annot)){
         stop('Please provide a gene annotation for the ChromatinAssay.')
     }
-    peak_ranges <- StringToGRanges(rownames(GetAssay(object, assay=peak_assay)))
+    peak_ranges <- StringToGRanges(
+        rownames(Seurat::GetAssay(object, assay=peak_assay))
+    )
 
     # Find candidate ranges by intersecting the supplied regions with peaks
     # Per default take all peaks as candidate regions
@@ -145,8 +147,12 @@ find_motifs.GRNData <- function(
     motif2tf <- motif2tf %>% select('motif'=1,'tf'=2) %>%
         distinct() %>% mutate(val=1) %>%
         tidyr::pivot_wider(names_from = 'tf', values_from=val, values_fill=0) %>%
-        tibble::column_to_rownames('motif') %>% as.matrix() %>% Matrix::Matrix(sparse=TRUE)
-    tfs_use <- intersect(rownames(GetAssay(object, params$rna_assay)), colnames(motif2tf))
+        tibble::column_to_rownames('motif') %>%
+        as.matrix() %>% Matrix::Matrix(sparse=TRUE)
+    tfs_use <- intersect(
+        rownames(GetAssay(object, params$rna_assay)),
+        colnames(motif2tf)
+    )
     if (length(tfs_use)==0){
         stop('None of the provided TFs were found in the dataset. Consider providing a custom motif-to-TF map as `motif_tfs`')
     }

@@ -30,13 +30,6 @@ motif2tf_use <- motif2tf %>%
 #### Basic workflow ####
 test_srt <- read_rds('../data/test_seurat.rds')
 
-regions_obj <- new(
-    Class = 'Regions',
-    ranges = cand_ranges,
-    peaks = peak_matches,
-    motifs = NULL
-)
-
 test_srt <- initiate_grn(
     test_srt,
     regions = phastConsElements20Mammals.UCSC.hg38,
@@ -54,7 +47,7 @@ test_srt <- infer_grn(test_srt, genes=genes_use,
     peak_to_gene_method = 'GREAT', parallel=F, verbose = 2)
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=0, p_thresh=1)
-annot <- Annotation(test_srt)
+annot <- Annotation(test_srt@data)
 
 plot_module_metrics(test_srt)
 plot_gof(test_srt)
