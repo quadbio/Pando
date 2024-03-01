@@ -136,5 +136,11 @@ GetAssaySummary <- function(object, ...){
     UseMethod(generic = 'GetAssaySummary', object = object)
 }
 
+#' @rdname GetAssay
+#' @export GetAssay
+GetAssay <- function(object, ...){
+    UseMethod(generic = 'GetAssay', object = object)
+}
+
 
 

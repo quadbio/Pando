@@ -2,13 +2,13 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{NetworkTFs}
 \alias{NetworkTFs}
-\alias{NetworkTFs.SeuratPlus}
+\alias{NetworkTFs.GRNData}
 \alias{NetworkTFs.RegulatoryNetwork}
 \title{Get network TFs}
 \usage{
 NetworkTFs(object, ...)
 
-\method{NetworkTFs}{SeuratPlus}(object)
+\method{NetworkTFs}{GRNData}(object)
 
 \method{NetworkTFs}{RegulatoryNetwork}(object)
 }

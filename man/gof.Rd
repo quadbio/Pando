@@ -2,14 +2,14 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{gof}
 \alias{gof}
-\alias{gof.SeuratPlus}
+\alias{gof.GRNData}
 \alias{gof.RegulatoryNetwork}
 \alias{gof.Network}
 \title{Get goodness-of-fit info}
 \usage{
 gof(object, ...)
 
-\method{gof}{SeuratPlus}(object, network = DefaultNetwork(object))
+\method{gof}{GRNData}(object, network = DefaultNetwork(object))
 
 \method{gof}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 

@@ -3,6 +3,7 @@
 \name{initiate_grn}
 \alias{initiate_grn}
 \alias{initiate_grn.Seurat}
+\alias{initiate_grn.GRNData}
 \title{Initiate the \code{RegulatoryNetwork} object.}
 \usage{
 initiate_grn(object, ...)
@@ -14,8 +15,18 @@ initiate_grn(object, ...)
   rna_assay = "RNA",
   exclude_exons = TRUE
 )
+
+\method{initiate_grn}{GRNData}(
+  object,
+  regions = NULL,
+  peak_assay = "peaks",
+  rna_assay = "RNA",
+  exclude_exons = TRUE
+)
 }
 \arguments{
+\item{object}{An object.}
+
 \item{regions}{Candidate regions to consider for binding site inference.
 If \code{NULL}, all peaks regions are considered.}
 
@@ -28,8 +39,10 @@ assay in the \code{Seurat} object.}
 \item{exclude_exons}{Logical. Whether to consider exons for binding site inference.}
 }
 \value{
-A SeuratPlus object containing a RegulatoryNetwork object.
+A GRNData object containing a RegulatoryNetwork object.
 }
 \description{
+Initiate the \code{RegulatoryNetwork} object.
+
 Initiate the \code{RegulatoryNetwork} object.
 }

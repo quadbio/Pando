@@ -30,6 +30,13 @@ motif2tf_use <- motif2tf %>%
 #### Basic workflow ####
 test_srt <- read_rds('../data/test_seurat.rds')
 
+regions_obj <- new(
+    Class = 'Regions',
+    ranges = cand_ranges,
+    peaks = peak_matches,
+    motifs = NULL
+)
+
 test_srt <- initiate_grn(
     test_srt,
     regions = phastConsElements20Mammals.UCSC.hg38,

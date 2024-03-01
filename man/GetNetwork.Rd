@@ -2,13 +2,13 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{GetNetwork}
 \alias{GetNetwork}
-\alias{GetNetwork.SeuratPlus}
+\alias{GetNetwork.GRNData}
 \alias{GetNetwork.RegulatoryNetwork}
 \title{Get network}
 \usage{
 GetNetwork(object, ...)
 
-\method{GetNetwork}{SeuratPlus}(object, network = DefaultNetwork(object))
+\method{GetNetwork}{GRNData}(object, network = DefaultNetwork(object))
 
 \method{GetNetwork}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 }

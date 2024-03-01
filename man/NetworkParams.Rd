@@ -2,14 +2,14 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{NetworkParams}
 \alias{NetworkParams}
-\alias{NetworkParams.SeuratPlus}
+\alias{NetworkParams.GRNData}
 \alias{NetworkParams.RegulatoryNetwork}
 \alias{NetworkParams.Network}
 \title{Get network parameters}
 \usage{
 NetworkParams(object, ...)
 
-\method{NetworkParams}{SeuratPlus}(object, network = DefaultNetwork(object))
+\method{NetworkParams}{GRNData}(object, network = DefaultNetwork(object))
 
 \method{NetworkParams}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 

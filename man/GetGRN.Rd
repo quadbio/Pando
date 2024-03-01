@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{GetGRN}
 \alias{GetGRN}
-\alias{GetGRN.SeuratPlus}
+\alias{GetGRN.GRNData}
 \title{Get network data}
 \usage{
 GetGRN(object, ...)
 
-\method{GetGRN}{SeuratPlus}(object)
+\method{GetGRN}{GRNData}(object)
 }
 \description{
 Get network data

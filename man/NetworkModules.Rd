@@ -2,14 +2,14 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{NetworkModules}
 \alias{NetworkModules}
-\alias{NetworkModules.SeuratPlus}
+\alias{NetworkModules.GRNData}
 \alias{NetworkModules.RegulatoryNetwork}
 \alias{NetworkModules.Network}
 \title{Get TF modules}
 \usage{
 NetworkModules(object, ...)
 
-\method{NetworkModules}{SeuratPlus}(object, network = DefaultNetwork(object))
+\method{NetworkModules}{GRNData}(object, network = DefaultNetwork(object))
 
 \method{NetworkModules}{RegulatoryNetwork}(object, network = DefaultNetwork(object))
 

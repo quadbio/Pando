@@ -2,14 +2,14 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{NetworkGraph}
 \alias{NetworkGraph}
-\alias{NetworkGraph.SeuratPlus}
+\alias{NetworkGraph.GRNData}
 \alias{NetworkGraph.RegulatoryNetwork}
 \alias{NetworkGraph.Network}
 \title{Get network parameters}
 \usage{
 NetworkGraph(object, ...)
 
-\method{NetworkGraph}{SeuratPlus}(object, network = DefaultNetwork(object), graph = "module_graph")
+\method{NetworkGraph}{GRNData}(object, network = DefaultNetwork(object), graph = "module_graph")
 
 \method{NetworkGraph}{RegulatoryNetwork}(object, network = DefaultNetwork(object), graph = "module_graph")
 

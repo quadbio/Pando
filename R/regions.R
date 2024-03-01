@@ -15,7 +15,7 @@ NULL
 #' assay in the \code{Seurat} object.
 #' @param exclude_exons Logical. Whether to consider exons for binding site inference.
 #'
-#' @return A SeuratPlus object containing a RegulatoryNetwork object.
+#' @return A GRNData object containing a RegulatoryNetwork object.
 #'
 #' @rdname initiate_grn
 #' @export
@@ -83,11 +83,31 @@ initiate_grn.Seurat <- function(
         params = params
     )
 
-    object <- as(object, 'SeuratPlus')
-    object@grn <- grn_obj
+    object <- new(
+        Class = 'GRNData',
+        grn = grn_obj,
+        data = object
+    )
+
     return(object)
 }
 
+#' Initiate the \code{RegulatoryNetwork} object.
+#'
+#' @param object An object.
+#'
+#' @rdname initiate_grn
+#' @export
+#' @method initiate_grn GRNData
+initiate_grn.GRNData <- function(
+        object,
+        regions = NULL,
+        peak_assay = 'peaks',
+        rna_assay = 'RNA',
+        exclude_exons = TRUE
+){
+    initiate_grn(object@data)
+}
 
 #' Scan for motifs in candidate regions.
 #'
@@ -99,12 +119,12 @@ initiate_grn.Seurat <- function(
 #' to be the name of the motif, the second the name of the TF.
 #' @param verbose Display messages.
 #'
-#' @return A SeuratPlus object with updated motif info.
+#' @return A GRNData object with updated motif info.
 #'
 #' @rdname find_motifs
 #' @export
-#' @method find_motifs SeuratPlus
-find_motifs.SeuratPlus <- function(
+#' @method find_motifs GRNData
+find_motifs.GRNData <- function(
     object,
     pfm,
     genome,

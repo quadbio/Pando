@@ -2,13 +2,13 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{Params}
 \alias{Params}
-\alias{Params.SeuratPlus}
+\alias{Params.GRNData}
 \alias{Params.RegulatoryNetwork}
 \title{Get GRN inference parameters}
 \usage{
 Params(object, ...)
 
-\method{Params}{SeuratPlus}(object)
+\method{Params}{GRNData}(object)
 
 \method{Params}{RegulatoryNetwork}(object)
 }

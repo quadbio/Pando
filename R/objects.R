@@ -105,31 +105,29 @@ RegulatoryNetwork <- setClass(
     )
 )
 
-
-#' The SeuratPlus class
+#' The GRNData class
 #'
-#' The SeuratPlus object is an extended \code{Seurat} object
+#' The GRNData object is an extended \code{Seurat} object
 #' for the storage and analysis of Regulatory network data.
 #'
 #' @slot grn A named list containing \code{RegulatoryNetwork} objects with inferred networks.
 #'
-#' @name SeuratPlus-class
-#' @rdname SeuratPlus-class
-#' @exportClass SeuratPlus
-#' @concept assay
-SeuratPlus <- setClass(
-    Class = 'SeuratPlus',
-    contains = 'Seurat',
+#' @name GRNData-class
+#' @rdname GRNData-class
+#' @exportClass GRNData
+GRNData <- setClass(
+    Class = 'GRNData',
     slots = list(
-        'grn' = 'RegulatoryNetwork'
+        'grn' = 'RegulatoryNetwork',
+        'data' = 'Seurat'
     )
 )
 
 #' Get network
 #' @rdname GetNetwork
-#' @method GetNetwork SeuratPlus
+#' @method GetNetwork GRNData
 #' @export
-GetNetwork.SeuratPlus <- function(object, network=DefaultNetwork(object)){
+GetNetwork.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object@grn, network=network))
 }
 
@@ -150,9 +148,9 @@ GetNetwork.RegulatoryNetwork <- function(object, network=DefaultNetwork(object))
 
 #' Get network features
 #' @rdname NetworkFeatures
-#' @method NetworkFeatures SeuratPlus
+#' @method NetworkFeatures GRNData
 #' @export
-NetworkFeatures.SeuratPlus <- function(object, network=DefaultNetwork(object)){
+NetworkFeatures.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@features)
 }
 
@@ -166,9 +164,9 @@ NetworkFeatures.RegulatoryNetwork <- function(object, network=DefaultNetwork(obj
 
 #' Get network TFs
 #' @rdname NetworkTFs
-#' @method NetworkTFs SeuratPlus
+#' @method NetworkTFs GRNData
 #' @export
-NetworkTFs.SeuratPlus <- function(object){
+NetworkTFs.GRNData <- function(object){
     return(object@grn@regions@tfs)
 }
 
@@ -182,9 +180,9 @@ NetworkTFs.RegulatoryNetwork <- function(object){
 
 #' Get network regions
 #' @rdname NetworkRegions
-#' @method NetworkRegions SeuratPlus
+#' @method NetworkRegions GRNData
 #' @export
-NetworkRegions.SeuratPlus <- function(object){
+NetworkRegions.GRNData <- function(object){
     return(object@grn@regions)
 }
 
@@ -198,18 +196,18 @@ NetworkRegions.RegulatoryNetwork <- function(object){
 
 #' Get network data
 #' @rdname GetGRN
-#' @method GetGRN SeuratPlus
+#' @method GetGRN GRNData
 #' @export
-GetGRN.SeuratPlus <- function(object){
+GetGRN.GRNData <- function(object){
     return(object@grn)
 }
 
 
 #' Get TF modules
 #' @rdname NetworkModules
-#' @method NetworkModules SeuratPlus
+#' @method NetworkModules GRNData
 #' @export
-NetworkModules.SeuratPlus <- function(object, network=DefaultNetwork(object)){
+NetworkModules.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@modules)
 }
 
@@ -230,9 +228,9 @@ NetworkModules.Network <- function(object){
 
 #' Get network parameters
 #' @rdname NetworkParams
-#' @method NetworkParams SeuratPlus
+#' @method NetworkParams GRNData
 #' @export
-NetworkParams.SeuratPlus <- function(object, network=DefaultNetwork(object)){
+NetworkParams.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@params)
 }
 
@@ -253,9 +251,9 @@ NetworkParams.Network <- function(object){
 
 #' Get network parameters
 #' @rdname NetworkGraph
-#' @method NetworkGraph SeuratPlus
+#' @method NetworkGraph GRNData
 #' @export
-NetworkGraph.SeuratPlus <- function(object, network=DefaultNetwork(object), graph='module_graph'){
+NetworkGraph.GRNData <- function(object, network=DefaultNetwork(object), graph='module_graph'){
     return(NetworkGraph(GetNetwork(object, network=network), graph=graph))
 }
 
@@ -278,9 +276,9 @@ NetworkGraph.Network <- function(object, graph='module_graph'){
 
 #' Get active network
 #' @rdname DefaultNetwork
-#' @method DefaultNetwork SeuratPlus
+#' @method DefaultNetwork GRNData
 #' @export
-DefaultNetwork.SeuratPlus <- function(object){
+DefaultNetwork.GRNData <- function(object){
     return(DefaultNetwork(GetGRN(object)))
 }
 
@@ -294,9 +292,9 @@ DefaultNetwork.RegulatoryNetwork <- function(object){
 
 #' Get fitted coefficients
 #' @rdname coef
-#' @method coef SeuratPlus
+#' @method coef GRNData
 #' @export
-coef.SeuratPlus <- function(object, network=DefaultNetwork(object)){
+coef.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@coefs)
 }
 
@@ -317,9 +315,9 @@ coef.Network <- function(object){
 
 #' Get goodness-of-fit info
 #' @rdname gof
-#' @method gof SeuratPlus
+#' @method gof GRNData
 #' @export
-gof.SeuratPlus <- function(object, network=DefaultNetwork(object)){
+gof.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@fit)
 }
 
@@ -340,9 +338,9 @@ gof.Network <- function(object, network=DefaultNetwork(object)){
 
 #' Get GRN inference parameters
 #' @rdname Params
-#' @method Params SeuratPlus
+#' @method Params GRNData
 #' @export
-Params.SeuratPlus <- function(object){
+Params.GRNData <- function(object){
     return(object@grn@params)
 }
 
@@ -373,6 +371,33 @@ GetAssaySummary.Seurat <- function(object, group_name, assay=NULL, verbose=TRUE)
 }
 
 
+#' Get summary of seurat assay from GRNData
+#' @rdname GetAssaySummary
+#' @method GetAssaySummary GRNData
+#' @export
+GetAssaySummary.GRNData <- function(object, group_name, assay=NULL, verbose=TRUE){
+    return(GetAssaySummary(object@data, group_name, assay=NULL, verbose=TRUE))
+}
+
+
+#' Get Seurat assay from GRNData
+#' @rdname GetAssay
+#' @method GetAssay GRNData
+#' @export
+GetAssay.GRNData <- function(object, assay=NULL){
+    return(GetAssay(object@data, assay=NULL))
+}
+
+
+#' Get layer data from
+#' @rdname LayerData
+#' @method LayerData GRNData
+#' @export
+LayerData.GRNData <- function(object, ...){
+    return(LayerData(object@data, ...))
+}
+
+
 #' Print RegulatoryNetwork objects
 #'
 #' @rdname print
@@ -383,17 +408,17 @@ print.RegulatoryNetwork <- function(object){
     if (is.null(n_tfs)){
         tf_string <- '\nCandidate regions have not been scanned for motifs'
     } else {
-        tf_string <- paste0('based on ', n_tfs, ' transcription factors')
+        tf_string <- paste0('based on ', n_tfs, ' transcription factors\n')
     }
     n_nets <- length(object@networks)
     net_names <- names(object@networks)
     if (n_nets==0){
-        conn_string <- '\nNo network has been inferred'
+        conn_string <- '\nNo network has been inferred\n'
     } else if (n_nets==1){
-        conn_string <- paste0(n_nets, ' inferred network: ', net_names)
+        conn_string <- paste0(n_nets, ' inferred network: ', net_names, '\n')
     } else {
         conn_string <- paste0(n_nets, ' inferred networks: ',
-            paste(net_names, collapse=', '))
+            paste(net_names, collapse=', '), '\n')
     }
     cat(paste0(
         'A RegulatoryNetwork object ', tf_string, '\n',

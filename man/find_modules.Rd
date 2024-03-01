@@ -3,7 +3,7 @@
 \name{find_modules}
 \alias{find_modules}
 \alias{find_modules.Network}
-\alias{find_modules.SeuratPlus}
+\alias{find_modules.GRNData}
 \title{Find TF modules in regulatory network}
 \usage{
 find_modules(object, ...)
@@ -19,7 +19,7 @@ find_modules(object, ...)
   verbose = TRUE
 )
 
-\method{find_modules}{SeuratPlus}(
+\method{find_modules}{GRNData}(
   object,
   network = DefaultNetwork(object),
   p_thresh = 0.05,
@@ -54,7 +54,7 @@ find_modules(object, ...)
 \value{
 A Network object.
 
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Find TF modules in regulatory network

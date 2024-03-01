@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/regions.R
 \name{find_motifs}
 \alias{find_motifs}
-\alias{find_motifs.SeuratPlus}
+\alias{find_motifs.GRNData}
 \title{Scan for motifs in candidate regions.}
 \usage{
 find_motifs(object, ...)
 
-\method{find_motifs}{SeuratPlus}(object, pfm, genome, motif_tfs = NULL, verbose = TRUE)
+\method{find_motifs}{GRNData}(object, pfm, genome, motif_tfs = NULL, verbose = TRUE)
 }
 \arguments{
 \item{pfm}{A \code{PFMatrixList} object with position weight matrices.}
@@ -20,7 +20,7 @@ to be the name of the motif, the second the name of the TF.}
 \item{verbose}{Display messages.}
 }
 \value{
-A SeuratPlus object with updated motif info.
+A GRNData object with updated motif info.
 }
 \description{
 Scan for motifs in candidate regions.

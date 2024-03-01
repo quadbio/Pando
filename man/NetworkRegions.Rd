@@ -2,13 +2,13 @@
 % Please edit documentation in R/generics.R, R/objects.R
 \name{NetworkRegions}
 \alias{NetworkRegions}
-\alias{NetworkRegions.SeuratPlus}
+\alias{NetworkRegions.GRNData}
 \alias{NetworkRegions.RegulatoryNetwork}
 \title{Get network regions}
 \usage{
 NetworkRegions(object, ...)
 
-\method{NetworkRegions}{SeuratPlus}(object)
+\method{NetworkRegions}{GRNData}(object)
 
 \method{NetworkRegions}{RegulatoryNetwork}(object)
 }

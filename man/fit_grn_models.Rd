@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/grn.R
 \name{fit_grn_models}
 \alias{fit_grn_models}
-\alias{fit_grn_models.SeuratPlus}
+\alias{fit_grn_models.GRNData}
 \title{Fit models for gene expression}
 \usage{
 fit_grn_models(object, ...)
 
-\method{fit_grn_models}{SeuratPlus}(
+\method{fit_grn_models}{GRNData}(
   object,
   genes = NULL,
   network_name = paste0(method, "_network"),
@@ -83,7 +83,7 @@ For more info, see \code{\link[formula]{stats}}
 \item{verbose}{Logical. Display messages}
 }
 \value{
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Fit models for gene expression

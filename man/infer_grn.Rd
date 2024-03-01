@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/grn.R
 \name{infer_grn}
 \alias{infer_grn}
-\alias{infer_grn.SeuratPlus}
+\alias{infer_grn.GRNData}
 \title{Infer a Gene Regulatory Network with \code{Pando}}
 \usage{
 infer_grn(object, ...)
 
-\method{infer_grn}{SeuratPlus}(
+\method{infer_grn}{GRNData}(
   object,
   genes = NULL,
   network_name = paste0(method, "_network"),
@@ -86,7 +86,7 @@ For more info, see \code{\link[formula]{stats}}
 \item{verbose}{Logical. Display messages. Set verbose to '2' to print errors for all model fits.}
 }
 \value{
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Infer a Gene Regulatory Network with \code{Pando}

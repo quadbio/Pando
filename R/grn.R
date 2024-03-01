@@ -41,12 +41,12 @@ NULL
 #' @param verbose Logical. Display messages. Set verbose to '2' to print errors for all model fits.
 #' @param ... Other parameters for the model fitting function.
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @rdname infer_grn
 #' @export
-#' @method infer_grn SeuratPlus
-infer_grn.SeuratPlus <- function(
+#' @method infer_grn GRNData
+infer_grn.GRNData <- function(
     object,
     genes = NULL,
     network_name = paste0(method, '_network'),
@@ -138,11 +138,11 @@ infer_grn.SeuratPlus <- function(
 #' @param verbose Logical. Display messages
 #' @param ... Other parameters for the model fitting function.
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @rdname fit_grn_models
-#' @method fit_grn_models SeuratPlus
-fit_grn_models.SeuratPlus <- function(
+#' @method fit_grn_models GRNData
+fit_grn_models.GRNData <- function(
     object,
     genes = NULL,
     network_name = paste0(method, '_network'),
@@ -596,15 +596,15 @@ find_modules.Network <- function(
 
 #' @importFrom purrr map
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @param object An object.
 #' @param network Name of the network to use.
 #'
 #' @rdname find_modules
 #' @export
-#' @method find_modules SeuratPlus
-find_modules.SeuratPlus <- function(
+#' @method find_modules GRNData
+find_modules.GRNData <- function(
     object,
     network = DefaultNetwork(object),
     p_thresh = 0.05,
