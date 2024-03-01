@@ -105,6 +105,7 @@ RegulatoryNetwork <- setClass(
     )
 )
 
+
 #' The GRNData class
 #'
 #' The GRNData object is an extended \code{Seurat} object
@@ -123,6 +124,7 @@ GRNData <- setClass(
     )
 )
 
+
 #' Get network
 #' @rdname GetNetwork
 #' @method GetNetwork GRNData
@@ -130,6 +132,7 @@ GRNData <- setClass(
 GetNetwork.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object@grn, network=network))
 }
+
 
 #' Get network
 #' @rdname GetNetwork
@@ -154,6 +157,7 @@ NetworkFeatures.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@features)
 }
 
+
 #' @rdname NetworkFeatures
 #' @method NetworkFeatures RegulatoryNetwork
 #' @export
@@ -170,6 +174,7 @@ NetworkTFs.GRNData <- function(object){
     return(object@grn@regions@tfs)
 }
 
+
 #' @rdname NetworkTFs
 #' @method NetworkTFs RegulatoryNetwork
 #' @export
@@ -185,6 +190,7 @@ NetworkTFs.RegulatoryNetwork <- function(object){
 NetworkRegions.GRNData <- function(object){
     return(object@grn@regions)
 }
+
 
 #' @rdname NetworkRegions
 #' @method NetworkRegions RegulatoryNetwork
@@ -211,12 +217,14 @@ NetworkModules.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@modules)
 }
 
+
 #' @rdname NetworkModules
 #' @method NetworkModules RegulatoryNetwork
 #' @export
 NetworkModules.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@modules)
 }
+
 
 #' @rdname NetworkModules
 #' @method NetworkModules Network
@@ -234,12 +242,14 @@ NetworkParams.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@params)
 }
 
+
 #' @rdname NetworkParams
 #' @method NetworkParams RegulatoryNetwork
 #' @export
 NetworkParams.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@params)
 }
+
 
 #' @rdname NetworkParams
 #' @method NetworkParams Network
@@ -257,12 +267,14 @@ NetworkGraph.GRNData <- function(object, network=DefaultNetwork(object), graph='
     return(NetworkGraph(GetNetwork(object, network=network), graph=graph))
 }
 
+
 #' @rdname NetworkGraph
 #' @method NetworkGraph RegulatoryNetwork
 #' @export
 NetworkGraph.RegulatoryNetwork <- function(object, network=DefaultNetwork(object), graph='module_graph'){
     return(NetworkGraph(GetNetwork(object, network=network), graph=graph))
 }
+
 
 #' @rdname NetworkGraph
 #' @method NetworkGraph Network
@@ -274,6 +286,7 @@ NetworkGraph.Network <- function(object, graph='module_graph'){
     return(object@graphs[[graph]])
 }
 
+
 #' Get active network
 #' @rdname DefaultNetwork
 #' @method DefaultNetwork GRNData
@@ -281,6 +294,7 @@ NetworkGraph.Network <- function(object, graph='module_graph'){
 DefaultNetwork.GRNData <- function(object){
     return(DefaultNetwork(GetGRN(object)))
 }
+
 
 #' @rdname DefaultNetwork
 #' @method DefaultNetwork RegulatoryNetwork
@@ -298,12 +312,14 @@ coef.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@coefs)
 }
 
+
 #' @rdname coef
 #' @method coef RegulatoryNetwork
 #' @export
 coef.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@coefs)
 }
+
 
 #' @rdname coef
 #' @method coef Network
@@ -321,12 +337,14 @@ gof.GRNData <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@fit)
 }
 
+
 #' @rdname gof
 #' @method gof RegulatoryNetwork
 #' @export
 gof.RegulatoryNetwork <- function(object, network=DefaultNetwork(object)){
     return(GetNetwork(object, network=network)@fit)
 }
+
 
 #' @rdname gof
 #' @method gof Network
@@ -343,6 +361,7 @@ gof.Network <- function(object, network=DefaultNetwork(object)){
 Params.GRNData <- function(object){
     return(object@grn@params)
 }
+
 
 #' @rdname Params
 #' @method Params RegulatoryNetwork
@@ -396,6 +415,7 @@ GetAssay.GRNData <- function(object, assay=NULL){
 LayerData.GRNData <- function(object, ...){
     return(SeuratObject::LayerData(object@data, ...))
 }
+
 
 #' Get variable features from GRNData
 #' @rdname VariableFeatures

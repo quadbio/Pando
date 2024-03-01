@@ -1,5 +1,5 @@
 Package: Pando
-Version: 1.0.5
+Version: 1.1.0
 Type: Package
 Title: Inferring regulomes from multi-modal single-cell genomics data
 Authors@R: person(given = "Jonas Simon",
@@ -20,8 +20,8 @@ Depends:
     R (>= 4.0.0)
 Imports: 
     tidyverse (>= 2.0.0),
-    Seurat (>= 4.0.0),
-    Signac,
+    Seurat (>= 5.0.0),
+    Signac (>= 1.12.0),
     Matrix (>= 1.5-0),
     MatrixGenerics (>= 1.10.0),
     ggplot2,
