@@ -215,7 +215,7 @@ plot_module_metrics.GRNData <- function(
 #' @param network Name of the network to use.
 #' @param graph_name Name of the graph.
 #' @param rna_assay Name of the RNA assay.
-#' @param rna_slot Name of the RNA slot to use.
+#' @param rna_layer Name of the RNA slot to use.
 #' @param umap_method Method to compute edge weights for UMAP:
 #' * \code{'weighted'} - Correlation weighted by GRN coefficient.
 #' * \code{'corr'} - Only correlation.
@@ -238,7 +238,7 @@ get_network_graph.GRNData <- function(
     network = DefaultNetwork(object),
     graph_name = 'module_graph',
     rna_assay = 'RNA',
-    rna_slot = 'data',
+    rna_layer = 'data',
     umap_method = c('weighted', 'corr', 'coef', 'none'),
     features = NULL,
     random_seed = 111,
@@ -257,7 +257,7 @@ get_network_graph.GRNData <- function(
     }
 
     if (umap_method=='weighted'){
-        rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
+        rna_expr <- t(LayerData(object, assay=rna_assay, layer=rna_layer))
         features <- intersect(features, colnames(rna_expr))
 
         log_message('Computing gene-gene correlation', verbose=verbose)
@@ -288,7 +288,7 @@ get_network_graph.GRNData <- function(
 
     } else if (umap_method=='corr'){
         net_features <- NetworkFeatures(object, network=network)
-        rna_expr <- t(Seurat::GetAssayData(object, assay=rna_assay, slot=rna_slot))
+        rna_expr <- t(LayerData(object, assay=rna_assay, layer=rna_layer))
 
         if (!is.null(features)){
             features <- intersect(intersect(features, colnames(rna_expr)), net_features)

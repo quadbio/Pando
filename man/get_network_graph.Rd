@@ -12,7 +12,7 @@ get_network_graph(object, ...)
   network = DefaultNetwork(object),
   graph_name = "module_graph",
   rna_assay = "RNA",
-  rna_slot = "data",
+  rna_layer = "data",
   umap_method = c("weighted", "corr", "coef", "none"),
   features = NULL,
   random_seed = 111,
@@ -31,7 +31,7 @@ get_network_graph(object, ...)
 
 \item{rna_assay}{Name of the RNA assay.}
 
-\item{rna_slot}{Name of the RNA slot to use.}
+\item{rna_layer}{Name of the RNA slot to use.}
 
 \item{umap_method}{Method to compute edge weights for UMAP:
 \itemize{

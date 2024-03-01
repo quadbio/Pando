@@ -142,5 +142,17 @@ GetAssay <- function(object, ...){
     UseMethod(generic = 'GetAssay', object = object)
 }
 
+#' @rdname LayerData
+#' @export LayerData
+LayerData <- function(object, ...){
+    UseMethod(generic = 'LayerData', object = object)
+}
+
+#' @rdname VariableFeatures
+#' @export VariableFeatures
+VariableFeatures <- function(object, ...){
+    UseMethod(generic = 'VariableFeatures', object = object)
+}
+
 
 
