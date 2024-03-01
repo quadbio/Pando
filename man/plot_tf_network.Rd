@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/plots.R
 \name{plot_tf_network}
 \alias{plot_tf_network}
-\alias{plot_tf_network.SeuratPlus}
+\alias{plot_tf_network.GRNData}
 \title{Plot sub-network centered around one TF.}
 \usage{
 plot_tf_network(object, ...)
 
-\method{plot_tf_network}{SeuratPlus}(
+\method{plot_tf_network}{GRNData}(
   object,
   tf,
   network = DefaultNetwork(object),
@@ -50,7 +50,7 @@ plot_tf_network(object, ...)
 \item{color_edges}{Logical, whether to color edges by direction.}
 }
 \value{
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Plot sub-network centered around one TF.

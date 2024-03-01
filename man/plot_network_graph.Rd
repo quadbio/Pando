@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/plots.R
 \name{plot_network_graph}
 \alias{plot_network_graph}
-\alias{plot_network_graph.SeuratPlus}
+\alias{plot_network_graph.GRNData}
 \title{Plot network graph.}
 \usage{
 plot_network_graph(object, ...)
 
-\method{plot_network_graph}{SeuratPlus}(
+\method{plot_network_graph}{GRNData}(
   object,
   network = DefaultNetwork(object),
   graph = "module_graph",
@@ -49,7 +49,7 @@ implemented in \code{\link[ggraph]{ggraph}}}
 \item{color_edges}{Logical, Whether to color edges by direction.}
 }
 \value{
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Plot network graph.

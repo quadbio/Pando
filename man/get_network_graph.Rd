@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/plots.R
 \name{get_network_graph}
 \alias{get_network_graph}
-\alias{get_network_graph.SeuratPlus}
+\alias{get_network_graph.GRNData}
 \title{Compute network graph embedding using UMAP.}
 \usage{
 get_network_graph(object, ...)
 
-\method{get_network_graph}{SeuratPlus}(
+\method{get_network_graph}{GRNData}(
   object,
   network = DefaultNetwork(object),
   graph_name = "module_graph",
@@ -50,7 +50,7 @@ uses all features in the network.}
 \item{verbose}{Print messages.}
 }
 \value{
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Compute network graph embedding using UMAP.

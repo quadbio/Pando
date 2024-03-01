@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/plots.R
 \name{get_tf_network}
 \alias{get_tf_network}
-\alias{get_tf_network.SeuratPlus}
+\alias{get_tf_network.GRNData}
 \title{Get sub-network centered around one TF.}
 \usage{
 get_tf_network(object, ...)
 
-\method{get_tf_network}{SeuratPlus}(
+\method{get_tf_network}{GRNData}(
   object,
   tf,
   network = DefaultNetwork(object),
@@ -40,7 +40,7 @@ or prune to the strongest overall connection.}
 \item{parallel}{Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.}
 }
 \value{
-A SeuratPlus object.
+A GRNData object.
 }
 \description{
 Get sub-network centered around one TF.

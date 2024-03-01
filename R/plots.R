@@ -70,8 +70,8 @@ get_umap <- function(
 #'
 #' @rdname plot_gof
 #' @export
-#' @method plot_gof SeuratPlus
-plot_gof.SeuratPlus <- function(
+#' @method plot_gof GRNData
+plot_gof.GRNData <- function(
     object,
     network = DefaultNetwork(object),
     point_size = 0.5
@@ -140,8 +140,8 @@ plot_gof.SeuratPlus <- function(
 #'
 #' @rdname plot_module_metrics
 #' @export
-#' @method plot_module_metrics SeuratPlus
-plot_module_metrics.SeuratPlus <- function(
+#' @method plot_module_metrics GRNData
+plot_module_metrics.GRNData <- function(
     object,
     network = DefaultNetwork(object)
 ){
@@ -228,12 +228,12 @@ plot_module_metrics.SeuratPlus <- function(
 #' @param ... Additional arguments for \code{\link[umap]{uwot}}.
 #' @param verbose Print messages.
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @rdname get_network_graph
 #' @export
-#' @method get_network_graph SeuratPlus
-get_network_graph.SeuratPlus <- function(
+#' @method get_network_graph GRNData
+get_network_graph.GRNData <- function(
     object,
     network = DefaultNetwork(object),
     graph_name = 'module_graph',
@@ -383,12 +383,12 @@ get_network_graph.SeuratPlus <- function(
 #' @param label_nodes Logical, Whether to label nodes with gene name.
 #' @param color_edges Logical, Whether to color edges by direction.
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @rdname plot_network_graph
 #' @export
-#' @method plot_network_graph SeuratPlus
-plot_network_graph.SeuratPlus <- function(
+#' @method plot_network_graph GRNData
+plot_network_graph.GRNData <- function(
     object,
     network = DefaultNetwork(object),
     graph = 'module_graph',
@@ -460,12 +460,12 @@ plot_network_graph.SeuratPlus <- function(
 #' @param verbose Logical. Whether to print messages.
 #' @param parallel Logical. Whether to parallelize the computation with \code{\link[foreach]{foreach}}.
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @rdname get_tf_network
 #' @export
-#' @method get_tf_network SeuratPlus
-get_tf_network.SeuratPlus <- function(
+#' @method get_tf_network GRNData
+get_tf_network.GRNData <- function(
     object,
     tf,
     network = DefaultNetwork(object),
@@ -585,12 +585,12 @@ get_tf_network.SeuratPlus <- function(
 #' * \code{'none'} - Label nothing (except the root TF).
 #' @param color_edges Logical, whether to color edges by direction.
 #'
-#' @return A SeuratPlus object.
+#' @return A GRNData object.
 #'
 #' @rdname plot_tf_network
 #' @export
-#' @method plot_tf_network SeuratPlus
-plot_tf_network.SeuratPlus <- function(
+#' @method plot_tf_network GRNData
+plot_tf_network.GRNData <- function(
     object,
     tf,
     network = DefaultNetwork(object),

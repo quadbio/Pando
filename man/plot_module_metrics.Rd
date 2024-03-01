@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/plots.R
 \name{plot_module_metrics}
 \alias{plot_module_metrics}
-\alias{plot_module_metrics.SeuratPlus}
+\alias{plot_module_metrics.GRNData}
 \title{Plot module metrics number of genes, number of peaks and number of TFs per gene.}
 \usage{
 plot_module_metrics(object, ...)
 
-\method{plot_module_metrics}{SeuratPlus}(object, network = DefaultNetwork(object))
+\method{plot_module_metrics}{GRNData}(object, network = DefaultNetwork(object))
 }
 \arguments{
 \item{object}{An object.}

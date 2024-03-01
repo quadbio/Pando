@@ -2,12 +2,12 @@
 % Please edit documentation in R/generics.R, R/plots.R
 \name{plot_gof}
 \alias{plot_gof}
-\alias{plot_gof.SeuratPlus}
+\alias{plot_gof.GRNData}
 \title{Plot goodness-of-fit metrics.}
 \usage{
 plot_gof(object, ...)
 
-\method{plot_gof}{SeuratPlus}(object, network = DefaultNetwork(object), point_size = 0.5)
+\method{plot_gof}{GRNData}(object, network = DefaultNetwork(object), point_size = 0.5)
 }
 \arguments{
 \item{object}{An object.}
