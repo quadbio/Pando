@@ -168,6 +168,8 @@ fit_grn_models.GRNData <- function(
     method <- match.arg(method)
     peak_to_gene_method <- match.arg(peak_to_gene_method)
 
+    check_if_available(method)
+
     # Get variables from object
     params <- Params(object)
     motif2tf <- NetworkTFs(object)

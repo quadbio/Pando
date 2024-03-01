@@ -487,3 +487,28 @@ sparse_cor <- function(
     return(corr_mat)
 }
 
+
+check_if_available <- function(method){
+    # Check if basic packages are installed
+    if ((method=='xgb') & (!require(xgboost, quietly = T))){
+        stop('The xgboost package is required to use xgb models.')
+    }
+    # Check if basic packages are installed
+    if ((method%in%c('cv.glmnet', 'glmnet')) & (!require(glmnet, quietly = T))){
+        stop('The glmnet package is required to use glmnet models.')
+    }    # Check if basic packages are installed
+    if ((method=='brms') & (!require(brms, quietly = T))){
+        stop('The brms package is required to use brms models.')
+    }
+    if ((method=='brms') & (!require(brms, quietly = T))){
+        stop('The brms package is required to use brms models.')
+    }
+    if (method%in%c('bagging_ridge', 'bayesian_ridge')){
+        if (!require(reticulate, quietly = T)){
+            stop('The brms package is required to use brms models.')
+        }
+        np <- reticulate::import('numpy')
+        pd <- reticulate::import('pandas')
+        sklearn <- reticulate::import('sklearn')
+    }
+}

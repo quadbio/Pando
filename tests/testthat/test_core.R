@@ -15,10 +15,10 @@ test_srt <- read_rds('../../../data/test_seurat.rds')
 genes_use <- c('NEUROD6', 'POU5F1')
 
 test_srt <- initiate_grn(test_srt, exclude_exons=F)
-VariableFeatures(test_srt, assay='RNA') <- genes_use
+VariableFeatures(test_srt@data, assay='RNA') <- genes_use
 
-test_that('initiate_grn returns SeuratPlus object.', {
-    expect_equal(class(test_srt)[1], 'SeuratPlus')
+test_that('initiate_grn returns GRNData object.', {
+    expect_equal(class(test_srt)[1], 'GRNData')
 })
 
 test_that('initiate_grn creates RegualtoryNetwork object.', {

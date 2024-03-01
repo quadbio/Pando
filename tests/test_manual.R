@@ -44,7 +44,7 @@ test_srt <- find_motifs(
 )
 
 test_srt <- infer_grn(test_srt, genes=genes_use,
-    peak_to_gene_method = 'GREAT', parallel=F, verbose = 2)
+    peak_to_gene_method = 'GREAT', parallel=F, verbose = 2, method='xgb')
 
 test_srt <- find_modules(test_srt, min_genes_per_module=0, nvar_thresh=0, p_thresh=1)
 annot <- Annotation(test_srt@data)
