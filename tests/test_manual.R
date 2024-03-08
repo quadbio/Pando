@@ -36,6 +36,11 @@ test_srt <- initiate_grn(
     exclude_exons = T
 )
 
+test_srt <- create_GRNData(
+    test_srt@data,
+    test_srt@grn
+)
+
 test_srt <- find_motifs(
     test_srt,
     motif_tfs = motif2tf,

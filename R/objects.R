@@ -125,6 +125,20 @@ GRNData <- setClass(
 )
 
 
+#' Create GRNData object from a Seurat and a GRN object
+#' @rdname create_GRNData
+#' @export
+create_GRNData <- function(seurat_object, grn_object){
+    object <- new(
+        Class = 'GRNData',
+        grn = grn_object,
+        data = seurat_object
+    )
+
+    return(object)
+}
+
+
 #' Get network
 #' @rdname GetNetwork
 #' @method GetNetwork GRNData
