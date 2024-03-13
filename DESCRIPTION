@@ -40,7 +40,9 @@ Imports:
     sparseMatrixStats (>= 1.10.0),
     irlba,
     uwot,
-    grr
+    grr,
+    chromVAR,
+    doParallel
 Suggests: 
     rmarkdown,
     testthat,

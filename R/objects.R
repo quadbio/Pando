@@ -439,6 +439,23 @@ VariableFeatures.GRNData <- function(object, ...){
     return(Seurat::VariableFeatures(object@data, ...))
 }
 
+#' Compute region stats from GRNData
+#' @rdname RegionStats
+#' @method RegionStats GRNData
+#' @export
+RegionStats.GRNData <- function(object, ...){
+    object@data <- Signac::RegionStats(object@data, ...)
+    return(object)
+}
+
+#' Run chromVAR on GRNData
+#' @rdname RunChromVAR
+#' @method RunChromVAR GRNData
+#' @export
+RunChromVAR.GRNData <- function(object, ...){
+    object@data <- Signac::RunChromVAR(object@data, ...)
+    return(object)
+}
 
 #' Print RegulatoryNetwork objects
 #'

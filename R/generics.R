@@ -154,5 +154,16 @@ VariableFeatures <- function(object, ...){
     UseMethod(generic = 'VariableFeatures', object = object)
 }
 
+#' @rdname RegionStats
+#' @export RegionStats
+RegionStats <- function(object, ...){
+    UseMethod(generic = 'RegionStats', object = object)
+}
+
+#' @rdname RunChromVAR
+#' @export RunChromVAR
+RunChromVAR <- function(object, ...){
+    UseMethod(generic = 'RunChromVAR', object = object)
+}
 
 
