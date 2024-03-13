@@ -32,7 +32,7 @@ initiate_grn.Seurat <- function(
     if (is.null(gene_annot)){
         stop('Please provide a gene annotation for the ChromatinAssay.')
     }
-    peak_ranges <- StringToGRanges(
+    peak_ranges <- Signac::StringToGRanges(
         rownames(Seurat::GetAssay(object, assay=peak_assay))
     )
 
@@ -78,6 +78,23 @@ initiate_grn.Seurat <- function(
         rna_assay = rna_assay,
         exclude_exons = exclude_exons
     )
+
+    # Add the modified peak matches to the Seurat object
+    cand_regions_df <- as.data.frame(cand_ranges) %>% 
+                      unite('region', c('seqnames', 'start', 'end'), sep='-', remove=FALSE) %>% 
+                      column_to_rownames('region')
+    cand_regions <- rownames(cand_regions_df)
+
+    cand_assay <- object[[peak_assay]]
+    cand_assay@counts <- cand_assay@counts[peak_matches, ]
+    rownames(cand_assay@counts) <- cand_regions
+    cand_assay@data <- cand_assay@data[peak_matches, ]
+    rownames(cand_assay@data) <- cand_regions
+    cand_assay@ranges <- cand_ranges
+    cand_assay@var.features <- list()
+    cand_assay@meta.features <- cand_regions_df
+
+    object[[paste0(peak_assay, "_cand")]] <- cand_assay
 
     grn_obj <- new(
         Class = 'RegulatoryNetwork',
@@ -166,7 +183,10 @@ find_motifs.GRNData <- function(
         pfm = pfm,
         verbose= verbose
     )
+    # Add motif positions to grn object
     object@grn@regions@motifs <- motif_pos
+    # Also add motif positions to the data object for default assay
+    object@data[[paste0(params$peak_assay, "_cand")]]@motifs <- motif_pos
 
     return(object)
 }

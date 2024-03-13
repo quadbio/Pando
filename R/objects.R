@@ -444,7 +444,10 @@ VariableFeatures.GRNData <- function(object, ...){
 #' @method RegionStats GRNData
 #' @export
 RegionStats.GRNData <- function(object, ...){
+    params <- Params(object)
+    Seurat::DefaultAssay(object@data) <- paste0(params$peak_assay, '_cand')
     object@data <- Signac::RegionStats(object@data, ...)
+    Seurat::DefaultAssay(object@data) <- params$peak_assay
     return(object)
 }
 
@@ -453,7 +456,10 @@ RegionStats.GRNData <- function(object, ...){
 #' @method RunChromVAR GRNData
 #' @export
 RunChromVAR.GRNData <- function(object, ...){
+    params <- Params(object)
+    Seurat::DefaultAssay(object@data) <- paste0(params$peak_assay, '_cand')
     object@data <- Signac::RunChromVAR(object@data, ...)
+    Seurat::DefaultAssay(object@data) <- params$peak_assay
     return(object)
 }
 
