@@ -172,7 +172,7 @@ fit_grn_models.GRNData <- function(
 
     # Get variables from object
     params <- Params(object)
-    motif2tf <- NetworkTFs(object)
+    motif2tf <- as.matrix(t(NetworkTFs(object)))
     if (is.null(motif2tf)){
         stop('Motif matches have not been found. Please run `find_motifs()` first.')
     }
