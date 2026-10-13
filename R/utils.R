@@ -371,7 +371,7 @@ aggregate_assay <- function(
     assay = 'RNA',
     slot = 'data'
 ){
-    ass_mat <- Matrix::t(Seurat::GetAssayData(object, assay=assay, layer=slot))
+    ass_mat <- Matrix::t(SeuratObject::LayerData(object, assay=assay, layer=slot))
     groups <- as.character(object@meta.data[[group_name]])
     agg_mat <- aggregate_matrix(ass_mat, groups=groups, fun=fun)
     if (is.null(object@assays[[assay]]@misc$summary)){
