@@ -210,8 +210,21 @@ fast_aggregate <- function(
     if (fun=='mean'){
         result@x <- result@x/(fast_aggregate(x, groupings2, fun='count'))@x
     }
-    attr(result,'crosswalk') <- grr::extract(groupings, match(rownames(result), groupings2$A))
+    attr(result,'crosswalk') <- extract_rows(groupings, match(rownames(result), groupings2$A))
     return(result)
+}
+
+#' Row subsetting for vectors, matrices and data frames.
+#' Replaces \code{grr::extract}, since grr is off CRAN.
+#'
+extract_rows <- function(x, i){
+    if (is.null(dim(x))){
+        return(x[i])
+    }
+    if (is.data.frame(x)){
+        return(as.data.frame(lapply(x, function(a) a[i])))
+    }
+    return(x[i, ])
 }
 
 #' Copy of the dMcast function from the Matrix.utils package,
@@ -346,7 +359,7 @@ aggregate_matrix <- function(
 #' @param group_name A character vector indicating the metadata column to aggregate over.
 #' @param fun The summary function to be applied to each group.
 #' @param assay The assay to summarize.
-#' @param slot The slot to summarize.
+#' @param slot The layer to summarize (passed to \code{layer} of \code{GetAssayData}).
 #'
 #' @return A Seurat object.
 #'
@@ -358,7 +371,7 @@ aggregate_assay <- function(
     assay = 'RNA',
     slot = 'data'
 ){
-    ass_mat <- Matrix::t(Seurat::GetAssayData(object, assay=assay, slot=slot))
+    ass_mat <- Matrix::t(Seurat::GetAssayData(object, assay=assay, layer=slot))
     groups <- as.character(object@meta.data[[group_name]])
     agg_mat <- aggregate_matrix(ass_mat, groups=groups, fun=fun)
     if (is.null(object@assays[[assay]]@misc$summary)){
