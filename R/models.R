@@ -222,7 +222,9 @@ fit_xgb <- function(
         eta=0.01,
         objective='reg:squarederror'),
     nrounds = 1000,
-    nthread = -1,
+    # xgboost >= 3 rejects nthread = -1 ("Passed invalid 'nthreads'"); 1 is valid in
+    # every version and does not oversubscribe when infer_grn(parallel=TRUE) forks
+    nthread = 1,
     ...
 ){
     if (!require(xgboost, quietly = T)){
@@ -290,8 +292,9 @@ fit_bagging_ridge <- function(
     }
     response <- data[[formula[[2]]]]
 
+    # scikit-learn >= 1.4 renamed BaggingRegressor(base_estimator=) to estimator=
     model <- sklearn$ensemble$BaggingRegressor(
-        base_estimator = sklearn$linear_model$Ridge(
+        estimator = sklearn$linear_model$Ridge(
             alpha = alpha,
             solver = solver,
             random_state = as.integer(123),

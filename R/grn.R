@@ -180,6 +180,13 @@ fit_grn_models.GRNData <- function(
     if (is.null(gene_annot)){
         stop('Please provide a gene annotation for the ChromatinAssay.')
     }
+    # EnsDb-derived annotations (Signac::GetGRangesFromEnsDb) contain intronic
+    # 'gap' rows with strand '*'. Signac::Extend() treats '*' as '+', so these
+    # rows extend minus-strand genes by `upstream` on the downstream side too.
+    # Gap rows lie inside the gene body, so dropping them keeps the gene extent.
+    if ('type' %in% colnames(GenomicRanges::mcols(gene_annot))){
+        gene_annot <- gene_annot[gene_annot$type != 'gap']
+    }
     # Select target genes for GRN inference
     if (is.null(genes)){
         genes <- VariableFeatures(object, assay=params$rna_assay)
@@ -193,7 +200,7 @@ fit_grn_models.GRNData <- function(
         gene_data <- Matrix::t(LayerData(
             object, assay=params$rna_assay, layer='data'
         ))
-        gene_groups <- TRUE
+        gene_groups <- seq_len(nrow(gene_data))
     } else {
         gene_data <- GetAssaySummary(
             object,
@@ -208,7 +215,7 @@ fit_grn_models.GRNData <- function(
         peak_data <- Matrix::t(LayerData(
             object, assay=params$peak_assay, layer='data'
         ))
-        peak_groups <- TRUE
+        peak_groups <- seq_len(nrow(peak_data))
     } else {
         peak_data <- GetAssaySummary(
             object,
@@ -287,6 +294,10 @@ fit_grn_models.GRNData <- function(
         }
 
         # Select peaks correlating with target gene expression
+        if (!g %in% colnames(gene_data)){
+            log_message('Warning: ', g, ' not found in gene expression matrix', verbose=verbose==2)
+            return()
+        }
         g_x <- gene_data[gene_groups, g, drop=FALSE]
         peak_x <- peak_data[peak_groups, gene_peaks, drop=FALSE]
         peak_g_cor <- as(sparse_cor(peak_x, g_x), 'generalMatrix')
@@ -431,17 +442,36 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
         coefs$padj <- p.adjust(coefs$pval, method=adjust_method)
     }
 
-    term_pattern <- paste0('(.+)', term, '(.+)')
     region_pattern <- '[\\d\\w]+_\\d+_\\d+'
+
+    # Escape the interaction term for use in a regex (e.g. '+' is a quantifier)
+    term_esc <- stringr::str_replace_all(term, '([\\+\\*\\.\\|\\?\\^\\$\\(\\)\\[\\]\\{\\}\\\\])', '\\\\\\1')
+    term_pattern <- paste0('(.+)', term_esc, '(.+)')
+
+    # Check whether terms actually contain the separator (they do for ':' and '*'
+    # but NOT for '+' — R lm() stores additive terms as plain variable names).
+    terms_have_sep <- any(stringr::str_detect(
+        coefs$term[!coefs$term %in% c('(Intercept)', 'Intercept')],
+        term_esc
+    ))
+
     coefs_use <- coefs %>%
         filter(!term%in%c('(Intercept)', 'Intercept')) %>%
         mutate(
-            tf_ = str_replace(term, term_pattern, '\\1'),
-            region_ = str_replace(term, term_pattern, '\\2')
+            # For interaction terms (containing the separator) split normally.
+            # For additive terms (no separator in term name) classify by pattern.
+            tf_ = if (terms_have_sep)
+                      str_replace(term, term_pattern, '\\1')
+                  else
+                      ifelse(str_detect(term, region_pattern), NA_character_, term),
+            region_ = if (terms_have_sep)
+                          str_replace(term, term_pattern, '\\2')
+                      else
+                          ifelse(str_detect(term, region_pattern), term, NA_character_)
         ) %>%
         mutate(
-            tf = ifelse(str_detect(tf_, region_pattern), region_, tf_),
-            region = ifelse(!str_detect(tf_, region_pattern), region_, tf_)
+            tf = ifelse(!is.na(tf_) & str_detect(tf_, region_pattern), region_, tf_),
+            region = ifelse(!is.na(tf_) & !str_detect(tf_, region_pattern), region_, tf_)
         ) %>%
         select(-region_, -tf_) %>%
         mutate(

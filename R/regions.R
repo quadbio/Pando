@@ -119,6 +119,10 @@ initiate_grn.GRNData <- function(
 #' @param genome A \code{BSgenome} object with the genome of interest.
 #' @param motif_tfs A data frame matching motifs with TFs. The first column is assumed
 #' to be the name of the motif, the second the name of the TF.
+#' @param bg Background nucleotide frequencies for motif scanning: 'subject'
+#' (composition of the candidate regions, default), 'genome', 'even' or a numeric
+#' vector of A, C, G, T frequencies.
+#' @param p_cutoff P-value cutoff for motif matches.
 #' @param verbose Display messages.
 #'
 #' @return A GRNData object with updated motif info.
@@ -131,6 +135,8 @@ find_motifs.GRNData <- function(
     pfm,
     genome,
     motif_tfs = NULL,
+    bg = 'subject',
+    p_cutoff = 5e-05,
     verbose = TRUE
 ){
     params <- Params(object)
@@ -158,13 +164,16 @@ find_motifs.GRNData <- function(
     }
     object@grn@regions@tfs <- motif2tf[, tfs_use]
 
-    # Find motif positions with Signac/motifmatchr
+    # Find motif positions with motifmatchr's scanner, using a corrected
+    # background conversion (see motifmatchr_patched.R)
     cand_ranges <- object@grn@regions@ranges
-    motif_pos <- Signac::AddMotifs(
+    motif_pos <- add_motifs_fixed(
         object = cand_ranges,
         genome = genome,
         pfm = pfm,
-        verbose= verbose
+        bg = bg,
+        p.cutoff = p_cutoff,
+        verbose = verbose
     )
     object@grn@regions@motifs <- motif_pos
 
