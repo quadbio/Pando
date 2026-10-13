@@ -7,7 +7,15 @@
 \usage{
 find_motifs(object, ...)
 
-\method{find_motifs}{GRNData}(object, pfm, genome, motif_tfs = NULL, verbose = TRUE)
+\method{find_motifs}{GRNData}(
+  object,
+  pfm,
+  genome,
+  motif_tfs = NULL,
+  bg = "subject",
+  p_cutoff = 5e-05,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{pfm}{A \code{PFMatrixList} object with position weight matrices.}
@@ -16,6 +24,12 @@ find_motifs(object, ...)
 
 \item{motif_tfs}{A data frame matching motifs with TFs. The first column is assumed
 to be the name of the motif, the second the name of the TF.}
+
+\item{bg}{Background nucleotide frequencies for motif scanning: 'subject'
+(composition of the candidate regions, default), 'genome', 'even' or a numeric
+vector of A, C, G, T frequencies.}
+
+\item{p_cutoff}{P-value cutoff for motif matches.}
 
 \item{verbose}{Display messages.}
 }
