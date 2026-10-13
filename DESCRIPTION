@@ -19,14 +19,21 @@ biocViews:
 Depends:
     R (>= 4.0.0)
 Imports: 
-    tidyverse (>= 2.0.0),
+    dplyr,
+    purrr,
+    stringr,
+    tibble,
+    tidyr,
     Seurat (>= 5.0.0),
+    SeuratObject (>= 5.0.0),
     Signac (>= 1.12.0),
     Matrix (>= 1.5-0),
+    methods,
     MatrixGenerics (>= 1.10.0),
     ggplot2,
     IRanges (>= 2.32.0),
     GenomicRanges,
+    S4Vectors,
     motifmatchr,
     Biostrings,
     BSgenome,
@@ -35,20 +42,23 @@ Imports:
     bayestestR,
     ggpointdensity,
     ggraph,
+    igraph,
     tidygraph,
     pals,
     patchwork,
+    scales,
+    pbapply,
     TFBSTools,
     foreach,
     sparseMatrixStats (>= 1.10.0),
     irlba,
-    uwot,
-    grr
+    uwot
 Suggests: 
+    knitr,
     rmarkdown,
     testthat,
     reticulate,
     xgboost,
-    brms
-Remotes: 
-    github::immunogenomics/presto
+    brms,
+    glmnet,
+    presto

@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"pkill -f \\\"mamba create -y -n R_pando\\\" 2>/dev/null; sleep 5; echo \\\"remaining mamba procs: $(pgrep -cf 'mamba create' 2>/dev/null || echo 0)\\\"; echo \\\"user threads now: $(ps -u $USER -L -...",
+  "error": "Exit code 144",
+  "timestamp": "2026-08-07T08:50:32.335Z",
+  "retry_count": 2
+}
