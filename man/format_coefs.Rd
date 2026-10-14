@@ -7,7 +7,15 @@
 format_coefs(coefs, term = ":", adjust_method = "fdr")
 }
 \arguments{
-\item{coefs}{A data frame with coefficients}
+\item{coefs}{A data frame with coefficients. If it already contains
+\code{tf} and \code{region} columns (as produced by \code{infer_grn()}),
+these are used as they are and \code{term} is not parsed. Otherwise TF and
+region are parsed from \code{term}, assuming regions named like
+\code{chr1_100_200} and '-' replaced by '_' in all names.}
+
+\item{term}{Interaction term between regions and TFs.}
+
+\item{adjust_method}{Method for p-value adjustment, see \code{p.adjust()}.}
 }
 \value{
 A data frame.

@@ -337,42 +337,31 @@ fit_grn_models.GRNData <- function(
             ) %>%
             rename('tf'=1, 'corr'=2)
 
-        # Filter TFs and make formula string
-        frml_string <- map(names(gene_peak_tfs), function(p){
-            peak_tfs <- gene_peak_tfs[[p]]
-            peak_tfs <- peak_tfs[peak_tfs%in%tfs_use]
-            if (length(peak_tfs)==0){
-                return()
-            }
-            peak_name <- str_replace_all(p, '-', '_')
-            tf_name <- str_replace_all(peak_tfs, '-', '_')
-            formula_str <- paste(
-                paste(peak_name, interaction_term, tf_name, sep=' '), collapse = ' + ')
-            return(list(tfs=peak_tfs, frml=formula_str))
-        })
-        frml_string <- frml_string[!map_lgl(frml_string, is.null)]
-        if (length(frml_string)==0){
+        # Filter TFs for each peak
+        peak_tfs_use <- map(gene_peak_tfs, function(tfs) tfs[tfs%in%tfs_use])
+        peak_tfs_use <- peak_tfs_use[lengths(peak_tfs_use) > 0]
+        if (length(peak_tfs_use)==0){
             log_message('Warning: No valid peak:TF pairs found for ', g, verbose=verbose==2)
             return()
         }
 
-        target <- str_replace_all(g, '-', '_')
-        model_frml <- as.formula(
-            paste0(target, ' ~ ', paste0(map(frml_string, function(x) x$frml),  collapse=' + '))
+        # Make formula and model matrix
+        model_input <- build_model_input(
+            target = g,
+            peak_tfs = peak_tfs_use,
+            gene_data = gene_data,
+            peak_x = peak_x,
+            gene_groups = gene_groups,
+            term = interaction_term,
+            scale = scale
         )
-
-        # Get expression data
-        nfeats <- sum(map_dbl(frml_string, function(x) length(x$tfs)))
-        gene_tfs <- purrr::reduce(map(frml_string, function(x) x$tfs), union)
-        gene_x <- gene_data[gene_groups, union(g, gene_tfs), drop=FALSE]
-        model_mat <- as.data.frame(cbind(gene_x, peak_x))
-        if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
-        colnames(model_mat) <- str_replace_all(colnames(model_mat), '-', '_')
+        var_names <- model_input$var_names
+        nfeats <- model_input$nfeats
 
         log_message('Fitting model with ', nfeats, ' variables for ', g, verbose=verbose==2)
         result <- try(fit_model(
-            model_frml,
-            data = model_mat,
+            model_input$formula,
+            data = model_input$data,
             method = method,
             ...
         ), silent=TRUE)
@@ -381,6 +370,7 @@ fit_grn_models.GRNData <- function(
             log_message(result, verbose=verbose==2)
             return()
         } else {
+            result$coefs <- decode_model_terms(result$coefs, var_names)
             result$gof$nvariables <- nfeats
             result$corr <- tf_g_corr_df
             return(result)
@@ -423,11 +413,110 @@ fit_grn_models.GRNData <- function(
 
 
 
+#' Placeholder variable names for model formulas
+#'
+#' @param target Name of the target gene.
+#' @param regions Character vector with region names.
+#' @param tfs Character vector with TF names.
+#'
+#' @return A named character vector mapping original names to syntactic
+#' placeholders (\code{target}, \code{region1}, ..., \code{tf1}, ...).
+#' @noRd
+model_var_names <- function(target, regions, tfs){
+    var_names <- c(
+        setNames('target', target),
+        setNames(paste0('region', seq_along(regions)), regions),
+        setNames(paste0('tf', seq_along(tfs)), tfs)
+    )
+    dup <- unique(names(var_names)[duplicated(names(var_names))])
+    if (length(dup) > 0){
+        stop('Gene and region names must be distinct, found duplicates: ', paste(dup, collapse=', '))
+    }
+    return(var_names)
+}
+
+
+#' Make model formula and data with placeholder variable names
+#'
+#' Gene and region names are not always valid R symbols (e.g. 'if', 'Su(H)',
+#' '18w' or dm6 regions like '3R-100-200'), so the formula and model matrix
+#' use placeholder names which are mapped back by \code{decode_model_terms()}.
+#'
+#' @param target Name of the target gene.
+#' @param peak_tfs Named list with TFs (values) for each region (names).
+#' @param gene_data Matrix with gene expression (observations x genes).
+#' @param peak_x Matrix with region accessibility (observations x regions).
+#' All columns are added to the model matrix.
+#' @param gene_groups Rows of \code{gene_data} matching the rows of \code{peak_x}.
+#' @param term Interaction term between regions and TFs.
+#' @param scale Logical, whether to scale the model matrix.
+#'
+#' @return A list with \code{formula}, \code{data}, \code{var_names} and
+#' \code{nfeats} (number of region-TF pairs).
+#' @noRd
+build_model_input <- function(
+    target,
+    peak_tfs,
+    gene_data,
+    peak_x,
+    gene_groups = seq_len(nrow(gene_data)),
+    term = ':',
+    scale = FALSE
+){
+    gene_tfs <- purrr::reduce(peak_tfs, union)
+    var_names <- model_var_names(target, colnames(peak_x), gene_tfs)
+    frml_terms <- purrr::map2_chr(names(peak_tfs), peak_tfs, function(p, tfs){
+        paste(var_names[p], term, var_names[tfs], sep=' ', collapse=' + ')
+    })
+    model_frml <- as.formula(
+        paste0(var_names[target], ' ~ ', paste0(frml_terms, collapse=' + '))
+    )
+
+    gene_x <- gene_data[gene_groups, union(target, gene_tfs), drop=FALSE]
+    model_mat <- as.data.frame(cbind(gene_x, peak_x))
+    if (scale) model_mat <- as.data.frame(scale(as.matrix(model_mat)))
+    colnames(model_mat) <- var_names[colnames(model_mat)]
+
+    return(list(
+        formula = model_frml,
+        data = model_mat,
+        var_names = var_names,
+        nfeats = sum(lengths(peak_tfs))
+    ))
+}
+
+
+#' Map placeholder names in model terms back to original names
+#'
+#' @param coefs A data frame with a \code{term} column.
+#' @param var_names Named character vector from \code{model_var_names()}.
+#'
+#' @return The data frame with \code{tf} and \code{region} columns added and
+#' placeholders in \code{term} replaced by the original names.
+#' @noRd
+decode_model_terms <- function(coefs, var_names){
+    lookup <- setNames(names(var_names), var_names)
+    coefs$tf <- unname(lookup[str_extract(coefs$term, '\\btf\\d+\\b')])
+    coefs$region <- unname(lookup[str_extract(coefs$term, '\\bregion\\d+\\b')])
+    # Keep unknown placeholders as they are instead of turning the term into NA
+    coefs$term <- str_replace_all(
+        coefs$term, '\\b(tf|region)\\d+\\b', function(x) ifelse(is.na(lookup[x]), x, lookup[x])
+    )
+    return(coefs)
+}
+
+
 #' Format network coefficients
 #'
 #' @import stringr
 #'
-#' @param coefs A data frame with coefficients
+#' @param coefs A data frame with coefficients. If it already contains
+#' \code{tf} and \code{region} columns (as produced by \code{infer_grn()}),
+#' these are used as they are and \code{term} is not parsed. Otherwise TF and
+#' region are parsed from \code{term}, assuming regions named like
+#' \code{chr1_100_200} and '-' replaced by '_' in all names.
+#' @param term Interaction term between regions and TFs.
+#' @param adjust_method Method for p-value adjustment, see \code{p.adjust()}.
 #'
 #' @return A data frame.
 #'
@@ -440,6 +529,14 @@ format_coefs <- function(coefs, term=':', adjust_method='fdr'){
 
     if ('pval' %in% colnames(coefs)){
         coefs$padj <- p.adjust(coefs$pval, method=adjust_method)
+    }
+
+    # TFs and regions were already decoded from placeholder names
+    if (all(c('tf', 'region') %in% colnames(coefs))){
+        coefs_use <- coefs %>%
+            filter(!term%in%c('(Intercept)', 'Intercept')) %>%
+            select(tf, target, region, term, everything())
+        return(coefs_use)
     }
 
     region_pattern <- '[\\d\\w]+_\\d+_\\d+'
