@@ -71,15 +71,32 @@ find_peaks_near_genes <- function(
 
     } else if (method=='GREAT'){
 
-        # Read gene annotation (Ensembl v93, GRCh38)
-        utils::data(EnsDb.Hsapiens.v93.annot.UCSC.hg38, envir=environment())
-        gene_annot_use <- EnsDb.Hsapiens.v93.annot.UCSC.hg38[
-            which(EnsDb.Hsapiens.v93.annot.UCSC.hg38$gene_name %in% genes$gene_name),
-        ]
-        gene_annot_tss <- select(as_tibble(gene_annot_use), seqnames, 'start'=tss, 'end'=tss, strand)
+        # Gene bodies from the supplied annotation (one range per gene and chromosome/strand).
+        # Previously the bundled human table (EnsDb.Hsapiens.v93.annot.UCSC.hg38) was used here and only
+        # the gene names were taken from `genes`, so GREAT silently linked nothing for other genomes.
+        if (!'gene_name' %in% colnames(GenomicRanges::mcols(genes))){
+            stop('`genes` needs a gene_name column for the GREAT method.')
+        }
+        genes <- genes[!is.na(genes$gene_name) & genes$gene_name != '']
+        gene_df <- data.frame(
+            seqnames = as.character(GenomicRanges::seqnames(genes)),
+            strand = as.character(GenomicRanges::strand(genes)),
+            start = GenomicRanges::start(genes),
+            end = GenomicRanges::end(genes),
+            gene_name = genes$gene_name
+        )
+        gene_df <- gene_df %>%
+            dplyr::group_by(gene_name, seqnames, strand) %>%
+            dplyr::summarise(start = min(start), end = max(end), .groups = 'drop')
+        gene_annot_use <- GenomicRanges::GRanges(
+            seqnames = gene_df$seqnames,
+            ranges = IRanges::IRanges(gene_df$start, gene_df$end),
+            strand = gene_df$strand,
+            gene_name = gene_df$gene_name
+        )
 
-        # Create GRanges object storing the TSS information
-        tss <- GRanges(gene_annot_use)
+        # Basal regulatory region: as before, anchored on the gene body (not on the TSS)
+        tss <- gene_annot_use
 
         # Define basal regulatory region (promoter region)
         # as 5 kb upstream + 1 kb downstream of the TSS
