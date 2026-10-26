@@ -56,7 +56,9 @@ NetworkModules(test_srt)
 
 ## More
 
-More info about Pando can be found on our [website](https://quadbio.github.io/Pando/). There you can find an API reference and a number of tutorial vignettes that give an introduction on how to use Pando most effectively.  
+More info about Pando can be found on our [website](https://quadbio.github.io/Pando/). There you can find an API reference and a number of tutorial vignettes that give an introduction on how to use Pando most effectively.
+
+Vignette data is available via Zenodo: [https://doi.org/10.5281/zenodo.23668130](https://doi.org/10.5281/zenodo.23668130).
 
 ## Citation
 
